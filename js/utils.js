@@ -1,35 +1,26 @@
-// ════════════════════════════════════════════
-// Shared Utilities
-// ════════════════════════════════════════════
+// utils.js
 
-export function showToast(msg, type = 'info', duration = 3000) {
-  const container = document.getElementById('toast-container');
-  if (!container) return;
-  const toast = document.createElement('div');
-  toast.className = `toast ${type}`;
-  toast.textContent = msg;
-  container.appendChild(toast);
-  setTimeout(() => {
-    toast.classList.add('fadeout');
-    setTimeout(() => toast.remove(), 350);
-  }, duration);
+export function showToast(msg, type = 'info', ms = 3200) {
+  const c = document.getElementById('toast-container');
+  if (!c) return;
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.textContent = msg;
+  c.appendChild(t);
+  setTimeout(() => { t.classList.add('fadeout'); setTimeout(() => t.remove(), 350); }, ms);
 }
 
-export function fmtTime(seconds) {
-  if (!seconds || isNaN(seconds)) return '00:00';
-  const m = Math.floor(seconds / 60);
-  const s = Math.floor(seconds % 60);
-  return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+export function fmtDate(d) {
+  if (!d) return '-';
+  const dt = typeof d === 'string' ? new Date(d) : d;
+  if (isNaN(dt)) return '-';
+  return `${dt.getFullYear()}년 ${String(dt.getMonth()+1).padStart(2,'0')}월 ${String(dt.getDate()).padStart(2,'0')}일`;
 }
 
-export function fmtDate(isoOrDate) {
-  const d = typeof isoOrDate === 'string' ? new Date(isoOrDate) : isoOrDate;
-  return `${d.getFullYear()}년 ${String(d.getMonth()+1).padStart(2,'0')}월 ${String(d.getDate()).padStart(2,'0')}일`;
-}
-
-export function fmtDateTime(isoOrDate) {
-  const d = typeof isoOrDate === 'string' ? new Date(isoOrDate) : isoOrDate;
-  return `${fmtDate(d)} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+export function fmtTime(sec) {
+  if (!sec || isNaN(sec)) return '00:00';
+  const m = Math.floor(sec/60), s = Math.floor(sec%60);
+  return String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
 }
 
 export function requireAuth() {
@@ -44,19 +35,28 @@ export function requireAdmin() {
   return JSON.parse(s);
 }
 
+export function safeId(name, org) {
+  return (name + '__' + org).replace(/[.#$[\]/\s]/g, '_');
+}
+
 export function generateCertNo() {
   const now = new Date();
-  const yy = String(now.getFullYear()).slice(2);
-  const mm = String(now.getMonth()+1).padStart(2,'0');
-  const seq = String(Math.floor(Math.random() * 9000) + 1000);
+  const yy  = String(now.getFullYear()).slice(2);
+  const mm  = String(now.getMonth()+1).padStart(2,'0');
+  const seq = String(Math.floor(Math.random()*9000)+1000);
   return `${yy}${mm}-${seq}`;
 }
 
-export function pct(value, total) {
-  if (!total) return 0;
-  return Math.round(value / total * 100);
-}
-
-export function confirm2(msg) {
-  return window.confirm(msg);
+// 유튜브 URL → embed URL 변환
+export function toYoutubeEmbed(url) {
+  if (!url) return null;
+  // already embed
+  if (url.includes('youtube.com/embed/')) return url;
+  // youtu.be/ID
+  const short = url.match(/youtu\.be\/([A-Za-z0-9_-]{11})/);
+  if (short) return `https://www.youtube.com/embed/${short[1]}?rel=0&modestbranding=1`;
+  // watch?v=ID
+  const full  = url.match(/[?&]v=([A-Za-z0-9_-]{11})/);
+  if (full)  return `https://www.youtube.com/embed/${full[1]}?rel=0&modestbranding=1`;
+  return null;
 }

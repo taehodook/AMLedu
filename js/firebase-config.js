@@ -1,27 +1,26 @@
 // ════════════════════════════════════════════
-// Firebase Configuration - KASG LMS
+// firebase-config.js  —  KASG LMS
 // ════════════════════════════════════════════
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, set, get, update, push, onValue, remove }
-  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-import { getStorage, ref as sRef, uploadBytesResumable, getDownloadURL, deleteObject }
-  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+import {
+  getDatabase, ref, set, get, update, push, remove, onValue
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
+// ▼▼▼ Firebase Console → 프로젝트 설정 → 웹 앱에서 복사하세요 ▼▼▼
 const firebaseConfig = {
-  databaseURL: "https://aml-2-5e6d5-default-rtdb.asia-southeast1.firebasedatabase.app/",
-  projectId: "aml-2-5e6d5",
-  storageBucket: "aml-2-5e6d5.appspot.com",
-  apiKey: "AIzaSyAjE52M5YvodrUONjnJx26njWDRb9CNQYI",
-  authDomain: "aml-2-5e6d5.firebaseapp.com",
-  messagingSenderId: "329904488876",
-  appId: "1:329904488876:web:2485ebc3d83ac44cb7ba09"
+  apiKey:            "AIzaSyAjE52M5YvodrUONjnJx26njWDRb9CNQYI",          // ← 교체 필수
+  authDomain:        "aml-2-5e6d5.firebaseapp.com",
+  databaseURL:       "https://aml-2-5e6d5-default-rtdb.asia-southeast1.firebasedatabase.app/",
+  projectId:         "aml-2-5e6d5",
+  storageBucket:     "aml-2-5e6d5.appspot.com",
+  messagingSenderId: "329904488876",        // ← 교체 필수
+  appId:             "1:329904488876:web:2485ebc3d83ac44cb7ba09"            // ← 교체 필수
 };
+// ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
 
 const app = initializeApp(firebaseConfig);
-export const db  = getDatabase(app);
-export const storage = getStorage(app);
+const db  = getDatabase(app);
 
-// ── DB helpers ──────────────────────────────
 export const DB = {
   async get(path) {
     const snap = await get(ref(db, path));
@@ -29,23 +28,13 @@ export const DB = {
   },
   async set(path, val) { return set(ref(db, path), val); },
   async update(path, val) { return update(ref(db, path), val); },
-  async push(path, val) { return push(ref(db, path), val); },
-  listen(path, cb) { onValue(ref(db, path), snap => cb(snap.exists() ? snap.val() : null)); },
-  async remove(path) { return remove(ref(db, path)); }
-};
-
-// ── Storage helpers ─────────────────────────
-export const ST = {
-  uploadVideo(file, courseId, onProgress) {
-    const storageRef = sRef(storage, `videos/${courseId}/${file.name}`);
-    const task = uploadBytesResumable(storageRef, file);
-    task.on('state_changed', snap => {
-      onProgress && onProgress(Math.round(snap.bytesTransferred / snap.totalBytes * 100));
-    });
-    return task;
+  async push(path, val) {
+    const r = await push(ref(db, path), val);
+    return r.key;
   },
-  async getURL(path) { return getDownloadURL(sRef(storage, path)); },
-  async delete(path) { return deleteObject(sRef(storage, path)); }
+  async remove(path) { return remove(ref(db, path)); },
+  listen(path, cb) {
+    onValue(ref(db, path), snap => cb(snap.exists() ? snap.val() : null));
+    return () => {}; // detach placeholder
+  }
 };
-
-export { ref, onValue, push };

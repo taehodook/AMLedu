@@ -6,140 +6,68 @@
 <title>평가 결과 — KASG LMS</title>
 <link rel="stylesheet" href="css/main.css">
 <style>
-  body {
-    background: #F0EDE6; min-height: 100vh;
-    display: flex; align-items: center; justify-content: center;
-    padding: 40px 24px;
-  }
-
-  .result-card {
-    background: var(--white);
-    border-radius: var(--radius-lg);
-    width: 520px; max-width: 100%;
-    overflow: hidden;
-    box-shadow: var(--shadow-lg);
-  }
-
-  .result-hero {
-    padding: 48px 40px;
-    text-align: center;
-    position: relative; overflow: hidden;
-  }
-  .result-hero.pass { background: linear-gradient(135deg, #0C3D25 0%, #1A6640 100%); }
-  .result-hero.fail { background: linear-gradient(135deg, #3D0C0C 0%, #7A1A1A 100%); }
-
-  .result-hero::before {
-    content: '';
-    position: absolute; inset: 0;
-    background: url('assets/logo-circle.png') center/120px no-repeat;
-    opacity: 0.05;
-  }
-
-  .result-icon { font-size: 64px; display: block; margin-bottom: 16px; }
-  .result-title {
-    font-family: 'Noto Serif KR', serif;
-    font-size: 26px; font-weight: 700; color: var(--white);
-  }
-  .result-sub { color: rgba(255,255,255,0.65); font-size: 13px; margin-top: 6px; }
-
-  .result-score-section {
-    padding: 36px 40px;
-    text-align: center;
-    border-bottom: 1px solid var(--border);
-  }
-  .score-huge {
-    font-family: 'Noto Serif KR', serif;
-    font-size: 80px; font-weight: 900; line-height: 1;
-  }
-  .score-huge.pass { color: var(--success); }
-  .score-huge.fail { color: var(--error); }
-  .score-label { font-size: 13px; color: var(--text-mid); margin-top: 4px; }
-
-  .result-details { padding: 24px 40px; }
-  .detail-row {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 11px 0; border-bottom: 1px solid rgba(0,0,0,0.05);
-    font-size: 14px;
-  }
-  .detail-row:last-child { border-bottom: none; }
-  .detail-key { color: var(--text-mid); }
-  .detail-val { font-weight: 600; color: var(--navy); }
-
-  .result-actions {
-    padding: 20px 40px 32px;
-    display: flex; gap: 12px;
-  }
+body{background:#EDE9E1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px 20px}
+.result-card{background:#fff;border-radius:var(--radius-lg);width:500px;max-width:100%;overflow:hidden;box-shadow:var(--shadow-lg)}
+.result-hero{padding:44px 36px;text-align:center;position:relative;overflow:hidden}
+.result-hero.pass{background:linear-gradient(135deg,#0C3D25 0%,#1A6640 100%)}
+.result-hero.fail{background:linear-gradient(135deg,#3D0C0C 0%,#7A1A1A 100%)}
+.result-hero::before{content:'';position:absolute;inset:0;background:url('assets/logo-circle.png') center/110px no-repeat;opacity:.05}
+.result-icon{font-size:60px;display:block;margin-bottom:14px}
+.result-title{font-family:'Noto Serif KR',serif;font-size:24px;font-weight:700;color:#fff}
+.result-sub{color:rgba(255,255,255,.62);font-size:13px;margin-top:5px}
+.score-section{padding:32px 36px;text-align:center;border-bottom:1px solid var(--border)}
+.score-huge{font-family:'Noto Serif KR',serif;font-size:76px;font-weight:900;line-height:1}
+.score-huge.pass{color:var(--success)}.score-huge.fail{color:var(--error)}
+.score-lbl{font-size:12px;color:var(--text-mid);margin-top:3px}
+.result-details{padding:22px 36px}
+.d-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(0,0,0,.05);font-size:14px}
+.d-row:last-child{border-bottom:none}
+.d-key{color:var(--text-mid)}
+.d-val{font-weight:600;color:var(--navy)}
+.result-actions{padding:18px 36px 28px;display:flex;gap:10px}
 </style>
 </head>
 <body>
-
 <div class="result-card">
-  <div class="result-hero" id="result-hero">
-    <span class="result-icon" id="result-icon">🏆</span>
-    <div class="result-title" id="result-title">교육 수료</div>
-    <div class="result-sub" id="result-sub"></div>
+  <div class="result-hero" id="hero">
+    <span class="result-icon" id="icon">🏆</span>
+    <div class="result-title" id="title">결과</div>
+    <div class="result-sub" id="sub"></div>
   </div>
-
-  <div class="result-score-section">
-    <div class="score-huge" id="result-score">-</div>
-    <div class="score-label">최종 점수 (수료 기준: 70점 이상)</div>
+  <div class="score-section">
+    <div class="score-huge" id="score"></div>
+    <div class="score-lbl">최종 점수 (수료 기준: 70점 이상)</div>
   </div>
-
   <div class="result-details">
-    <div class="detail-row"><span class="detail-key">응시자</span><span class="detail-val" id="r-name"></span></div>
-    <div class="detail-row"><span class="detail-key">총 문항</span><span class="detail-val" id="r-total"></span></div>
-    <div class="detail-row"><span class="detail-key">정답</span><span class="detail-val" id="r-correct"></span></div>
-    <div class="detail-row"><span class="detail-key">오답</span><span class="detail-val" id="r-wrong"></span></div>
-    <div class="detail-row"><span class="detail-key">응시 횟수</span><span class="detail-val" id="r-attempt"></span></div>
-    <div class="detail-row"><span class="detail-key">수료 여부</span><span class="detail-val" id="r-pass"></span></div>
+    <div class="d-row"><span class="d-key">응시자</span><span class="d-val" id="r-name"></span></div>
+    <div class="d-row"><span class="d-key">총 문항</span><span class="d-val" id="r-total"></span></div>
+    <div class="d-row"><span class="d-key">정답</span><span class="d-val" id="r-correct"></span></div>
+    <div class="d-row"><span class="d-key">오답</span><span class="d-val" id="r-wrong"></span></div>
+    <div class="d-row"><span class="d-key">응시 횟수</span><span class="d-val" id="r-att"></span></div>
+    <div class="d-row"><span class="d-key">수료 여부</span><span class="d-val" id="r-pass"></span></div>
   </div>
-
-  <div class="result-actions" id="result-actions"></div>
+  <div class="result-actions" id="actions"></div>
 </div>
-
-<div id="toast-container"></div>
-
 <script>
-const raw    = sessionStorage.getItem('kasg_result');
-const user   = JSON.parse(sessionStorage.getItem('kasg_user') || '{}');
-if (!raw) { window.location.href = 'dashboard.html'; throw 0; }
-const result = JSON.parse(raw);
-
-const { score, passed, correct, total, attempt } = result;
-
-document.getElementById('result-hero').className  = 'result-hero ' + (passed ? 'pass' : 'fail');
-document.getElementById('result-icon').textContent = passed ? '🏆' : '📋';
-document.getElementById('result-title').textContent = passed ? '교육 수료 완료!' : '미수료';
-document.getElementById('result-sub').textContent   = passed
-  ? `${user.name}님, 축하드립니다! 수료 기준을 달성하였습니다.`
-  : `아쉽게도 수료 기준(70점)에 미달하였습니다. ${attempt < 2 ? '재수강 후 재응시 가능합니다.' : '응시 기회를 모두 사용하였습니다.'}`;
-
-const scoreEl = document.getElementById('result-score');
-scoreEl.textContent  = score + '점';
-scoreEl.className    = 'score-huge ' + (passed ? 'pass' : 'fail');
-
-document.getElementById('r-name').textContent    = `${user.name} (${user.org})`;
-document.getElementById('r-total').textContent   = total + '문항';
-document.getElementById('r-correct').textContent = correct + '개';
-document.getElementById('r-wrong').textContent   = (total - correct) + '개';
-document.getElementById('r-attempt').textContent = attempt + '/2회';
-document.getElementById('r-pass').innerHTML      = passed
-  ? '<span style="color:var(--success);font-weight:700">✅ 수료</span>'
-  : '<span style="color:var(--error);font-weight:700">❌ 미수료</span>';
-
-const actions = document.getElementById('result-actions');
-if (passed) {
-  actions.innerHTML = `
-    <button class="btn btn-outline" style="flex:1" onclick="window.location.href='dashboard.html'">대시보드</button>
-    <button class="btn btn-gold" style="flex:2" onclick="window.location.href='certificate.html'">🎓 수료증 발급</button>`;
-} else if (attempt < 2) {
-  actions.innerHTML = `
-    <button class="btn btn-outline" style="flex:1" onclick="window.location.href='dashboard.html'">대시보드</button>
-    <button class="btn btn-primary" style="flex:2" onclick="window.location.href='player.html'">📺 재수강 후 재응시</button>`;
-} else {
-  actions.innerHTML = `
-    <button class="btn btn-primary btn-block" onclick="window.location.href='dashboard.html'">대시보드로 이동</button>`;
-}
+const raw=sessionStorage.getItem('kasg_result'),user=JSON.parse(sessionStorage.getItem('kasg_user')||'{}');
+if(!raw){window.location.href='dashboard.html';throw 0;}
+const {score,passed,correct,total,attempt}=JSON.parse(raw);
+document.getElementById('hero').className='result-hero '+(passed?'pass':'fail');
+document.getElementById('icon').textContent=passed?'🏆':'📋';
+document.getElementById('title').textContent=passed?'교육 수료 완료!':'미수료';
+document.getElementById('sub').textContent=passed?`${user.name}님, 수료 기준을 달성하였습니다. 축하드립니다!`
+  :`수료 기준(70점) 미달입니다.${attempt<2?' 재수강 후 재응시 가능합니다.':' 응시 기회를 모두 사용하였습니다.'}`;
+const sc=document.getElementById('score');sc.textContent=score+'점';sc.className='score-huge '+(passed?'pass':'fail');
+document.getElementById('r-name').textContent=`${user.name} (${user.org})`;
+document.getElementById('r-total').textContent=total+'문항';
+document.getElementById('r-correct').textContent=correct+'개';
+document.getElementById('r-wrong').textContent=(total-correct)+'개';
+document.getElementById('r-att').textContent=attempt+'/2회';
+document.getElementById('r-pass').innerHTML=passed?'<span style="color:var(--success);font-weight:700">✅ 수료</span>':'<span style="color:var(--error);font-weight:700">❌ 미수료</span>';
+const ac=document.getElementById('actions');
+if(passed)ac.innerHTML=`<button class="btn btn-outline" style="flex:1" onclick="window.location.href='dashboard.html'">대시보드</button><button class="btn btn-gold" style="flex:2" onclick="window.location.href='certificate.html'">🎓 수료증 발급</button>`;
+else if(attempt<2)ac.innerHTML=`<button class="btn btn-outline" style="flex:1" onclick="window.location.href='dashboard.html'">대시보드</button><button class="btn btn-primary" style="flex:2" onclick="window.location.href='player.html'">📺 재수강 후 재응시</button>`;
+else ac.innerHTML=`<button class="btn btn-primary btn-block" onclick="window.location.href='dashboard.html'">대시보드로 이동</button>`;
 </script>
 </body>
 </html>

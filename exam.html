@@ -3,342 +3,141 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>최종 이해도 평가 — KASG LMS</title>
+<title>최종 평가 — KASG LMS</title>
 <link rel="stylesheet" href="css/main.css">
 <style>
-  body { background: #F0EDE6; min-height: 100vh; }
-
-  .exam-layout {
-    max-width: 800px; margin: 0 auto;
-    padding: 36px 24px;
-  }
-
-  .exam-header-card {
-    background: var(--navy);
-    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-    padding: 28px 36px;
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .exam-title {
-    font-family: 'Noto Serif KR', serif;
-    font-size: 22px; font-weight: 700; color: var(--white);
-  }
-  .exam-subtitle { color: var(--kasg-gold); font-size: 13px; margin-top: 4px; }
-
-  .timer-box {
-    background: rgba(255,255,255,0.08);
-    border: 1.5px solid var(--kasg-gold);
-    border-radius: var(--radius);
-    padding: 10px 24px;
-    font-family: 'DM Mono', monospace;
-    font-size: 28px; font-weight: 500;
-    color: var(--kasg-gold); letter-spacing: 2px;
-  }
-  .timer-box.urgent { color: #FF6B6B; border-color: #FF6B6B; animation: pulse 1s infinite; }
-  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.7; } }
-
-  .exam-body {
-    background: var(--white);
-    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
-    padding: 36px;
-    box-shadow: var(--shadow-md);
-  }
-
-  .exam-progress {
-    display: flex; align-items: center; gap: 14px;
-    margin-bottom: 32px;
-  }
-  .ep-bar { flex: 1; height: 6px; }
-  .ep-text { font-size: 12px; color: var(--text-mid); white-space: nowrap; }
-
-  .question-num {
-    font-size: 11px; font-weight: 600;
-    color: var(--kasg-gold); letter-spacing: 1px;
-    text-transform: uppercase; margin-bottom: 10px;
-  }
-  .question-text {
-    font-family: 'Noto Serif KR', serif;
-    font-size: 19px; font-weight: 600;
-    color: var(--navy); line-height: 1.7;
-    margin-bottom: 28px;
-  }
-
-  .exam-opts { display: flex; flex-direction: column; gap: 10px; }
-  .exam-opt {
-    padding: 15px 18px;
-    border: 1.5px solid var(--border); border-radius: var(--radius);
-    cursor: pointer; font-size: 14px;
-    display: flex; align-items: center; gap: 14px;
-    transition: all 0.15s;
-  }
-  .exam-opt:hover { border-color: var(--navy); background: rgba(12,31,63,0.03); }
-  .exam-opt.selected { border-color: var(--navy); background: var(--navy); color: var(--white); }
-  .exam-opt-n {
-    width: 28px; height: 28px; border-radius: 50%;
-    border: 1.5px solid currentColor; opacity: 0.5;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 12px; font-weight: 700; flex-shrink: 0;
-  }
-
-  .exam-nav {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-top: 36px;
-  }
-
-  /* Answer palette */
-  .answer-palette {
-    margin-top: 28px; padding-top: 24px;
-    border-top: 1px solid var(--border);
-  }
-  .palette-title { font-size: 11px; font-weight: 600; color: var(--text-mid); letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 12px; }
-  .palette-grid  { display: flex; flex-wrap: wrap; gap: 6px; }
-  .palette-cell  {
-    width: 36px; height: 36px; border-radius: var(--radius);
-    border: 1.5px solid var(--border);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 12px; font-weight: 500; cursor: pointer;
-    transition: all 0.15s;
-  }
-  .palette-cell.answered { background: var(--navy); color: var(--white); border-color: var(--navy); }
-  .palette-cell.current  { border-color: var(--kasg-gold); }
-
-  /* Review warning */
-  .review-warn {
-    margin-top: 16px; padding: 12px 16px;
-    background: #FEF3C7; border-radius: var(--radius);
-    font-size: 13px; color: var(--warn);
-    border-left: 3px solid var(--kasg-gold);
-    display: none;
-  }
-  .review-warn.show { display: block; }
+body{background:#EDE9E1;min-height:100vh}
+.exam-wrap{max-width:780px;margin:0 auto;padding:32px 20px}
+.exam-top{background:var(--navy);border-radius:var(--radius-lg) var(--radius-lg) 0 0;padding:26px 32px;display:flex;align-items:center;justify-content:space-between}
+.exam-title{font-family:'Noto Serif KR',serif;font-size:20px;font-weight:700;color:#fff}
+.exam-sub{color:var(--kasg-gold);font-size:12px;margin-top:3px}
+.timer-box{background:rgba(255,255,255,.08);border:1.5px solid var(--kasg-gold);border-radius:var(--radius);padding:9px 20px;font-family:'DM Mono',monospace;font-size:26px;color:var(--kasg-gold);letter-spacing:2px}
+.timer-box.urgent{color:#FF6B6B;border-color:#FF6B6B;animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.65}}
+.exam-body{background:#fff;border-radius:0 0 var(--radius-lg) var(--radius-lg);padding:32px;box-shadow:var(--shadow-md)}
+.ep-bar-wrap{display:flex;align-items:center;gap:13px;margin-bottom:28px}
+.ep-fill-wrap{flex:1;height:5px}
+.ep-text{font-size:12px;color:var(--text-mid);white-space:nowrap}
+.q-num{font-size:11px;font-weight:600;color:var(--kasg-gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:9px}
+.q-text{font-family:'Noto Serif KR',serif;font-size:18px;font-weight:600;color:var(--navy);line-height:1.75;margin-bottom:24px}
+.exam-opts{display:flex;flex-direction:column;gap:9px}
+.exam-opt{padding:14px 16px;border:1.5px solid var(--border);border-radius:var(--radius);cursor:pointer;font-size:14px;display:flex;align-items:center;gap:13px;transition:all .15s}
+.exam-opt:hover{border-color:var(--navy);background:rgba(12,31,63,.03)}
+.exam-opt.selected{border-color:var(--navy);background:var(--navy);color:#fff}
+.exam-opt-n{width:27px;height:27px;border-radius:50%;border:1.5px solid currentColor;opacity:.5;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.exam-nav{display:flex;justify-content:space-between;align-items:center;margin-top:32px}
+.palette-wrap{margin-top:24px;padding-top:20px;border-top:1px solid var(--border)}
+.palette-title{font-size:11px;font-weight:600;color:var(--text-mid);letter-spacing:.5px;text-transform:uppercase;margin-bottom:11px}
+.palette-grid{display:flex;flex-wrap:wrap;gap:6px}
+.pc{width:34px;height:34px;border-radius:var(--radius);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;cursor:pointer;transition:all .15s}
+.pc.answered{background:var(--navy);color:#fff;border-color:var(--navy)}
+.pc.current{border-color:var(--kasg-gold)}
+.review-warn{margin-top:14px;padding:10px 14px;background:var(--warn-bg);border-radius:var(--radius);font-size:13px;color:var(--warn-text);border-left:3px solid var(--kasg-gold);display:none}
+.review-warn.show{display:block}
 </style>
 </head>
 <body>
-
 <header class="site-header">
-  <div class="header-brand">
-    <img class="header-logo-img" src="assets/logo-wide.png" alt="KASG">
-  </div>
-  <div class="header-nav">
-    <div class="header-user-chip">👤 <span id="header-name"></span></div>
-  </div>
+  <div class="header-brand"><img class="header-logo-img" src="assets/logo-wide.png" alt="KASG"></div>
+  <div class="header-nav"><div class="header-chip">👤 <span id="hd-name"></span></div></div>
 </header>
-
-<div class="exam-layout">
-  <div class="exam-header-card">
-    <div>
-      <div class="exam-title" id="exam-title">최종 이해도 평가</div>
-      <div class="exam-subtitle" id="exam-subtitle">1차 시험 · 총 20문항 · 시간 40분</div>
-    </div>
+<div class="exam-wrap">
+  <div class="exam-top">
+    <div><div class="exam-title">최종 이해도 평가</div><div class="exam-sub" id="exam-sub">1차 시험 · 총 20문항 · 40분</div></div>
     <div class="timer-box" id="timer">40:00</div>
   </div>
-
   <div class="exam-body">
-    <div class="exam-progress">
-      <div class="ep-bar">
-        <div class="progress-wrap" style="height:6px"><div class="progress-fill" id="ep-fill" style="width:5%"></div></div>
-      </div>
+    <div class="ep-bar-wrap">
+      <div class="ep-fill-wrap"><div class="progress-wrap" style="height:5px"><div class="progress-fill" id="ep-fill" style="width:5%"></div></div></div>
       <span class="ep-text" id="ep-text">1 / 20</span>
     </div>
-
-    <div class="question-num" id="q-num">Q 01 / 20</div>
-    <div class="question-text" id="q-text">문제 로딩 중...</div>
+    <div class="q-num" id="q-num">Q 01 / 20</div>
+    <div class="q-text" id="q-text">문제 로딩 중...</div>
     <div class="exam-opts" id="q-opts"></div>
-
     <div class="exam-nav">
       <button class="btn btn-outline" id="prev-btn" onclick="navigate(-1)">← 이전</button>
       <button class="btn btn-primary" id="next-btn" onclick="navigate(1)">다음 →</button>
     </div>
-
-    <div class="answer-palette">
+    <div class="palette-wrap">
       <div class="palette-title">답안 현황</div>
       <div class="palette-grid" id="palette"></div>
     </div>
-
-    <div class="review-warn" id="review-warn">
-      ⚠️ 아직 답하지 않은 문항이 있습니다. 모두 답한 후 제출해 주세요.
-    </div>
+    <div class="review-warn" id="review-warn">⚠️ 아직 답하지 않은 문항이 있습니다.</div>
   </div>
 </div>
-
 <div id="toast-container"></div>
-
 <script type="module">
 import { DB } from './js/firebase-config.js';
-import { requireAuth, fmtDate, generateCertNo, showToast } from './js/utils.js';
+import { requireAuth, fmtDate, generateCertNo } from './js/utils.js';
 import { QUIZ_BANK } from './js/quiz-data.js';
 
-const user     = requireAuth();
+const user = requireAuth(); if (!user) throw 0;
 const courseId = sessionStorage.getItem('kasg_course');
-if (!user || !courseId) { window.location.href = 'dashboard.html'; throw 0; }
+if (!courseId) { window.location.href='dashboard.html'; throw 0; }
+document.getElementById('hd-name').textContent = user.name;
 
-document.getElementById('header-name').textContent = user.name;
-
-let questions = [];
-let answers   = {};
-let curIdx    = 0;
-let timerSec  = 40 * 60;
-let timerInt  = null;
-let attempt   = 1;
-let learner   = null;
-let course    = null;
+let questions=[], answers={}, curIdx=0, timerSec=2400, timerInt=null, attempt=1, learner=null, course=null;
 
 async function init() {
-  [learner, course] = await Promise.all([
-    DB.get(`learners/${user.safeId}`),
-    DB.get(`courses/${courseId}`)
-  ]);
-
-  // Guard: must have watched video
-  const status = learner?.courseStatus?.[courseId];
-  if (status !== 'watched' && learner?.status !== 'completed') {
-    const prog = learner?.courseProgress?.[courseId] || 0;
-    if (prog < 0.99) {
-      alert('영상을 끝까지 시청해야 평가에 응시할 수 있습니다.');
-      window.location.href = 'player.html';
-      return;
-    }
+  [learner, course] = await Promise.all([DB.get(`learners/${user.id}`), DB.get(`courses/${courseId}`)]);
+  // Guard: must have watched
+  const cp = learner?.courseProgress?.[courseId] || 0;
+  if (cp < 0.99 && learner?.courseStatus?.[courseId] !== 'watched') {
+    alert('영상을 끝까지 시청해야 평가에 응시할 수 있습니다.');
+    window.location.href='player.html'; return;
   }
-
-  // Guard: max 2 attempts
-  attempt = (learner?.attempt || 0) + 1;
-  if (attempt > 2) {
-    alert('최대 응시 횟수(2회)를 초과하였습니다. 관리자에게 문의하세요.');
-    window.location.href = 'dashboard.html';
-    return;
-  }
-
-  // Pick question set
-  const setKey   = attempt === 1 ? 'A' : 'B';
-  questions      = QUIZ_BANK[setKey];
-  document.getElementById('exam-subtitle').textContent = `${attempt}차 시험 · 총 ${questions.length}문항 · 시간 40분`;
-
-  buildPalette();
-  renderQ();
-  startTimer();
+  attempt = (learner?.attempt||0)+1;
+  if (attempt > 2) { alert('최대 응시 횟수(2회)를 초과하였습니다.'); window.location.href='dashboard.html'; return; }
+  questions = QUIZ_BANK[attempt===1?'A':'B'];
+  document.getElementById('exam-sub').textContent = `${attempt}차 시험 · 총 ${questions.length}문항 · 40분`;
+  buildPalette(); renderQ(); startTimer();
 }
 
 function renderQ() {
-  const q = questions[curIdx];
-  const n = curIdx + 1;
-  const t = questions.length;
-
+  const q=questions[curIdx], n=curIdx+1, t=questions.length, sel=answers[curIdx];
   document.getElementById('q-num').textContent  = `Q ${String(n).padStart(2,'0')} / ${String(t).padStart(2,'0')}`;
   document.getElementById('q-text').textContent = q.q;
-  document.getElementById('ep-fill').style.width = (n / t * 100) + '%';
+  document.getElementById('ep-fill').style.width= (n/t*100)+'%';
   document.getElementById('ep-text').textContent = `${n} / ${t}`;
-
-  const sel = answers[curIdx];
-  document.getElementById('q-opts').innerHTML = q.opts.map((o, i) => `
-    <div class="exam-opt ${sel === i ? 'selected' : ''}" onclick="selectOpt(${i})">
-      <span class="exam-opt-n">${i+1}</span>${o}
-    </div>`).join('');
-
-  document.getElementById('prev-btn').disabled = curIdx === 0;
-  document.getElementById('next-btn').textContent =
-    curIdx === questions.length - 1 ? '최종 제출 🏁' : '다음 →';
-
+  document.getElementById('q-opts').innerHTML = q.opts.map((o,i) =>
+    `<div class="exam-opt${sel===i?' selected':''}" onclick="selOpt(${i})"><span class="exam-opt-n">${i+1}</span>${o}</div>`
+  ).join('');
+  document.getElementById('prev-btn').disabled = curIdx===0;
+  document.getElementById('next-btn').textContent = curIdx===t-1 ? '최종 제출 🏁' : '다음 →';
   updatePalette();
   document.getElementById('review-warn').classList.remove('show');
 }
-
-window.selectOpt = function(i) {
-  answers[curIdx] = i;
-  renderQ();
-};
-
+window.selOpt = function(i){ answers[curIdx]=i; renderQ(); };
 window.navigate = function(dir) {
-  const isLast = curIdx === questions.length - 1;
-  if (answers[curIdx] === undefined) {
-    document.getElementById('review-warn').classList.add('show');
-    if (isLast) return;
-  }
-  if (isLast && dir === 1) {
-    // Final submit
-    const unanswered = questions.filter((_, i) => answers[i] === undefined).length;
-    if (unanswered > 0) {
-      document.getElementById('review-warn').classList.add('show');
-      showToast(`${unanswered}문항이 미답 상태입니다.`, 'error');
-      return;
-    }
-    if (confirm('최종 제출하시겠습니까? 제출 후 수정이 불가합니다.')) submitExam();
+  const isLast=curIdx===questions.length-1;
+  if (isLast && dir===1) {
+    const un=questions.filter((_,i)=>answers[i]===undefined).length;
+    if (un>0){document.getElementById('review-warn').classList.add('show');return;}
+    if(confirm('최종 제출하시겠습니까? 수정이 불가합니다.')) submitExam();
     return;
   }
-  curIdx = Math.max(0, Math.min(questions.length - 1, curIdx + dir));
-  renderQ();
+  curIdx=Math.max(0,Math.min(questions.length-1,curIdx+dir)); renderQ();
 };
-
-function buildPalette() {
-  document.getElementById('palette').innerHTML = questions.map((_, i) => `
-    <div class="palette-cell" id="pc-${i}" onclick="jumpTo(${i})">${i+1}</div>`).join('');
-}
-function updatePalette() {
-  questions.forEach((_, i) => {
-    const c = document.getElementById('pc-' + i);
-    if (!c) return;
-    c.className = 'palette-cell' +
-      (answers[i] !== undefined ? ' answered' : '') +
-      (i === curIdx ? ' current' : '');
-  });
-}
-window.jumpTo = function(i) { curIdx = i; renderQ(); };
-
-// Timer
-function startTimer() {
-  updateTimerEl();
-  timerInt = setInterval(() => {
-    timerSec--;
-    updateTimerEl();
-    if (timerSec <= 0) { clearInterval(timerInt); alert('시험 시간이 종료되었습니다.'); submitExam(); }
-  }, 1000);
-}
-function updateTimerEl() {
-  const m = Math.floor(timerSec / 60).toString().padStart(2,'0');
-  const s = (timerSec % 60).toString().padStart(2,'0');
-  const el = document.getElementById('timer');
-  el.textContent = `${m}:${s}`;
-  el.className = 'timer-box' + (timerSec < 300 ? ' urgent' : '');
-}
-
-async function submitExam() {
+function buildPalette(){document.getElementById('palette').innerHTML=questions.map((_,i)=>`<div class="pc" id="pc-${i}" onclick="jumpTo(${i})">${i+1}</div>`).join('');}
+function updatePalette(){questions.forEach((_,i)=>{const c=document.getElementById('pc-'+i);if(!c)return;c.className='pc'+(answers[i]!==undefined?' answered':'')+(i===curIdx?' current':'');});}
+window.jumpTo=function(i){curIdx=i;renderQ();};
+function startTimer(){updateTimerEl();timerInt=setInterval(()=>{timerSec--;updateTimerEl();if(timerSec<=0){clearInterval(timerInt);alert('시험 시간이 종료되었습니다.');submitExam();}},1000);}
+function updateTimerEl(){const m=Math.floor(timerSec/60).toString().padStart(2,'0'),s=(timerSec%60).toString().padStart(2,'0');const el=document.getElementById('timer');el.textContent=`${m}:${s}`;el.className='timer-box'+(timerSec<300?' urgent':'');}
+async function submitExam(){
   clearInterval(timerInt);
-  const total  = questions.length;
-  let correct  = 0;
-  questions.forEach((q, i) => { if (answers[i] === q.ans) correct++; });
-  const score  = Math.round(correct / total * 100);
-  const passed = score >= 70;
-  const now    = new Date();
-
-  const updates = {
-    attempt,
-    finalScore: score,
-    finalPassed: passed,
-    lastExamDate: now.toISOString(),
-    [`courseStatus/${courseId}`]: passed ? 'completed' : 'failed',
-  };
-
-  if (passed) {
-    const certNo   = generateCertNo();
-    const certDate = now.toISOString();
-    updates.status   = 'completed';
-    updates.certNo   = certNo;
-    updates.certDate = certDate;
-    updates[`courseCerts/${courseId}`] = { certNo, certDate, score };
-    // Add to completions log
-    await DB.push('completions', {
-      name: user.name, org: user.org, safeId: user.safeId,
-      courseId, courseTitle: course?.title || '',
-      certNo, score, date: now.toISOString()
-    });
+  let correct=0; questions.forEach((q,i)=>{if(answers[i]===q.ans)correct++;});
+  const score=Math.round(correct/questions.length*100), passed=score>=70, now=new Date();
+  const up={attempt, finalScore:score, finalPassed:passed, lastExamDate:now.toISOString(), [`courseStatus/${courseId}`]:passed?'completed':'failed'};
+  if(passed){
+    const certNo=generateCertNo();
+    up.completedStatus='completed'; up.certNo=certNo; up.certDate=now.toISOString();
+    up[`courseCerts/${courseId}`]={certNo,certDate:now.toISOString(),score};
+    await DB.push('completions',{name:user.name,org:user.org,userId:user.id,courseId,courseTitle:course?.title||'',certNo,score,date:now.toISOString()});
   }
-
-  await DB.update(`learners/${user.safeId}`, updates);
-
-  // Store result in session for result page
-  sessionStorage.setItem('kasg_result', JSON.stringify({ score, passed, correct, total, attempt }));
-  window.location.href = 'result.html';
+  await DB.update(`learners/${user.id}`,up);
+  sessionStorage.setItem('kasg_result',JSON.stringify({score,passed,correct,total:questions.length,attempt}));
+  window.location.href='result.html';
 }
-
 init();
 </script>
 </body>
