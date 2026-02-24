@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>강의 시청 — KASG LMS</title>
+<link rel="stylesheet" href="css/main.css">
+<style>
+  body { background: #0A0A12; margin: 0; overflow-x: hidden; }
+
+  .player-layout {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    height: calc(100vh - 68px);
+  }
+
+  /* ── Video Area ── */
+  .video-area {
+    display: flex; flex-direction: column;
+    background: #000;
+  }
+
+  .video-container {
+    flex: 1;
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+    background: #000;
+    overflow: hidden;
+  }
+
+  #main-video {
+    width: 100%; height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
+  /* No-seek overlay to block progress bar clicks */
+  .video-noseek {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 40px;
+    z-index: 5;
+    cursor: not-allowed;
+  }
+
+  /* ── Mid Quiz Overlay ── */
+  .quiz-overlay {
+    position: absolute; inset: 0;
+    background: rgba(0,0,0,0.88);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 20;
+    backdrop-filter: blur(8px);
+    display: none;
+  }
+  .quiz-overlay.active { display: flex; animation: fadeIn 0.3s ease; }
+  @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+  .quiz-popup {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    width: 560px; max-width: 90vw;
+    padding: 36px 40px;
+    border-top: 5px solid var(--kasg-gold);
+    box-shadow: 0 32px 80px rgba(0,0,0,0.7);
+    animation: slideUp 0.35s ease;
+  }
+  @keyframes slideUp { from { opacity:0; transform: translateY(24px); } to { opacity:1; transform: none; } }
+
+  .quiz-label {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 20px;
+  }
+  .quiz-num-badge {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--navy); color: var(--kasg-gold);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 15px; flex-shrink: 0;
+  }
+  .quiz-label-text { font-size: 11px; font-weight: 600; color: var(--kasg-gold); letter-spacing: 1px; text-transform: uppercase; }
+  .quiz-label-sub  { font-size: 12px; color: var(--text-mid); }
+
+  .quiz-question {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 17px; font-weight: 600;
+    color: var(--navy); margin-bottom: 22px; line-height: 1.7;
+  }
+
+  .quiz-options { display: flex; flex-direction: column; gap: 9px; }
+  .quiz-opt {
+    padding: 13px 16px;
+    border: 1.5px solid var(--border); border-radius: var(--radius);
+    cursor: pointer; font-size: 14px; color: var(--text);
+    background: var(--white);
+    display: flex; align-items: center; gap: 12px;
+    transition: all 0.15s;
+  }
+  .quiz-opt:hover { border-color: var(--navy); background: rgba(12,31,63,0.03); }
+  .quiz-opt.selected { border-color: var(--navy); background: var(--navy); color: var(--white); }
+  .quiz-opt.correct  { border-color: var(--success); background: #D1FAE5; color: var(--success); }
+  .quiz-opt.wrong    { border-color: var(--error);   background: #FEE2E2; color: var(--error); }
+  .quiz-opt-n {
+    width: 24px; height: 24px; border-radius: 50%;
+    border: 1.5px solid currentColor; opacity: 0.5;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; flex-shrink: 0;
+  }
+
+  .quiz-feedback {
+    margin-top: 14px; padding: 10px 14px;
+    border-radius: var(--radius); font-size: 13px;
+    display: none;
+  }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.ok  { background: #D1FAE5; color: var(--success); border-left: 3px solid var(--success); }
+  .quiz-feedback.err { background: #FEE2E2; color: var(--error);   border-left: 3px solid var(--error); }
+
+  .quiz-actions { margin-top: 20px; display: flex; justify-content: flex-end; gap: 8px; }
+
+  /* ── Video Controls Bar ── */
+  .video-controls {
+    background: #14141E;
+    padding: 10px 20px;
+    display: flex; align-items: center; gap: 14px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .vc-time {
+    color: rgba(255,255,255,0.6); font-size: 12px;
+    font-family: 'DM Mono', monospace; white-space: nowrap;
+  }
+
+  .vc-bar {
+    flex: 1; height: 4px; background: rgba(255,255,255,0.1);
+    border-radius: 2px; position: relative; cursor: not-allowed;
+  }
+  .vc-fill {
+    height: 100%; background: linear-gradient(90deg, var(--kasg-gold), #F5C842);
+    border-radius: 2px; transition: width 0.5s;
+    pointer-events: none;
+  }
+  .vc-marker {
+    position: absolute; top: -10px;
+    width: 2px; height: 24px;
+    background: rgba(255,255,255,0.3);
+    transform: translateX(-50%);
+  }
+  .vc-marker::before {
+    content: attr(data-label);
+    position: absolute; top: -20px; left: 50%; transform: translateX(-50%);
+    font-size: 9px; color: var(--kasg-gold); white-space: nowrap;
+  }
+  .vc-lock { font-size: 11px; color: rgba(255,165,0,0.6); white-space: nowrap; }
+
+  /* ── Sidebar ── */
+  .video-sidebar {
+    background: var(--cream);
+    border-left: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .sb-course-info {
+    background: var(--navy);
+    padding: 20px;
+    border-bottom: 2px solid var(--kasg-gold);
+  }
+  .sb-course-title {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 14px; font-weight: 700;
+    color: var(--white); margin-bottom: 10px;
+  }
+  .sb-info-row {
+    display: flex; justify-content: space-between;
+    font-size: 11px; color: rgba(255,255,255,0.6);
+    padding: 4px 0;
+  }
+  .sb-info-row strong { color: rgba(255,255,255,0.85); }
+
+  .sb-section {
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .sb-section-title {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.5px;
+    color: var(--text-mid); text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  /* Checkpoint */
+  .checkpoint-list { display: flex; flex-direction: column; gap: 8px; }
+  .cp-item {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 12px; color: var(--text-mid);
+  }
+  .cp-dot {
+    width: 22px; height: 22px; border-radius: 50%;
+    border: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; flex-shrink: 0;
+    transition: all 0.3s;
+  }
+  .cp-dot.done   { background: var(--success); border-color: var(--success); color: var(--white); }
+  .cp-dot.active { border-color: var(--kasg-gold); background: rgba(212,160,23,0.1); color: var(--kasg-gold); }
+
+  /* Score panel */
+  .score-panel { padding: 16px 20px; background: var(--white); }
+  .score-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 0; border-bottom: 1px solid rgba(0,0,0,0.05);
+    font-size: 12px; color: var(--text-mid);
+  }
+  .score-item:last-child { border-bottom: none; }
+  .score-val { font-weight: 700; color: var(--navy); font-size: 15px; }
+  .score-big {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 32px; font-weight: 900;
+    text-align: center; padding: 8px 0;
+  }
+  .score-big.good { color: var(--success); }
+  .score-big.bad  { color: var(--error); }
+
+  .sb-actions { padding: 16px 20px; margin-top: auto; }
+
+  /* Completion banner */
+  .completion-banner {
+    margin: 16px 20px;
+    background: linear-gradient(135deg, var(--success) 0%, #2D8A5A 100%);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    text-align: center; color: var(--white);
+    display: none;
+  }
+  .completion-banner.show { display: block; animation: fadeIn 0.5s ease; }
+  .completion-banner .icon { font-size: 28px; margin-bottom: 8px; }
+  .completion-banner .title { font-family: 'Noto Serif KR', serif; font-size: 15px; font-weight: 700; }
+  .completion-banner .sub   { font-size: 12px; opacity: 0.8; margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-brand">
+    <img class="header-logo-img" src="assets/logo-wide.png" alt="KASG">
+  </div>
+  <div class="header-nav">
+    <div class="header-user-chip">
+      <span>👤</span><span id="header-name"></span>
+    </div>
+    <button class="header-btn" onclick="window.location.href='dashboard.html'">← 목록으로</button>
+  </div>
+</header>
+
+<div class="player-layout">
+  <!-- Video Main -->
+  <div class="video-area">
+    <div class="video-container">
+      <video id="main-video" controlsList="nodownload nofullscreen noremoteplayback" disablePictureInPicture>
+        <source id="video-src" src="" type="video/mp4">
+        브라우저가 비디오를 지원하지 않습니다.
+      </video>
+
+      <!-- Mid Quiz Overlay -->
+      <div class="quiz-overlay" id="quiz-overlay">
+        <div class="quiz-popup">
+          <div class="quiz-label">
+            <div class="quiz-num-badge" id="qz-num">1</div>
+            <div>
+              <div class="quiz-label-text">⚡ 이해도 확인 문제</div>
+              <div class="quiz-label-sub">문제를 풀어야 영상을 계속 시청할 수 있습니다</div>
+            </div>
+          </div>
+          <div class="quiz-question" id="qz-question"></div>
+          <div class="quiz-options" id="qz-options"></div>
+          <div class="quiz-feedback" id="qz-feedback"></div>
+          <div class="quiz-actions">
+            <button class="btn btn-primary" id="qz-submit" onclick="submitMidQuiz()" disabled>제출하기</button>
+            <button class="btn btn-gold" id="qz-continue" onclick="closeMidQuiz()" style="display:none">▶ 계속 시청</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="video-controls">
+      <span class="vc-time" id="vc-time">00:00 / 00:00</span>
+      <div class="vc-bar" id="vc-bar">
+        <div class="vc-fill" id="vc-fill"></div>
+      </div>
+      <span class="vc-lock">🔒 앞으로 이동 불가</span>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <div class="video-sidebar">
+    <div class="sb-course-info">
+      <div class="sb-course-title" id="sb-course-title">강의 로딩 중...</div>
+      <div class="sb-info-row"><span>교육목적</span><strong id="sb-purpose">-</strong></div>
+      <div class="sb-info-row"><span>교육형태</span><strong>온라인 교육</strong></div>
+      <div class="sb-info-row"><span>수료기준</span><strong>최종 평가 70점 이상</strong></div>
+    </div>
+
+    <div class="sb-section">
+      <div class="sb-section-title">📍 진도 체크포인트</div>
+      <div class="checkpoint-list" id="cp-list"></div>
+    </div>
+
+    <div class="score-panel">
+      <div class="sb-section-title" style="margin-bottom:10px">📊 중간 퀴즈 현황</div>
+      <div class="score-item"><span>완료 / 전체</span><span class="score-val" id="sc-done">0 / 3</span></div>
+      <div class="score-item"><span>정답 수</span><span class="score-val" id="sc-correct">0</span></div>
+      <div class="score-big" id="sc-pct" style="color:var(--text-mid);font-size:18px">-</div>
+    </div>
+
+    <!-- Completion banner -->
+    <div class="completion-banner" id="completion-banner">
+      <div class="icon">🎉</div>
+      <div class="title">영상 시청 완료!</div>
+      <div class="sub">최종 평가를 응시해 주세요</div>
+    </div>
+
+    <div class="sb-actions">
+      <button class="btn btn-gold btn-block btn-lg" id="exam-btn"
+              onclick="goToExam()" style="display:none">
+        📝 최종 평가 응시하기
+      </button>
+      <div style="height:8px"></div>
+      <button class="btn btn-outline btn-block btn-sm" onclick="window.location.href='dashboard.html'">
+        ← 강의 목록으로
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<script type="module">
+import { DB } from './js/firebase-config.js';
+import { requireAuth, fmtTime, fmtDate, showToast } from './js/utils.js';
+import { MID_QUIZZES } from './js/quiz-data.js';
+
+const user = requireAuth();
+if (!user) throw new Error('No auth');
+
+const courseId = sessionStorage.getItem('kasg_course');
+if (!courseId) { window.location.href = 'dashboard.html'; throw new Error('No course'); }
+
+document.getElementById('header-name').textContent = user.name;
+
+let course = null;
+let learner = null;
+let videoDuration = 0;
+let currentTime = 0;
+let maxReached = 0;
+let videoEnded = false;
+let midTriggers = []; // seconds
+let midAnswered  = [false, false, false];
+let midCorrect   = 0;
+let activeMidIdx = -1;
+let midSelected  = null;
+let midDone      = false;
+
+const video = document.getElementById('main-video');
+
+// ── Load course & learner data ──────────────
+async function init() {
+  [course, learner] = await Promise.all([
+    DB.get(`courses/${courseId}`),
+    DB.get(`learners/${user.safeId}`)
+  ]);
+
+  if (!course) { alert('강의 정보를 찾을 수 없습니다.'); window.location.href = 'dashboard.html'; return; }
+
+  document.getElementById('sb-course-title').textContent = course.title;
+  document.getElementById('sb-purpose').textContent      = course.purpose || '자금세탁방지 실무 이해';
+
+  // Restore progress
+  if (learner?.courseProgress?.[courseId]) {
+    maxReached = (learner.courseProgress[courseId] || 0);
+  }
+  if (learner?.midAnswered?.[courseId]) midAnswered = learner.midAnswered[courseId];
+  if (learner?.midCorrect)              midCorrect  = learner.midCorrect;
+
+  // Set video source
+  if (course.videoURL) {
+    document.getElementById('video-src').src = course.videoURL;
+    video.load();
+  }
+
+  // If already completed, show exam button
+  const status = learner?.courseStatus?.[courseId];
+  const attempt = learner?.attempt || 0;
+  if (learner?.status === 'completed') {
+    videoEnded = true;
+    document.getElementById('completion-banner').classList.add('show');
+    document.getElementById('exam-btn').style.display = '';
+    document.getElementById('exam-btn').textContent = '🏆 수료증 보기';
+    document.getElementById('exam-btn').onclick = () => window.location.href = 'certificate.html';
+  }
+
+  updateCheckpoints();
+  updateScore();
+}
+
+video.addEventListener('loadedmetadata', () => {
+  videoDuration = video.duration;
+  midTriggers = [0.25, 0.50, 0.75].map(r => Math.floor(r * videoDuration));
+  buildCheckpoints();
+  // Restore seek position
+  if (maxReached > 0) {
+    video.currentTime = Math.max(0, maxReached * videoDuration - 3);
+    currentTime = video.currentTime;
+  }
+  drawMarkers();
+});
+
+video.addEventListener('timeupdate', onTimeUpdate);
+video.addEventListener('seeking',    onSeeking);
+video.addEventListener('ended',      onVideoEnded);
+
+function onSeeking() {
+  const allowed = maxReached * videoDuration + 2;
+  if (video.currentTime > allowed) {
+    video.currentTime = currentTime;
+  }
+}
+
+function onTimeUpdate() {
+  const cur = video.currentTime;
+  const dur  = videoDuration || 1;
+
+  if (cur > maxReached * dur + 2 && !videoEnded) {
+    video.currentTime = maxReached * dur;
+    return;
+  }
+  if (cur / dur > maxReached) maxReached = cur / dur;
+  currentTime = cur;
+
+  document.getElementById('vc-time').textContent = fmtTime(cur) + ' / ' + fmtTime(dur);
+  document.getElementById('vc-fill').style.width = (cur / dur * 100) + '%';
+
+  updateCheckpoints();
+
+  // Check mid-quiz triggers
+  for (let i = 0; i < midTriggers.length; i++) {
+    if (!midAnswered[i] && cur >= midTriggers[i]) {
+      video.pause();
+      showMidQuiz(i);
+      break;
+    }
+  }
+
+  // Save progress periodically (every 10s)
+  if (Math.floor(cur) % 10 === 0) saveProgress();
+}
+
+function onVideoEnded() {
+  videoEnded = true;
+  maxReached = 1;
+  saveProgress();
+  document.getElementById('completion-banner').classList.add('show');
+  document.getElementById('exam-btn').style.display = '';
+  updateCheckpoints();
+  showToast('🎉 영상 시청 완료! 최종 평가를 응시해 주세요.', 'success', 5000);
+}
+
+async function saveProgress() {
+  await DB.update(`learners/${user.safeId}`, {
+    [`courseProgress/${courseId}`]: maxReached,
+    [`courseStatus/${courseId}`]:   videoEnded ? 'watched' : 'in_progress',
+    [`midAnswered/${courseId}`]:    midAnswered,
+    midQuizCorrect: midCorrect,
+    midQuizTotal:   midAnswered.filter(Boolean).length,
+    status: learner?.status || (videoEnded ? 'in_progress' : 'in_progress')
+  });
+}
+
+// ── Checkpoints ─────────────────────────────
+function buildCheckpoints() {
+  const list = document.getElementById('cp-list');
+  const cps  = [
+    '강의 시작',
+    '구간 퀴즈 ①  (25%)',
+    '구간 퀴즈 ②  (50%)',
+    '구간 퀴즈 ③  (75%)',
+    '영상 완료',
+    '최종 평가 응시',
+    '수료 완료',
+  ];
+  list.innerHTML = cps.map((c, i) => `
+    <div class="cp-item">
+      <div class="cp-dot" id="cp-${i}">·</div>
+      <span>${c}</span>
+    </div>`).join('');
+}
+
+function updateCheckpoints() {
+  const cur = video.currentTime;
+  const dur  = videoDuration || 1;
+  const dones = [
+    cur >= 1,
+    midAnswered[0],
+    midAnswered[1],
+    midAnswered[2],
+    videoEnded,
+    (learner?.attempt || 0) > 0,
+    learner?.status === 'completed',
+  ];
+  dones.forEach((done, i) => {
+    const dot = document.getElementById('cp-' + i);
+    if (!dot) return;
+    const isNext = !done && dones.slice(0, i).every(Boolean);
+    dot.className = 'cp-dot' + (done ? ' done' : isNext ? ' active' : '');
+    dot.textContent = done ? '✓' : '·';
+  });
+}
+
+function drawMarkers() {
+  const bar = document.getElementById('vc-bar');
+  const dur  = videoDuration;
+  midTriggers.forEach((t, i) => {
+    const m = document.createElement('div');
+    m.className = 'vc-marker';
+    m.style.left = (t / dur * 100) + '%';
+    m.setAttribute('data-label', `퀴즈${i+1}`);
+    bar.appendChild(m);
+  });
+}
+
+function updateScore() {
+  const done = midAnswered.filter(Boolean).length;
+  document.getElementById('sc-done').textContent    = `${done} / 3`;
+  document.getElementById('sc-correct').textContent = midCorrect;
+  if (done > 0) {
+    const p = Math.round(midCorrect / done * 100);
+    const el = document.getElementById('sc-pct');
+    el.textContent  = p + '%';
+    el.className = 'score-big ' + (p >= 70 ? 'good' : 'bad');
+  }
+}
+
+// ── Mid Quiz ────────────────────────────────
+function showMidQuiz(idx) {
+  activeMidIdx = idx;
+  midSelected  = null;
+  midDone      = false;
+  const q = MID_QUIZZES[idx];
+
+  document.getElementById('qz-num').textContent = idx + 1;
+  document.getElementById('qz-question').textContent = q.q;
+  document.getElementById('qz-feedback').className  = 'quiz-feedback';
+  document.getElementById('qz-submit').disabled     = true;
+  document.getElementById('qz-submit').style.display = '';
+  document.getElementById('qz-continue').style.display = 'none';
+
+  document.getElementById('qz-options').innerHTML = q.opts.map((o, i) => `
+    <div class="quiz-opt" id="qz-opt-${i}" onclick="selectMidOpt(${i})">
+      <span class="quiz-opt-n">${i+1}</span>${o}
+    </div>`).join('');
+
+  document.getElementById('quiz-overlay').classList.add('active');
+}
+
+window.selectMidOpt = function(idx) {
+  if (midDone) return;
+  midSelected = idx;
+  document.querySelectorAll('.quiz-opt').forEach((el, i) => {
+    el.className = 'quiz-opt' + (i === idx ? ' selected' : '');
+  });
+  document.getElementById('qz-submit').disabled = false;
+};
+
+window.submitMidQuiz = function() {
+  if (midSelected === null || midDone) return;
+  midDone = true;
+  const q = MID_QUIZZES[activeMidIdx];
+  const ok = midSelected === q.ans;
+  if (ok) midCorrect++;
+  midAnswered[activeMidIdx] = true;
+
+  document.querySelectorAll('.quiz-opt').forEach((el, i) => {
+    if (i === q.ans)      el.className = 'quiz-opt correct';
+    else if (i === midSelected) el.className = 'quiz-opt wrong';
+  });
+
+  const fb = document.getElementById('qz-feedback');
+  fb.className   = 'quiz-feedback show ' + (ok ? 'ok' : 'err');
+  fb.textContent = ok
+    ? '✅ 정답입니다! 계속 시청하세요.'
+    : `❌ 오답입니다. 정답: "${q.opts[q.ans]}"`;
+
+  document.getElementById('qz-submit').style.display   = 'none';
+  document.getElementById('qz-continue').style.display = '';
+  saveProgress();
+  updateScore();
+};
+
+window.closeMidQuiz = function() {
+  document.getElementById('quiz-overlay').classList.remove('active');
+  video.play();
+  updateCheckpoints();
+};
+
+window.goToExam = function() {
+  if (!videoEnded) { showToast('영상을 끝까지 시청해야 평가에 응시할 수 있습니다.', 'error'); return; }
+  window.location.href = 'exam.html';
+};
+
+init();
+</script>
+</body>
+</html>

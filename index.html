@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>로그인 — KASG AML 교육 시스템</title>
+<link rel="stylesheet" href="css/main.css">
+<style>
+  body {
+    background: linear-gradient(160deg, var(--navy) 0%, #162B50 55%, #0A1830 100%);
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+
+  /* Decorative rings */
+  body::before, body::after {
+    content: '';
+    position: absolute; border-radius: 50%;
+    border: 1px solid rgba(212,160,23,0.08);
+    pointer-events: none;
+  }
+  body::before { width: 700px; height: 700px; top: -300px; right: -200px; }
+  body::after  { width: 500px; height: 500px; bottom: -200px; left: -150px; }
+
+  .kasg-ring {
+    position: absolute; border-radius: 50%;
+    border: 1px solid rgba(200,48,42,0.06);
+    pointer-events: none;
+    width: 900px; height: 900px;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .login-card {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    width: 440px; max-width: 95vw;
+    padding: 0;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.5);
+    border-top: 5px solid var(--kasg-gold);
+    animation: cardIn 0.4s ease;
+    position: relative; z-index: 1;
+  }
+  @keyframes cardIn { from { opacity:0; transform: translateY(-24px); } to { opacity:1; transform: none; } }
+
+  .login-head {
+    padding: 36px 40px 28px;
+    text-align: center;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+  }
+
+  .login-logo-wide {
+    height: 50px; width: auto;
+    margin: 0 auto 16px;
+  }
+
+  .login-desc {
+    font-size: 12px; color: var(--text-light);
+    letter-spacing: 0.3px; margin-top: 6px;
+  }
+
+  .login-body { padding: 28px 40px 36px; }
+
+  .login-title {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 20px; font-weight: 700;
+    color: var(--navy); text-align: center;
+    margin-bottom: 24px;
+  }
+
+  .login-divider {
+    display: flex; align-items: center; gap: 12px;
+    margin: 20px 0;
+    font-size: 11px; color: var(--text-light);
+  }
+  .login-divider::before, .login-divider::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+  }
+
+  .error-msg {
+    background: #FEE2E2; color: var(--error);
+    padding: 10px 14px; border-radius: var(--radius);
+    font-size: 13px; margin-bottom: 16px;
+    border-left: 3px solid var(--error);
+    display: none;
+  }
+  .error-msg.show { display: block; }
+
+  .admin-link {
+    text-align: center; margin-top: 16px;
+    font-size: 12px; color: var(--text-light);
+  }
+  .admin-link a {
+    color: var(--navy); font-weight: 500; cursor: pointer;
+    text-decoration: underline;
+  }
+
+  .login-footer {
+    padding: 16px 40px;
+    background: var(--cream);
+    border-top: 1px solid var(--border);
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    font-size: 11px; color: var(--text-light); text-align: center;
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+<div class="kasg-ring"></div>
+
+<div class="login-card">
+  <div class="login-head">
+    <img class="login-logo-wide" src="assets/logo-wide.png" alt="KASG 로고">
+    <div class="login-desc">AML 온라인 교육 학습관리시스템 (LMS)</div>
+  </div>
+
+  <div class="login-body">
+    <div class="login-title">수강생 로그인</div>
+
+    <div class="error-msg" id="login-error">아이디 또는 비밀번호가 올바르지 않습니다.</div>
+
+    <div class="form-group">
+      <label class="form-label">아이디 (성명)</label>
+      <input class="form-input" id="login-id" type="text" placeholder="성함을 입력하세요" autocomplete="username">
+    </div>
+    <div class="form-group">
+      <label class="form-label">비밀번호</label>
+      <input class="form-input" id="login-pw" type="password" placeholder="비밀번호를 입력하세요" autocomplete="current-password">
+    </div>
+    <div class="form-group">
+      <label class="form-label">소속 기관</label>
+      <input class="form-input" id="login-org" type="text" placeholder="소속 기관명을 입력하세요">
+    </div>
+
+    <button class="btn btn-primary btn-lg btn-block" onclick="doLogin()" id="login-btn">
+      로그인 / 수강 시작
+    </button>
+
+    <div class="admin-link">
+      관리자이신가요? <a onclick="goAdmin()">관리자 로그인 →</a>
+    </div>
+  </div>
+
+  <div class="login-footer">
+    © 2025 한국자금세탁방지연구회 · Korea Anti-money Laundering Study Group<br>
+    문의: 관리자에게 연락하세요
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<script type="module">
+import { DB } from './js/firebase-config.js';
+import { showToast } from './js/utils.js';
+
+window.doLogin = async function() {
+  const id  = document.getElementById('login-id').value.trim();
+  const pw  = document.getElementById('login-pw').value.trim();
+  const org = document.getElementById('login-org').value.trim();
+
+  if (!id || !pw || !org) {
+    document.getElementById('login-error').textContent = '모든 필드를 입력해 주세요.';
+    document.getElementById('login-error').classList.add('show');
+    return;
+  }
+
+  const btn = document.getElementById('login-btn');
+  btn.disabled = true;
+  btn.textContent = '로그인 중...';
+
+  try {
+    // Check/create learner in Firebase
+    const safeId = id.replace(/[.#$[\]]/g, '_') + '_' + org.replace(/[.#$[\]]/g, '_');
+    let learner = await DB.get(`learners/${safeId}`);
+
+    if (!learner) {
+      // New learner
+      learner = {
+        name: id, org: org, safeId,
+        progress: 0, midQuizCorrect: 0, midQuizTotal: 0,
+        finalScore: null, status: 'new', attempt: 0,
+        certNo: null, certDate: null,
+        createdAt: new Date().toISOString()
+      };
+      await DB.set(`learners/${safeId}`, learner);
+    } else {
+      // Verify pw if they have one set
+      if (learner.pw && learner.pw !== pw) {
+        document.getElementById('login-error').textContent = '비밀번호가 올바르지 않습니다.';
+        document.getElementById('login-error').classList.add('show');
+        btn.disabled = false; btn.textContent = '로그인 / 수강 시작';
+        return;
+      }
+    }
+
+    // Save pw on first login
+    if (!learner.pw) await DB.update(`learners/${safeId}`, { pw });
+
+    // Store session
+    sessionStorage.setItem('kasg_user', JSON.stringify({ name: id, org, safeId }));
+    window.location.href = 'dashboard.html';
+  } catch(e) {
+    console.error(e);
+    document.getElementById('login-error').textContent = '연결 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.';
+    document.getElementById('login-error').classList.add('show');
+    btn.disabled = false; btn.textContent = '로그인 / 수강 시작';
+  }
+};
+
+window.goAdmin = function() {
+  window.location.href = 'admin.html';
+};
+
+// Enter key
+document.addEventListener('keydown', e => { if (e.key === 'Enter') window.doLogin(); });
+</script>
+</body>
+</html>

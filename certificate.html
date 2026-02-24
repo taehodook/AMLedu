@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>수료증 — KASG LMS</title>
+<link rel="stylesheet" href="css/main.css">
+<style>
+  body {
+    background: #2A2835; min-height: 100vh;
+    display: flex; align-items: flex-start; justify-content: center;
+    padding: 40px 24px;
+  }
+
+  .cert-wrapper { position: relative; }
+
+  .cert-toolbar {
+    position: absolute; top: -52px; right: 0;
+    display: flex; gap: 10px;
+  }
+  .cert-toolbar button {
+    padding: 10px 22px; border-radius: var(--radius);
+    font-size: 14px; font-weight: 600; cursor: pointer; border: none;
+    transition: all 0.2s;
+  }
+  .btn-print { background: var(--kasg-gold); color: var(--navy); }
+  .btn-print:hover { background: #E8B520; transform: translateY(-1px); }
+  .btn-back  { background: rgba(255,255,255,0.15); color: var(--white); }
+  .btn-back:hover { background: rgba(255,255,255,0.25); }
+
+  /* ════ CERTIFICATE ════ */
+  .certificate {
+    width: 794px;
+    min-height: 1122px;
+    background: var(--white);
+    position: relative;
+    padding: 64px 72px;
+    font-family: 'Noto Serif KR', serif;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+  }
+
+  /* Decorative borders */
+  .cert-border-outer {
+    position: absolute; inset: 14px;
+    border: 2px solid var(--kasg-gold);
+    pointer-events: none;
+  }
+  .cert-border-inner {
+    position: absolute; inset: 20px;
+    border: 1px solid rgba(212,160,23,0.25);
+    pointer-events: none;
+  }
+
+  /* Corner ornaments */
+  .corner {
+    position: absolute;
+    width: 44px; height: 44px;
+    border-style: solid; border-color: var(--kasg-gold);
+  }
+  .corner.tl { top: 8px;  left: 8px;  border-width: 4px 0 0 4px; }
+  .corner.tr { top: 8px;  right: 8px; border-width: 4px 4px 0 0; }
+  .corner.bl { bottom: 8px; left: 8px;  border-width: 0 0 4px 4px; }
+  .corner.br { bottom: 8px; right: 8px; border-width: 0 4px 4px 0; }
+
+  /* Issue number */
+  .cert-issue {
+    text-align: right;
+    font-size: 12px; color: var(--text-mid);
+    font-family: 'Noto Sans KR', sans-serif;
+    margin-bottom: 20px;
+    position: relative; z-index: 1;
+  }
+
+  /* Medal / Emblem */
+  .cert-emblem-wrap {
+    text-align: center; margin-bottom: 20px;
+  }
+
+  .cert-emblem {
+    display: inline-block; position: relative;
+  }
+
+  .cert-logo-circle {
+    width: 96px; height: 96px;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2), 0 0 0 4px var(--kasg-gold), 0 0 0 6px rgba(212,160,23,0.2);
+    display: block; margin: 0 auto;
+  }
+  .cert-logo-circle img { width: 100%; height: 100%; object-fit: cover; }
+
+  /* Ribbon below emblem */
+  .cert-ribbon {
+    width: 36px; height: 32px;
+    margin: 0 auto;
+    background: linear-gradient(180deg, #1A3EA0 0%, #0C2A7A 100%);
+    clip-path: polygon(0 0, 100% 0, 85% 100%, 15% 100%);
+  }
+
+  /* Main title */
+  .cert-main-title {
+    text-align: center;
+    font-size: 48px; font-weight: 900;
+    color: var(--navy); letter-spacing: 10px;
+    margin: 36px 0 40px;
+    position: relative;
+  }
+  .cert-main-title::after {
+    content: '';
+    position: absolute; bottom: -12px; left: 50%; transform: translateX(-50%);
+    width: 120px; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--kasg-gold), transparent);
+  }
+
+  /* Fields */
+  .cert-fields {
+    max-width: 580px; margin: 0 auto 28px;
+  }
+
+  .cert-field {
+    display: flex; align-items: baseline;
+    padding: 11px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    font-size: 15px;
+  }
+  .cert-field:last-child { border-bottom: none; }
+
+  .cf-key {
+    width: 90px; font-weight: 700;
+    color: var(--navy); flex-shrink: 0; letter-spacing: 1px;
+  }
+  .cf-colon { width: 24px; text-align: center; color: var(--text-mid); flex-shrink: 0; }
+  .cf-val { flex: 1; color: var(--text); font-weight: 400; line-height: 1.5; }
+
+  .cert-divider {
+    height: 1px; margin: 20px 0;
+    background: linear-gradient(90deg, transparent 0%, var(--kasg-gold) 30%, var(--kasg-gold) 70%, transparent 100%);
+  }
+
+  /* Main text */
+  .cert-body-text {
+    text-align: center;
+    font-size: 16px; line-height: 2.1;
+    color: var(--navy);
+    padding: 20px 40px;
+    border-top: 1px solid rgba(0,0,0,0.06);
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    margin: 16px 0;
+  }
+
+  /* Date */
+  .cert-date {
+    text-align: center;
+    font-size: 19px; font-weight: 600;
+    color: var(--navy); letter-spacing: 2px;
+    padding: 24px 0 20px;
+  }
+
+  /* Issuer */
+  .cert-issuer {
+    display: flex; align-items: center;
+    justify-content: center; gap: 24px;
+  }
+
+  .cert-logo-wide-wrap img {
+    height: 52px; width: auto;
+  }
+
+  .cert-issuer-divider {
+    width: 1px; height: 60px; background: rgba(0,0,0,0.1);
+  }
+
+  .cert-chairman {
+    text-align: center;
+  }
+  .cert-chairman-title {
+    font-size: 13px; color: var(--text-mid); margin-bottom: 4px;
+  }
+  .cert-chairman-name {
+    font-size: 22px; font-weight: 700;
+    color: var(--navy); letter-spacing: 4px;
+  }
+
+  /* Seal */
+  .cert-seal {
+    width: 76px; height: 76px;
+    border: 3px solid var(--kasg-red);
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9.5px; font-weight: 700;
+    color: var(--kasg-red);
+    text-align: center; line-height: 1.6;
+    letter-spacing: 0.3px;
+    transform: rotate(-8deg);
+    opacity: 0.82;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+
+  @media print {
+    body { background: white; padding: 0; }
+    .cert-toolbar, header, .site-header { display: none !important; }
+    .certificate { box-shadow: none; width: 100%; min-height: auto; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cert-wrapper">
+  <div class="cert-toolbar no-print">
+    <button class="btn-back" onclick="window.location.href='dashboard.html'">← 대시보드</button>
+    <button class="btn-print" onclick="window.print()">🖨 수료증 인쇄 / 저장</button>
+  </div>
+
+  <div class="certificate" id="certificate">
+    <!-- Borders & corners -->
+    <div class="cert-border-outer"></div>
+    <div class="cert-border-inner"></div>
+    <div class="corner tl"></div>
+    <div class="corner tr"></div>
+    <div class="corner bl"></div>
+    <div class="corner br"></div>
+
+    <!-- Issue No -->
+    <div class="cert-issue" id="cert-issue-no">발급번호 : 제 ????-????호</div>
+
+    <!-- Emblem -->
+    <div class="cert-emblem-wrap">
+      <div class="cert-emblem">
+        <div class="cert-logo-circle">
+          <img src="assets/logo-circle.png" alt="KASG 로고">
+        </div>
+        <div class="cert-ribbon"></div>
+      </div>
+    </div>
+
+    <!-- Main Title -->
+    <div class="cert-main-title">교 육 수 료 증</div>
+
+    <!-- Fields -->
+    <div class="cert-fields">
+      <div class="cert-field">
+        <span class="cf-key">성&nbsp;&nbsp;&nbsp;&nbsp;명</span>
+        <span class="cf-colon">:</span>
+        <span class="cf-val" id="cf-name"></span>
+      </div>
+      <div class="cert-field">
+        <span class="cf-key">소&nbsp;&nbsp;&nbsp;&nbsp;속</span>
+        <span class="cf-colon">:</span>
+        <span class="cf-val" id="cf-org"></span>
+      </div>
+      <div class="cert-field">
+        <span class="cf-key">교육과정</span>
+        <span class="cf-colon">:</span>
+        <span class="cf-val" id="cf-course"></span>
+      </div>
+      <div class="cert-field">
+        <span class="cf-key">교육일시</span>
+        <span class="cf-colon">:</span>
+        <span class="cf-val" id="cf-date"></span>
+      </div>
+      <div class="cert-field">
+        <span class="cf-key">교육장소</span>
+        <span class="cf-colon">:</span>
+        <span class="cf-val">사이버온라인교육</span>
+      </div>
+      <div class="cert-field">
+        <span class="cf-key">교육형태</span>
+        <span class="cf-colon">:</span>
+        <span class="cf-val">온라인 교육</span>
+      </div>
+      <div class="cert-field">
+        <span class="cf-key">교육목적</span>
+        <span class="cf-colon">:</span>
+        <span class="cf-val" id="cf-purpose"></span>
+      </div>
+    </div>
+
+    <div class="cert-divider"></div>
+
+    <!-- Body text -->
+    <div class="cert-body-text" id="cf-body-text">
+      위 사람은 「<span id="ct-course-name"></span>」 과정을 성실히<br>
+      이수하였기에 본 증서를 수여합니다.
+    </div>
+
+    <!-- Date -->
+    <div class="cert-date" id="cf-issue-date"></div>
+
+    <!-- Issuer -->
+    <div class="cert-issuer">
+      <div class="cert-logo-wide-wrap">
+        <img src="assets/logo-wide.png" alt="한국자금세탁방지연구회">
+      </div>
+      <div class="cert-issuer-divider"></div>
+      <div class="cert-chairman">
+        <div class="cert-chairman-title">한국자금세탁방지연구회</div>
+        <div class="cert-chairman-name">회 장 &nbsp; 정 태 호</div>
+      </div>
+      <div class="cert-seal">
+        한국자금<br>세탁방지<br>연구회<br>직&nbsp;&nbsp;&nbsp;인
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { DB } from './js/firebase-config.js';
+import { requireAuth, fmtDate } from './js/utils.js';
+
+const user = requireAuth();
+if (!user) throw 0;
+
+const courseId = sessionStorage.getItem('kasg_course');
+
+async function init() {
+  const [learner, course] = await Promise.all([
+    DB.get(`learners/${user.safeId}`),
+    courseId ? DB.get(`courses/${courseId}`) : Promise.resolve(null)
+  ]);
+
+  // Guard: only completed learners
+  if (!learner || learner.status !== 'completed') {
+    alert('수료 완료 후 수료증을 발급받을 수 있습니다.');
+    window.location.href = 'dashboard.html';
+    return;
+  }
+
+  const certDate = new Date(learner.certDate || learner.lastExamDate || new Date());
+  const courseName = course?.title || learner?.courseTitle || '자금세탁방지 실무자 교육';
+  const purpose    = course?.purpose || '자금세탁방지(AML) 실무 이해 및 역량 강화';
+  const duration   = course?.duration || 2;
+
+  document.getElementById('cert-issue-no').textContent = `발급번호 : 제 ${learner.certNo}호`;
+  document.getElementById('cf-name').textContent       = learner.name;
+  document.getElementById('cf-org').textContent        = learner.org;
+  document.getElementById('cf-course').textContent     = courseName;
+  document.getElementById('cf-date').textContent       = `${fmtDate(certDate)} (${duration}시간)`;
+  document.getElementById('cf-purpose').textContent    = purpose;
+  document.getElementById('cf-issue-date').textContent = `${fmtDate(certDate)}`;
+
+  // Body text
+  document.getElementById('ct-course-name').textContent = courseName;
+}
+
+init();
+</script>
+</body>
+</html>

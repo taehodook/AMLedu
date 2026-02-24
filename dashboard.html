@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>수강 대시보드 — KASG LMS</title>
+<link rel="stylesheet" href="css/main.css">
+<style>
+  body { background: #F0EDE6; min-height: 100vh; }
+
+  .dash-layout {
+    max-width: 1100px; margin: 0 auto;
+    padding: 36px 24px;
+  }
+
+  .dash-hero {
+    background: var(--navy);
+    border-radius: var(--radius-lg);
+    padding: 36px 40px;
+    margin-bottom: 32px;
+    position: relative; overflow: hidden;
+    border-left: 6px solid var(--kasg-gold);
+  }
+
+  .dash-hero::after {
+    content: '';
+    position: absolute; right: 0; top: 0; bottom: 0; width: 240px;
+    background: url('assets/logo-circle.png') center/100px no-repeat;
+    opacity: 0.06;
+  }
+
+  .dash-hero-welcome {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 26px; font-weight: 700;
+    color: var(--white); margin-bottom: 6px;
+  }
+  .dash-hero-sub { color: rgba(255,255,255,0.6); font-size: 13px; }
+  .dash-hero-meta {
+    display: flex; gap: 24px; margin-top: 20px;
+  }
+  .hero-meta-item {
+    display: flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.1);
+    padding: 8px 16px; border-radius: 20px;
+    color: rgba(255,255,255,0.8); font-size: 13px;
+  }
+
+  .dash-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 24px;
+  }
+
+  /* Course List */
+  .course-list { display: flex; flex-direction: column; gap: 16px; }
+
+  .course-item {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    border-left: 5px solid var(--kasg-gold);
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+  }
+  .course-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .course-item.locked { border-left-color: var(--border); opacity: 0.6; cursor: not-allowed; }
+
+  .course-thumb {
+    width: 120px; min-height: 120px; flex-shrink: 0;
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .course-thumb img { width: 56px; opacity: 0.7; }
+  .course-thumb .play-icon {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 40px; opacity: 0.8;
+  }
+
+  .course-info { flex: 1; padding: 20px 24px; }
+  .course-name {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 16px; font-weight: 700;
+    color: var(--navy); margin-bottom: 8px;
+  }
+  .course-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+  .course-tag {
+    padding: 3px 10px;
+    background: var(--kasg-gray);
+    border-radius: 12px;
+    font-size: 11px; color: var(--text-mid);
+  }
+
+  .course-progress-wrap {
+    display: flex; align-items: center; gap: 12px;
+  }
+  .course-progress-bar { flex: 1; }
+  .progress-wrap { height: 6px; }
+  .course-pct { font-size: 12px; font-weight: 600; color: var(--navy); min-width: 36px; }
+
+  .course-action { padding: 20px; display: flex; align-items: center; }
+
+  /* Sidebar */
+  .sidebar { display: flex; flex-direction: column; gap: 20px; }
+
+  .my-status-card {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .my-status-header {
+    background: var(--navy);
+    padding: 16px 20px;
+    font-family: 'Noto Serif KR', serif;
+    font-size: 14px; font-weight: 600;
+    color: var(--white);
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .status-rows { padding: 16px 20px; }
+  .status-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    font-size: 13px;
+  }
+  .status-row:last-child { border-bottom: none; }
+  .status-row-key { color: var(--text-mid); }
+  .status-row-val { font-weight: 600; color: var(--text); }
+
+  .cert-cta {
+    background: linear-gradient(135deg, var(--kasg-gold) 0%, #E8B520 100%);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 16px rgba(212,160,23,0.3);
+  }
+  .cert-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(212,160,23,0.4); }
+  .cert-cta-icon { font-size: 36px; margin-bottom: 8px; }
+  .cert-cta-title { font-family: 'Noto Serif KR', serif; font-size: 16px; font-weight: 700; color: var(--navy); }
+  .cert-cta-sub { font-size: 12px; color: rgba(12,31,63,0.7); margin-top: 4px; }
+
+  .guide-card {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    box-shadow: var(--shadow-sm);
+  }
+  .guide-title { font-size: 13px; font-weight: 600; color: var(--navy); margin-bottom: 12px; }
+  .guide-step {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 12px; color: var(--text-mid);
+    padding: 6px 0;
+  }
+  .step-num {
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--navy); color: var(--white);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700; flex-shrink: 0;
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-brand">
+    <img class="header-logo-img" src="assets/logo-wide.png" alt="KASG">
+  </div>
+  <div class="header-nav">
+    <div class="header-user-chip">
+      <span>👤</span>
+      <span id="header-name"></span>
+      <span style="opacity:0.4">|</span>
+      <span id="header-org" style="opacity:0.7;font-size:12px"></span>
+    </div>
+    <button class="header-btn" onclick="logout()">로그아웃</button>
+  </div>
+</header>
+
+<div class="dash-layout">
+  <!-- Hero -->
+  <div class="dash-hero">
+    <div class="dash-hero-welcome" id="dash-welcome">환영합니다!</div>
+    <div class="dash-hero-sub">한국자금세탁방지연구회 AML 온라인 교육 시스템입니다.</div>
+    <div class="dash-hero-meta">
+      <div class="hero-meta-item">📅 <span id="dash-today"></span></div>
+      <div class="hero-meta-item">🎯 수료 기준: 70점 이상</div>
+      <div class="hero-meta-item">⏱ 영상 완료 후 평가 응시</div>
+    </div>
+  </div>
+
+  <div class="dash-grid">
+    <!-- Course List -->
+    <div>
+      <div class="section-title">📚 수강 과정 목록</div>
+      <div class="course-list" id="course-list">
+        <div style="text-align:center;padding:40px;color:var(--text-light)">
+          <div class="spinner" style="margin:0 auto 16px"></div>
+          강의 목록을 불러오는 중...
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <!-- My Status -->
+      <div class="my-status-card">
+        <div class="my-status-header">📊 내 학습 현황</div>
+        <div class="status-rows" id="status-rows">
+          <div class="status-row"><span class="status-row-key">전체 진도</span><span class="status-row-val" id="st-progress">-</span></div>
+          <div class="status-row"><span class="status-row-key">중간 퀴즈</span><span class="status-row-val" id="st-midquiz">-</span></div>
+          <div class="status-row"><span class="status-row-key">최종 점수</span><span class="status-row-val" id="st-score">-</span></div>
+          <div class="status-row"><span class="status-row-key">응시 횟수</span><span class="status-row-val" id="st-attempt">-</span></div>
+          <div class="status-row"><span class="status-row-key">수료 상태</span><span class="status-row-val" id="st-status">-</span></div>
+        </div>
+      </div>
+
+      <!-- Cert CTA (show only if completed) -->
+      <div class="cert-cta" id="cert-cta" style="display:none" onclick="window.location.href='certificate.html'">
+        <div class="cert-cta-icon">🏆</div>
+        <div class="cert-cta-title">수료증 발급</div>
+        <div class="cert-cta-sub">클릭하여 수료증을 확인·출력하세요</div>
+      </div>
+
+      <!-- Guide -->
+      <div class="guide-card">
+        <div class="guide-title">📋 수강 안내</div>
+        <div class="guide-step"><div class="step-num">1</div><span>강의 영상을 처음부터 끝까지 시청하세요</span></div>
+        <div class="guide-step"><div class="step-num">2</div><span>영상 중간 이해도 퀴즈 3개를 풀어주세요</span></div>
+        <div class="guide-step"><div class="step-num">3</div><span>영상 완료 후 최종 평가(20문항)에 응시하세요</span></div>
+        <div class="guide-step"><div class="step-num">4</div><span>70점 이상 시 수료증을 발급받을 수 있습니다</span></div>
+        <div class="guide-step"><div class="step-num">5</div><span>미수료 시 재수강 후 새 문제로 재응시 가능합니다</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<script type="module">
+import { DB } from './js/firebase-config.js';
+import { requireAuth, fmtDate } from './js/utils.js';
+
+const user = requireAuth();
+if (!user) throw new Error('No auth');
+
+// Init UI
+document.getElementById('header-name').textContent = user.name;
+document.getElementById('header-org').textContent  = user.org;
+document.getElementById('dash-welcome').textContent = `안녕하세요, ${user.name}님 👋`;
+document.getElementById('dash-today').textContent   = fmtDate(new Date());
+
+window.logout = function() {
+  sessionStorage.removeItem('kasg_user');
+  window.location.href = 'index.html';
+};
+
+// Load courses from Firebase
+async function loadCourses() {
+  const courses = await DB.get('courses') || {};
+  const listEl = document.getElementById('course-list');
+
+  const courseArr = Object.entries(courses).map(([id, c]) => ({ id, ...c }));
+
+  if (courseArr.length === 0) {
+    listEl.innerHTML = `
+      <div class="card" style="text-align:center;padding:48px">
+        <div style="font-size:40px;margin-bottom:12px">📂</div>
+        <div style="color:var(--text-mid);font-size:14px">등록된 강의가 없습니다.<br>관리자에게 문의하세요.</div>
+      </div>`;
+    return;
+  }
+
+  // Load learner data
+  const learner = await DB.get(`learners/${user.safeId}`);
+
+  listEl.innerHTML = courseArr.map(course => {
+    const progress = learner?.courseProgress?.[course.id] || 0;
+    const pctVal   = Math.round(progress * 100);
+    const status   = learner?.courseStatus?.[course.id] || 'new';
+    const badgeHtml = status === 'completed'
+      ? '<span class="badge badge-success">✅ 수료 완료</span>'
+      : status === 'in_progress'
+        ? '<span class="badge badge-warn">▶ 수강 중</span>'
+        : '<span class="badge badge-neutral">🆕 수강 전</span>';
+
+    return `
+      <div class="course-item ${course.locked ? 'locked' : ''}"
+           onclick="${course.locked ? "alert('준비 중인 강의입니다.')" : `goToCourse('${course.id}')`}">
+        <div class="course-thumb">
+          <div class="play-icon">🎬</div>
+        </div>
+        <div class="course-info">
+          <div class="course-name">${course.title}</div>
+          <div class="course-tags">
+            <span class="course-tag">🕐 ${course.duration || '?'}시간</span>
+            <span class="course-tag">📋 20문항</span>
+            <span class="course-tag">🎯 70% 이상 수료</span>
+            ${badgeHtml}
+          </div>
+          <div class="course-progress-wrap">
+            <div class="course-progress-bar">
+              <div class="progress-wrap"><div class="progress-fill" style="width:${pctVal}%"></div></div>
+            </div>
+            <span class="course-pct">${pctVal}%</span>
+          </div>
+        </div>
+        <div class="course-action">
+          <button class="btn ${status === 'completed' ? 'btn-outline' : 'btn-primary'} btn-sm"
+                  onclick="event.stopPropagation(); ${course.locked ? "alert('준비 중')" : `goToCourse('${course.id}')`}">
+            ${status === 'completed' ? '재수강' : status === 'in_progress' ? '이어보기' : '수강 시작'}
+          </button>
+        </div>
+      </div>`;
+  }).join('');
+
+  // Update sidebar status
+  if (learner) {
+    const firstCourse = courseArr[0];
+    const prog = learner?.courseProgress?.[firstCourse?.id] || 0;
+    const mq   = learner?.midQuizCorrect || 0;
+    const mqT  = learner?.midQuizTotal || 0;
+    const score = learner?.finalScore;
+    const att  = learner?.attempt || 0;
+    const st   = learner?.status || 'new';
+
+    document.getElementById('st-progress').textContent = Math.round(prog*100) + '%';
+    document.getElementById('st-midquiz').textContent  = mqT > 0 ? `${mq}/${mqT} 정답` : '미응시';
+    document.getElementById('st-score').textContent    = score !== null && score !== undefined ? score + '점' : '미응시';
+    document.getElementById('st-attempt').textContent  = att + '/2회';
+    document.getElementById('st-status').innerHTML     = st === 'completed'
+      ? '<span style="color:var(--success);font-weight:700">✅ 수료</span>'
+      : st === 'in_progress'
+        ? '<span style="color:var(--warn);font-weight:700">▶ 수강 중</span>'
+        : '<span style="color:var(--text-mid)">미수강</span>';
+
+    if (st === 'completed') {
+      document.getElementById('cert-cta').style.display = '';
+    }
+  }
+}
+
+window.goToCourse = function(courseId) {
+  sessionStorage.setItem('kasg_course', courseId);
+  window.location.href = 'player.html';
+};
+
+loadCourses();
+</script>
+</body>
+</html>
