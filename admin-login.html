@@ -7,43 +7,137 @@
 <link rel="stylesheet" href="css/main.css">
 <style>
 body{background:linear-gradient(135deg,#050D1F 0%,#0C1F3F 65%,#0A1530 100%);min-height:100vh;display:flex;align-items:center;justify-content:center}
-.al-card{background:#fff;border-radius:var(--radius-lg);width:380px;max-width:95vw;border-top:5px solid var(--kasg-red);box-shadow:0 32px 80px rgba(0,0,0,.6);overflow:hidden;animation:cardIn .4s ease}
+.al-wrap{width:420px;max-width:96vw}
+.al-card{background:#fff;border-radius:var(--radius-lg);border-top:5px solid var(--kasg-red);box-shadow:0 32px 80px rgba(0,0,0,.6);overflow:hidden;animation:cardIn .4s ease}
 @keyframes cardIn{from{opacity:0;transform:translateY(-18px)}to{opacity:1;transform:none}}
-.al-head{background:var(--navy);padding:26px 34px;text-align:center;border-bottom:1px solid rgba(255,255,255,.07)}
-.al-head img{height:38px;margin:0 auto 10px}
-.al-head-title{font-family:'Noto Serif KR',serif;font-size:17px;font-weight:700;color:#fff;margin-bottom:3px}
-.al-head-sub{font-size:10px;color:var(--kasg-red);letter-spacing:1.5px;text-transform:uppercase}
-.al-body{padding:26px 34px 32px}
+.al-head{background:var(--navy);padding:24px 34px 20px;text-align:center}
+.al-head img{height:36px;margin:0 auto 10px;display:block}
+.al-head-title{font-family:'Noto Serif KR',serif;font-size:16px;font-weight:700;color:#fff;margin-bottom:3px}
+.al-head-sub{font-size:9.5px;color:var(--kasg-gold);letter-spacing:1.5px;text-transform:uppercase;opacity:.7}
+
+/* 역할 탭 */
+.role-tabs{display:flex;margin:0;border-bottom:3px solid var(--kasg-gold)}
+.role-tab{flex:1;padding:11px 8px;font-size:12.5px;font-weight:700;cursor:pointer;border:none;background:rgba(255,255,255,.05);color:rgba(255,255,255,.45);transition:all .18s;letter-spacing:.3px}
+.role-tab.active{background:var(--navy);color:#fff;position:relative}
+.role-tab.active::after{content:'';position:absolute;bottom:-3px;left:0;right:0;height:3px;background:var(--kasg-gold)}
+.role-tab:hover:not(.active){background:rgba(255,255,255,.1);color:rgba(255,255,255,.75)}
+
+.al-body{padding:24px 32px 28px}
 .err-box{background:#FEE2E2;color:var(--error);padding:10px 13px;border-radius:var(--radius);font-size:13px;margin-bottom:14px;border-left:3px solid var(--error);display:none}
 .err-box.show{display:block}
-.back-link{text-align:center;margin-top:14px;font-size:12px;color:var(--text-light);cursor:pointer}
+
+.role-hint{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:var(--radius);margin-bottom:14px;font-size:12px}
+.role-hint.super{background:rgba(200,48,42,.07);color:#8B1818;border:1px solid rgba(200,48,42,.15)}
+.role-hint.org{background:rgba(12,31,63,.06);color:var(--navy);border:1px solid rgba(12,31,63,.12)}
+
+.back-link{text-align:center;margin-top:16px;font-size:12px;color:var(--text-light);cursor:pointer}
 .back-link:hover{color:var(--navy)}
 </style>
 </head>
 <body>
-<div class="al-card">
-  <div class="al-head">
-    <img src="assets/logo-wide.png" alt="KASG">
-    <div class="al-head-title">관리자 로그인</div>
-    <div class="al-head-sub">ADMINISTRATOR ACCESS</div>
-  </div>
-  <div class="al-body">
-    <div class="err-box" id="err">관리자 비밀번호가 올바르지 않습니다.</div>
-    <div class="form-group"><label class="form-label">관리자 비밀번호</label><input class="form-input" type="password" id="admin-pw" placeholder="비밀번호 입력"></div>
-    <button class="btn btn-danger btn-lg btn-block" onclick="doLogin()">관리자 로그인</button>
-    <div class="back-link" onclick="window.location.href='index.html'">← 수강생 로그인으로 돌아가기</div>
+<div class="al-wrap">
+  <div class="al-card">
+    <div class="al-head">
+      <img src="assets/logo-wide.png" alt="KASG">
+      <div class="al-head-title">관리자 포털</div>
+      <div class="al-head-sub">ADMINISTRATOR PORTAL</div>
+    </div>
+
+    <!-- 역할 탭 (헤더 하단) -->
+    <div class="role-tabs" style="background:var(--navy)">
+      <div class="role-tab active" id="tab-super" onclick="setRole('super')">🔑 시스템 관리자</div>
+      <div class="role-tab" id="tab-org" onclick="setRole('org')">🏢 회사별 관리자</div>
+    </div>
+
+    <div class="al-body">
+      <div class="err-box" id="err"></div>
+
+      <!-- 시스템 관리자 폼 -->
+      <div id="form-super">
+        <div class="role-hint super">⚡ 최고 권한 — 모든 메뉴와 데이터에 접근 가능합니다.</div>
+        <div class="form-group">
+          <label class="form-label">관리자 비밀번호</label>
+          <input class="form-input" type="password" id="super-pw" placeholder="비밀번호 입력">
+        </div>
+        <button class="btn btn-danger btn-lg btn-block" onclick="loginSuper()">로그인</button>
+      </div>
+
+      <!-- 회사별 관리자 폼 -->
+      <div id="form-org" style="display:none">
+        <div class="role-hint org">🏢 소속 회사 데이터만 조회 가능합니다. 시스템 관리자로부터 계정을 발급받으세요.</div>
+        <div class="form-group">
+          <label class="form-label">아이디</label>
+          <input class="form-input" type="text" id="org-id" placeholder="부여받은 관리자 아이디">
+        </div>
+        <div class="form-group">
+          <label class="form-label">비밀번호</label>
+          <input class="form-input" type="password" id="org-pw" placeholder="비밀번호">
+        </div>
+        <button class="btn btn-primary btn-lg btn-block" onclick="loginOrg()">로그인</button>
+      </div>
+
+      <div class="back-link" onclick="window.location.href='index.html'">← 수강생 로그인으로 돌아가기</div>
+    </div>
   </div>
 </div>
+
 <script type="module">
 import { DB } from './js/firebase-config.js';
-window.doLogin = async function(){
-  const pw=document.getElementById('admin-pw').value;
-  const stored=await DB.get('admin/password') || 'kasg2025admin';
-  if(pw===stored){sessionStorage.setItem('kasg_admin',JSON.stringify({ok:true}));window.location.href='admin.html';}
-  else{document.getElementById('err').classList.add('show');}
+
+window.setRole = function(role) {
+  ['super','org'].forEach(r => {
+    document.getElementById(`tab-${r}`).classList.toggle('active', r === role);
+    document.getElementById(`form-${r}`).style.display = r === role ? '' : 'none';
+  });
+  document.getElementById('err').classList.remove('show');
 };
-document.addEventListener('keydown',e=>{if(e.key==='Enter')window.doLogin();});
-if(sessionStorage.getItem('kasg_admin'))window.location.href='admin.html';
+
+function showErr(msg) {
+  const e = document.getElementById('err');
+  e.textContent = msg;
+  e.classList.add('show');
+}
+
+window.loginSuper = async function() {
+  const pw = document.getElementById('super-pw').value;
+  if (!pw) { showErr('비밀번호를 입력하세요.'); return; }
+  const stored = await DB.get('admin/password') || 'kasg2025admin';
+  if (pw === stored) {
+    sessionStorage.setItem('kasg_admin', JSON.stringify({ ok:true, role:'super', id:'admin' }));
+    window.location.href = 'admin.html';
+  } else {
+    showErr('비밀번호가 올바르지 않습니다.');
+  }
+};
+
+window.loginOrg = async function() {
+  const id = document.getElementById('org-id').value.trim();
+  const pw = document.getElementById('org-pw').value;
+  if (!id || !pw) { showErr('아이디와 비밀번호를 입력하세요.'); return; }
+  const safeKey = id.replace(/[.#$[\] ]/g, '_');
+  const admin = await DB.get(`orgAdmins/${safeKey}`);
+  if (!admin)          { showErr('존재하지 않는 아이디입니다.'); return; }
+  if (admin.password !== pw) { showErr('비밀번호가 올바르지 않습니다.'); return; }
+  if (admin.disabled)  { showErr('비활성화된 계정입니다. 시스템 관리자에게 문의하세요.'); return; }
+  sessionStorage.setItem('kasg_admin', JSON.stringify({
+    ok: true, role: 'org', id: safeKey,
+    name: admin.name, org: admin.org,
+    permissions: admin.permissions || []
+  }));
+  window.location.href = 'admin.html';
+};
+
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Enter') return;
+  const isSuper = document.getElementById('form-super').style.display !== 'none';
+  isSuper ? loginSuper() : loginOrg();
+});
+
+// 이미 로그인된 경우 바로 이동
+try {
+  const s = sessionStorage.getItem('kasg_admin');
+  if (s && JSON.parse(s).ok) window.location.href = 'admin.html';
+} catch(e) {}
 </script>
 </body>
 </html>

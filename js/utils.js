@@ -32,7 +32,21 @@ export function requireAuth() {
 export function requireAdmin() {
   const s = sessionStorage.getItem('kasg_admin');
   if (!s) { window.location.href = 'admin-login.html'; return null; }
-  return JSON.parse(s);
+  try { return JSON.parse(s); } catch(e) { window.location.href = 'admin-login.html'; return null; }
+}
+
+export function isSuper(session) {
+  return session?.role === 'super';
+}
+
+export function hasPerm(session, perm) {
+  if (isSuper(session)) return true;
+  return (session?.permissions || []).includes(perm);
+}
+
+export function adminOrg(session) {
+  if (isSuper(session)) return null;
+  return session?.org || null;
 }
 
 export function safeId(name, org) {
@@ -47,15 +61,11 @@ export function generateCertNo() {
   return `${yy}${mm}-${seq}`;
 }
 
-// 유튜브 URL → embed URL 변환
 export function toYoutubeEmbed(url) {
   if (!url) return null;
-  // already embed
   if (url.includes('youtube.com/embed/')) return url;
-  // youtu.be/ID
   const short = url.match(/youtu\.be\/([A-Za-z0-9_-]{11})/);
   if (short) return `https://www.youtube.com/embed/${short[1]}?rel=0&modestbranding=1`;
-  // watch?v=ID
   const full  = url.match(/[?&]v=([A-Za-z0-9_-]{11})/);
   if (full)  return `https://www.youtube.com/embed/${full[1]}?rel=0&modestbranding=1`;
   return null;

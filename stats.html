@@ -295,6 +295,23 @@ async function init(){
   rawLearners    = ld  ? Object.entries(ld).map(([id,v])=>({...v,_id:id})).filter(l=>l.status!=='pending'&&l.status!=='rejected') : [];
   rawCourses     = cd  || {};
   rawCompletions = cmp ? Object.values(cmp) : [];
+
+  // URL로 전달된 org 파라미터 처리 (회사별 관리자용)
+  const urlOrg = new URLSearchParams(location.search).get('org');
+  if(urlOrg){
+    // org 필터 고정 — 변경 불가
+    rawLearners    = rawLearners.filter(l=>l.org===urlOrg);
+    rawCompletions = rawCompletions.filter(c=>c.org===urlOrg);
+    // 안내 배너 표시
+    const banner=document.createElement('div');
+    banner.style.cssText='background:rgba(26,62,160,.08);border:1px solid rgba(26,62,160,.2);border-radius:8px;padding:10px 16px;margin-bottom:14px;font-size:12.5px;color:#1A3EA0;display:flex;align-items:center;gap:8px';
+    banner.innerHTML=`<span style="font-size:18px">🏢</span><span><strong>${urlOrg}</strong> 소속 수강생 데이터만 표시됩니다. (회사별 관리자 접근)</span>`;
+    document.querySelector('.stats-container')?.prepend(banner);
+    // 기관 필터 선택 불가하게 처리
+    const orgSel=document.getElementById('f-org');
+    if(orgSel){ orgSel.innerHTML=`<option value="${urlOrg}">${urlOrg}</option>`; orgSel.disabled=true; }
+  }
+
   buildFilters();
   applyFilters();
 }

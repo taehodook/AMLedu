@@ -123,7 +123,28 @@ body{background:#ECEAE4;min-height:100vh}
 .stats-cta-left .s{font-size:12px;color:rgba(255,255,255,.5);margin-top:2px}
 .stats-cta-arr{font-size:22px;color:var(--kasg-gold)}
 
-/* ── Quiz Editor ── */
+/* ── Role & Permission UI ── */
+.role-badge-super{display:inline-flex;align-items:center;gap:4px;padding:2px 10px;border-radius:10px;font-size:10px;font-weight:700;background:rgba(200,48,42,.12);color:var(--kasg-red);border:1px solid rgba(200,48,42,.2)}
+.role-badge-org{display:inline-flex;align-items:center;gap:4px;padding:2px 10px;border-radius:10px;font-size:10px;font-weight:700;background:rgba(26,62,160,.12);color:#1A3EA0;border:1px solid rgba(26,62,160,.2)}
+.org-banner{background:linear-gradient(90deg,rgba(26,62,160,.08),rgba(26,62,160,.03));border:1px solid rgba(26,62,160,.18);border-radius:var(--radius);padding:11px 16px;display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.org-banner .ob-icon{font-size:22px}
+.org-banner .ob-body strong{display:block;font-size:13px;color:var(--navy)}
+.org-banner .ob-body span{font-size:11.5px;color:var(--text-mid)}
+/* nav: 권한 없는 항목 잠금 */
+.nav-item.nav-locked{opacity:.3;cursor:not-allowed !important;pointer-events:none}
+/* 회사별 관리자 관리 */
+.perm-checks{display:flex;flex-wrap:wrap;gap:7px}
+.perm-check-label{display:flex;align-items:flex-start;gap:7px;padding:8px 12px;border:1.5px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all .13s;background:#fff;min-width:160px}
+.perm-check-label:hover{border-color:var(--navy)}
+.perm-check-label.active{border-color:var(--navy);background:rgba(12,31,63,.05)}
+.perm-check-label input{margin-top:1px;width:14px;height:14px;accent-color:var(--navy);flex-shrink:0;cursor:pointer}
+.perm-check-title{font-size:12px;font-weight:600;color:var(--navy);display:block}
+.perm-check-desc{font-size:10.5px;color:var(--text-light);display:block;margin-top:1px}
+.perm-pill{display:inline-flex;align-items:center;padding:1px 7px;border-radius:8px;font-size:10px;font-weight:600;background:rgba(26,62,160,.1);color:#1A3EA0;margin:1px 2px 1px 0}
+.oa-status-on{color:var(--success);font-weight:600;font-size:11.5px}
+.oa-status-off{color:var(--text-light);font-size:11.5px}
+
+
 .quiz-section{margin-top:18px}
 .quiz-section-hd{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;background:var(--navy);border-radius:var(--radius-lg) var(--radius-lg) 0 0;border-bottom:3px solid var(--kasg-gold)}
 .quiz-section-title{font-family:'Noto Serif KR',serif;font-size:13px;font-weight:700;color:#fff;display:flex;align-items:center;gap:7px}
@@ -205,11 +226,12 @@ body{background:#ECEAE4;min-height:100vh}
 <header class="site-header">
   <div class="header-brand">
     <img class="header-logo-img" src="assets/logo-wide.png" alt="KASG">
-    <span style="color:var(--kasg-red);font-size:10px;font-weight:700;letter-spacing:1px;background:rgba(200,48,42,.13);padding:2px 9px;border-radius:9px;margin-left:8px">ADMIN</span>
+    <span id="hd-role-badge" style="margin-left:8px"></span>
+    <span id="hd-user-name" style="font-size:11px;color:rgba(255,255,255,.55);margin-left:6px"></span>
   </div>
   <div class="header-nav">
-    <button class="header-btn" onclick="window.open('stats.html','_blank')">📊 통계 현황</button>
-    <button class="header-btn" onclick="window.open('index.html','_blank')">수강생 화면</button>
+    <button class="header-btn" id="hd-btn-stats" onclick="openStats()">📊 통계 현황</button>
+    <button class="header-btn" id="hd-btn-learner" onclick="window.open('index.html','_blank')">수강생 화면</button>
     <button class="header-btn" onclick="adminLogout()">로그아웃</button>
   </div>
 </header>
@@ -217,26 +239,28 @@ body{background:#ECEAE4;min-height:100vh}
 <div class="admin-layout">
   <nav class="admin-nav">
     <div class="nav-sec">대시보드</div>
-    <div class="nav-item active" data-sec="overview" onclick="go(this)"><span class="nav-icon">📊</span>전체 현황</div>
+    <div class="nav-item active" data-sec="overview" data-perm="overview" onclick="go(this)"><span class="nav-icon">📊</span>전체 현황</div>
     <div class="nav-divider"></div>
     <div class="nav-sec">수강생 관리</div>
-    <div class="nav-item" data-sec="pending" onclick="go(this)"><span class="nav-icon">⏳</span>가입 승인<span class="nav-badge" id="pending-cnt">0</span></div>
-    <div class="nav-item" data-sec="learners" onclick="go(this)"><span class="nav-icon">👥</span>수강생 목록</div>
-    <div class="nav-item" data-sec="bulk-register" onclick="go(this)"><span class="nav-icon">📤</span>대량 등록</div>
-    <div class="nav-item" data-sec="assign" onclick="go(this)"><span class="nav-icon">📋</span>강의 배정</div>
-    <div class="nav-item" data-sec="completions" onclick="go(this)"><span class="nav-icon">🏆</span>수료 현황</div>
+    <div class="nav-item" data-sec="pending"       data-perm="pending"       onclick="go(this)"><span class="nav-icon">⏳</span>가입 승인<span class="nav-badge" id="pending-cnt">0</span></div>
+    <div class="nav-item" data-sec="learners"      data-perm="learners"      onclick="go(this)"><span class="nav-icon">👥</span>수강생 목록</div>
+    <div class="nav-item" data-sec="bulk-register" data-super-only onclick="go(this)"><span class="nav-icon">📤</span>대량 등록</div>
+    <div class="nav-item" data-sec="assign"        data-super-only onclick="go(this)"><span class="nav-icon">📋</span>강의 배정</div>
+    <div class="nav-item" data-sec="completions"   data-perm="completions"   onclick="go(this)"><span class="nav-icon">🏆</span>수료 현황</div>
     <div class="nav-divider"></div>
     <div class="nav-sec">강의 관리</div>
-    <div class="nav-item" data-sec="courses" onclick="go(this)"><span class="nav-icon">🎬</span>강의 목록</div>
-    <div class="nav-item" data-sec="add-course" onclick="go(this)"><span class="nav-icon">➕</span>강의 등록</div>
+    <div class="nav-item" data-sec="courses"       data-super-only onclick="go(this)"><span class="nav-icon">🎬</span>강의 목록</div>
+    <div class="nav-item" data-sec="add-course"    data-super-only onclick="go(this)"><span class="nav-icon">➕</span>강의 등록</div>
     <div class="nav-divider"></div>
     <div class="nav-sec">통계·증적</div>
-    <div class="nav-item" onclick="window.open('stats.html','_blank')"><span class="nav-icon">📈</span>통계 현황 보고서</div>
+    <div class="nav-item" data-perm="stats" onclick="openStats()"><span class="nav-icon">📈</span>통계 현황 보고서</div>
     <div class="nav-divider"></div>
-    <div class="nav-sec">시스템</div>
-    <div class="nav-item" data-sec="settings" onclick="go(this)"><span class="nav-icon">⚙️</span>설정</div>
+    <div class="nav-sec" id="nav-sec-system">시스템</div>
+    <div class="nav-item" data-sec="settings"   data-super-only onclick="go(this)"><span class="nav-icon">⚙️</span>설정</div>
+    <div class="nav-item" data-sec="org-admins" data-super-only onclick="go(this)"><span class="nav-icon">🏢</span>회사별 관리자</div>
     <div class="nav-bottom">
       <div class="nav-item" onclick="adminLogout()"><span class="nav-icon">🚪</span>로그아웃</div>
+    </div>
     </div>
   </nav>
 
@@ -245,8 +269,16 @@ body{background:#ECEAE4;min-height:100vh}
     <!-- ══ OVERVIEW ══ -->
     <div class="content-sec active" id="sec-overview">
       <div class="section-title">📊 전체 현황</div>
+      <!-- 회사별 관리자 배너 (JS로 표시 제어) -->
+      <div class="org-banner" id="org-banner" style="display:none">
+        <div class="ob-icon">🏢</div>
+        <div class="ob-body">
+          <strong id="org-banner-title"></strong>
+          <span id="org-banner-perms"></span>
+        </div>
+      </div>
       <!-- Stats CTA -->
-      <div class="stats-cta" onclick="window.open('stats.html','_blank')">
+      <div class="stats-cta" onclick="openStats()">
         <div class="stats-cta-left">
           <div class="t">📊 교육 현황 통계 보고서</div>
           <div class="s">기관별·등급별·부서별 통계 · 인쇄·PDF·CSV 다운로드</div>
@@ -569,10 +601,94 @@ body{background:#ECEAE4;min-height:100vh}
       </div>
     </div>
 
+    <!-- ══ ORG ADMINS ══ -->
+    <div class="content-sec" id="sec-org-admins">
+      <div class="section-title">🏢 회사별 관리자</div>
+
+      <!-- 안내 박스 -->
+      <div class="alert alert-info" style="margin-bottom:14px;font-size:12.5px">
+        <strong>⚡ 시스템 관리자 전용</strong> — 각 회사별 관리자 계정을 등록하고 페이지 접근 권한을 설정합니다.<br>
+        회사별 관리자는 <strong>자기 소속 회사 데이터만</strong> 조회 가능하며, 부여된 권한 메뉴만 사용할 수 있습니다.
+      </div>
+
+      <!-- 등록 폼 -->
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-header"><span class="card-title">➕ 새 관리자 계정 등록</span></div>
+        <div class="card-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px">
+            <div class="form-group">
+              <label class="form-label">아이디 * <span style="font-weight:400;color:var(--text-light)">(영문·숫자·_)</span></label>
+              <input class="form-input" id="oa-id" placeholder="예: samsung_admin">
+            </div>
+            <div class="form-group"><label class="form-label">담당자 이름 *</label><input class="form-input" id="oa-name" placeholder="홍길동"></div>
+            <div class="form-group"><label class="form-label">소속 회사 * <span style="font-weight:400;color:var(--text-light)">(수강생의 소속과 일치)</span></label><input class="form-input" id="oa-org" placeholder="예: 삼성전자"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+            <div class="form-group"><label class="form-label">초기 비밀번호 * (6자 이상)</label><input class="form-input" type="password" id="oa-pw" placeholder="초기 비밀번호"></div>
+            <div class="form-group"><label class="form-label">연락처</label><input class="form-input" id="oa-phone" placeholder="010-0000-0000"></div>
+          </div>
+          <div class="form-group" style="margin-bottom:14px">
+            <label class="form-label" style="margin-bottom:9px">📋 페이지 접근 권한 설정 <span style="font-weight:400;color:var(--text-light)">(체크한 메뉴만 접근 가능)</span></label>
+            <div id="oa-perm-new"></div>
+          </div>
+          <div style="display:flex;justify-content:flex-end;gap:8px">
+            <button class="btn btn-outline btn-sm" onclick="clearOAForm()">초기화</button>
+            <button class="btn btn-primary" onclick="saveNewOA()">💾 관리자 등록</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 목록 -->
+      <div class="card">
+        <div class="card-header" style="flex-wrap:wrap;gap:8px">
+          <span class="card-title">등록된 관리자 목록</span>
+          <input class="filter-input" id="oa-search" placeholder="아이디·이름·회사 검색..." oninput="renderOAList()" style="margin-left:auto;width:200px">
+        </div>
+        <div style="background:#fff;border-radius:0 0 var(--radius-lg) var(--radius-lg);overflow:hidden">
+          <table class="data-table">
+            <thead>
+              <tr><th>아이디</th><th>이름</th><th>소속 회사</th><th>연락처</th><th>부여된 권한</th><th>상태</th><th>등록일</th><th>관리</th></tr>
+            </thead>
+            <tbody id="oa-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /admin-content -->
+</div><!-- /admin-layout -->
+
+<!-- ── Org Admin Edit Modal ── -->
+<div class="modal-backdrop hidden" id="modal-edit-oa">
+  <div class="modal-box" style="width:min(640px,96vw)">
+    <div class="modal-header">
+      <span class="modal-title">✏️ 관리자 수정 — <span id="oa-edit-id-label" style="color:var(--kasg-gold)"></span></span>
+      <button class="modal-close" onclick="closeModal('modal-edit-oa')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="oa-edit-key">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+        <div class="form-group"><label class="form-label">이름</label><input class="form-input" id="oa-edit-name"></div>
+        <div class="form-group"><label class="form-label">소속 회사</label><input class="form-input" id="oa-edit-org"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+        <div class="form-group">
+          <label class="form-label">새 비밀번호 <span style="font-weight:400;color:var(--text-light)">(비워두면 유지)</span></label>
+          <input class="form-input" type="password" id="oa-edit-pw" placeholder="변경 시 입력 (6자 이상)">
+        </div>
+        <div class="form-group"><label class="form-label">연락처</label><input class="form-input" id="oa-edit-phone"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" style="margin-bottom:9px">📋 페이지 접근 권한</label>
+        <div id="oa-perm-edit"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline btn-sm" onclick="closeModal('modal-edit-oa')">취소</button>
+      <button class="btn btn-primary btn-sm" onclick="doEditOA()">💾 저장</button>
+    </div>
   </div>
 </div>
-
-<!-- ══ MODALS ══ -->
 
 <!-- Reset PW -->
 <div class="modal-backdrop hidden" id="modal-reset-pw">
@@ -731,15 +847,95 @@ body{background:#ECEAE4;min-height:100vh}
 
 <script type="module">
 import { DB } from './js/firebase-config.js';
-import { requireAdmin, fmtDate, toYoutubeEmbed, showToast } from './js/utils.js';
+import { requireAdmin, isSuper, hasPerm, adminOrg, fmtDate, toYoutubeEmbed, showToast } from './js/utils.js';
 
-requireAdmin();
+// ═══════════════════════════════════════════════════════════════
+// 인증 & 권한 세팅
+// ═══════════════════════════════════════════════════════════════
+const SESSION   = requireAdmin(); if (!SESSION) throw 0;
+const SUPER     = isSuper(SESSION);
+const ORG_FILTER = adminOrg(SESSION); // null=전체(super), 'XX'=자기 회사만
+
+// 권한 정의
+const ALL_PERMS = [
+  // ── 대시보드 ──
+  { key:'overview',    icon:'📊', label:'전체 현황',      group:'대시보드',   desc:'KPI 카드 · 등급별 현황 · 최근 수료자' },
+  // ── 수강생 관리 ──
+  { key:'pending',     icon:'⏳', label:'가입 승인',      group:'수강생 관리', desc:'신규 가입 승인·거절' },
+  { key:'learners',    icon:'👥', label:'수강생 목록',    group:'수강생 관리', desc:'자사 수강생 조회 · 정보 열람' },
+  { key:'learners_edit',icon:'✏️',label:'수강생 정보 수정',group:'수강생 관리', desc:'수강생 정보 편집 · 등급 변경' },
+  { key:'completions', icon:'🏆', label:'수료 현황',      group:'수강생 관리', desc:'수료자 목록 조회' },
+  // ── 통계 ──
+  { key:'stats',       icon:'📈', label:'통계 보고서',    group:'통계·증적', desc:'통계 페이지 접근 · CSV/PDF 출력' },
+];
+
+// 데이터 필터 (org admin은 자기 회사만)
+function filterByOrg(arr, orgField='org') {
+  if (!ORG_FILTER) return arr;
+  return arr.filter(item => (item[orgField] || '') === ORG_FILTER);
+}
+
+// ── UI 역할 초기화 ──────────────────────────────────────────
+function initRoleUI() {
+  const badgeEl = document.getElementById('hd-role-badge');
+  const nameEl  = document.getElementById('hd-user-name');
+
+  if (SUPER) {
+    badgeEl.innerHTML = '<span class="role-badge-super">⚡ 시스템 관리자</span>';
+  } else {
+    badgeEl.innerHTML = '<span class="role-badge-org">🏢 회사 관리자</span>';
+    nameEl.textContent = `${SESSION.name}  ·  ${SESSION.org}`;
+    // 수강생 화면 버튼 숨김
+    const lb = document.getElementById('hd-btn-learner');
+    if (lb) lb.style.display = 'none';
+
+    // 회사 배너
+    const banner = document.getElementById('org-banner');
+    if (banner) {
+      banner.style.display = '';
+      document.getElementById('org-banner-title').textContent =
+        `🏢 ${SESSION.org}  —  ${SESSION.name}님 (회사별 관리자 포털)`;
+      // 그룹별 권한 표시
+      const groups = {};
+      ALL_PERMS.forEach(p => { if (!groups[p.group]) groups[p.group]=[]; groups[p.group].push(p); });
+      const permHtml = Object.entries(groups).map(([grp, perms]) => {
+        const granted = perms.filter(p => hasPerm(SESSION, p.key));
+        if (!granted.length) return '';
+        return `<span style="margin-right:8px"><strong style="color:var(--kasg-gold)">${grp}:</strong> ${granted.map(p=>p.icon+' '+p.label).join(' · ')}</span>`;
+      }).filter(Boolean).join('');
+      document.getElementById('org-banner-perms').innerHTML =
+        permHtml || '<span style="color:rgba(255,255,255,.5)">⚠ 부여된 권한 없음 — 시스템 관리자에게 문의하세요</span>';
+    }
+  }
+
+  // ── 네비 메뉴 권한 제어 ──
+  document.querySelectorAll('.nav-item[data-super-only]').forEach(el => {
+    if (!SUPER) el.style.display = 'none';
+  });
+  document.querySelectorAll('.nav-item[data-perm]').forEach(el => {
+    const perm = el.dataset.perm;
+    if (!hasPerm(SESSION, perm)) {
+      el.classList.add('nav-locked');
+      el.removeAttribute('onclick');
+      el.addEventListener('click', () =>
+        showToast(`"${ALL_PERMS.find(p=>p.key===perm)?.label||perm}" 메뉴 접근 권한이 없습니다.`, 'warn'));
+    }
+  });
+  if (!SUPER) {
+    const sysLabel = document.getElementById('nav-sec-system');
+    if (sysLabel) sysLabel.style.display = 'none';
+  }
+
+  // ── learners_edit 권한 제어 (수강생 수정 버튼) ──
+  // 권한 없는 경우 동적 렌더링 시 체크
+  window._canEditLearner = SUPER || hasPerm(SESSION, 'learners_edit');
+}
 
 const GRADE_LABEL = { board:'이사회·임원', aml:'AML 담당자', general:'일반', research:'연구회' };
 const GRADE_COLOR = { board:'#C8960A', aml:'#1A3EA0', general:'#5A6070', research:'#C8302A' };
 const VALID_GRADES= new Set(['board','aml','general','research']);
 
-let allLearners=[], allCourses={}, allCompletions=[];
+let allLearners=[], allCourses={}, allCompletions=[], allOrgAdmins={};
 let assignTargetId='', resetTargetId='';
 let bulkGrades=new Set();
 let parsedRows=[];
@@ -783,31 +979,45 @@ window.go=function(el){
   document.getElementById('sec-'+el.dataset.sec).classList.add('active');
   const m={overview:'loadOverview',pending:'loadPending',learners:'loadLearners',
     assign:'loadAssign',completions:'loadCompletions',courses:'loadCourses',
-    'bulk-register':'loadBulkRegister','add-course':'initAddCourseForm'};
+    'bulk-register':'loadBulkRegister','add-course':'initAddCourseForm',
+    'org-admins':'loadOrgAdmins'};
   if(m[el.dataset.sec]) window[m[el.dataset.sec]]();
+};
+window.openStats=function(){
+  if(!hasPerm(SESSION,'stats')){showToast('통계 보고서 접근 권한이 없습니다.','warn');return;}
+  const url=ORG_FILTER?`stats.html?org=${encodeURIComponent(ORG_FILTER)}`:'stats.html';
+  window.open(url,'_blank');
 };
 window.adminLogout=()=>{sessionStorage.removeItem('kasg_admin');window.location.href='admin-login.html';};
 window.closeModal=id=>document.getElementById(id).classList.add('hidden');
 
 async function fetchAll(){
-  const[ld,cd,cmp]=await Promise.all([DB.get('learners'),DB.get('courses'),DB.get('completions')]);
+  const[ld,cd,cmp,oad]=await Promise.all([
+    DB.get('learners'),DB.get('courses'),DB.get('completions'),DB.get('orgAdmins')
+  ]);
   allLearners   =ld ?Object.entries(ld).map(([id,v])=>({...v,_id:id})):[];
   allCourses    =cd ||{};
   allCompletions=cmp?Object.values(cmp).sort((a,b)=>new Date(b.date)-new Date(a.date)):[];
+  allOrgAdmins  =oad||{};
 }
 
 // ── OVERVIEW ──
 window.loadOverview=async function(){
   await fetchAll();
-  const approved=allLearners.filter(l=>l.status!=='pending'&&l.status!=='rejected');
-  const pending =allLearners.filter(l=>l.status==='pending');
+  // 회사별 관리자는 자기 회사 데이터만
+  const baseL = filterByOrg(allLearners);
+  const baseC = ORG_FILTER ? allCompletions.filter(c=>c.org===ORG_FILTER) : allCompletions;
+
+  const approved=baseL.filter(l=>l.status!=='pending'&&l.status!=='rejected');
+  const pending =allLearners.filter(l=>l.status==='pending'); // pending은 전체(super가 처리)
   const done    =approved.filter(l=>l.completedStatus==='completed'||l.status==='completed');
   const rate    =approved.length?Math.round(done.length/approved.length*100):0;
-  document.getElementById('ov-total').textContent  =approved.length;
-  document.getElementById('ov-pending').textContent=pending.length;
-  document.getElementById('ov-done').textContent   =done.length;
-  document.getElementById('ov-rate').textContent   =rate+'%';
-  document.getElementById('pending-cnt').textContent=pending.length;
+
+  document.getElementById('ov-total').textContent   = approved.length;
+  document.getElementById('ov-pending').textContent = SUPER ? pending.length : '-';
+  document.getElementById('ov-done').textContent    = done.length;
+  document.getElementById('ov-rate').textContent    = rate+'%';
+  if(SUPER) document.getElementById('pending-cnt').textContent = pending.length;
 
   const grades=['board','aml','general','research'];
   document.getElementById('grade-stats').innerHTML=grades.map(g=>{
@@ -817,7 +1027,7 @@ window.loadOverview=async function(){
       <div class="stat-label">${gradePill(g)}<br><span style="font-size:10px;color:var(--text-light)">수료 ${d}명</span></div></div>`;
   }).join('');
 
-  document.getElementById('ov-recent').innerHTML=allCompletions.slice(0,6).map(c=>
+  document.getElementById('ov-recent').innerHTML=baseC.slice(0,6).map(c=>
     `<tr><td><strong>${c.name}</strong></td><td>${gradePill(c.grade||'general')}</td><td>${c.org||'-'}</td>
     <td style="max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${c.courseTitle||'-'}</td>
     <td><span class="badge badge-success">${c.score}점</span></td>
@@ -881,11 +1091,12 @@ function renderLearners(list){
       <td><span class="badge ${bCls}">${bLbl}</span></td>
       <td style="font-size:10px;color:var(--text-light)">${fmtDate(new Date(l.createdAt||Date.now()))}</td>
       <td><div style="display:flex;gap:3px;flex-wrap:wrap;justify-content:center">
-        <button class="tbl-btn tb-edit"   onclick="openEditLearner('${l._id}')">✏️ 정보·등급</button>
-        <button class="tbl-btn tb-assign" onclick="openAssign('${l._id}')">📋 배정</button>
-        <button class="tbl-btn tb-pw"     onclick="openResetPw('${l._id}','${l.name}')">🔑</button>
-        <button class="tbl-btn tb-reset"  onclick="resetProgress('${l._id}','${l.name}')">🔄</button>
-        <button class="tbl-btn tb-delete" onclick="deleteLearner('${l._id}','${l.name}')">🗑</button>
+        ${window._canEditLearner ? `<button class="tbl-btn tb-edit"   onclick="openEditLearner('${l._id}')">✏️ 정보·등급</button>` : ''}
+        ${SUPER ? `<button class="tbl-btn tb-assign" onclick="openAssign('${l._id}')">📋 배정</button>` : ''}
+        ${window._canEditLearner ? `<button class="tbl-btn tb-pw"     onclick="openResetPw('${l._id}','${l.name}')">🔑</button>` : ''}
+        ${SUPER ? `<button class="tbl-btn tb-reset"  onclick="resetProgress('${l._id}','${l.name}')">🔄</button>` : ''}
+        ${SUPER ? `<button class="tbl-btn tb-delete" onclick="deleteLearner('${l._id}','${l.name}')">🗑</button>` : ''}
+        ${!window._canEditLearner && !SUPER ? '<span style="font-size:11px;color:var(--text-light)">열람 전용</span>' : ''}
       </div></td></tr>`;
   }).join(''):'<tr class="empty-row"><td colspan="9">수강생 없음</td></tr>';
 }
@@ -1663,6 +1874,164 @@ window.clearCF=function(){
   renderNewQForm('cf');
   renderQBank('cf');
   updateExamCountWarn('cf');
+};
+
+// ── ORG ADMIN MANAGEMENT ──────────────────────────────────────
+function renderPermChecks(containerId, currentPerms=[]) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  // Group by group label
+  const groups = {};
+  ALL_PERMS.forEach(p => {
+    if (!groups[p.group]) groups[p.group] = [];
+    groups[p.group].push(p);
+  });
+  el.innerHTML = Object.entries(groups).map(([grp, perms]) => `
+    <div style="margin-bottom:10px">
+      <div style="font-size:10px;font-weight:700;color:var(--text-light);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px">${grp}</div>
+      <div class="perm-checks">
+        ${perms.map(p => `
+          <label class="perm-check-item" style="cursor:pointer;display:flex;align-items:flex-start;gap:7px;padding:7px 10px;border:1.5px solid var(--border);border-radius:var(--radius);transition:all .12s;background:${currentPerms.includes(p.key)?'rgba(12,31,63,.05)':'#fff'}">
+            <input type="checkbox" name="${containerId}-perm" value="${p.key}" ${currentPerms.includes(p.key)?'checked':''} style="width:14px;height:14px;accent-color:var(--navy);flex-shrink:0;margin-top:1px" onchange="this.closest('label').style.background=this.checked?'rgba(12,31,63,.05)':'#fff'">
+            <span>
+              <span class="perm-check-title">${p.icon} ${p.label}</span>
+              <span class="perm-check-desc">${p.desc}</span>
+            </span>
+          </label>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+function getCheckedPerms(containerId) {
+  return [...document.querySelectorAll(`input[name="${containerId}-perm"]:checked`)].map(el => el.value);
+}
+
+window.loadOrgAdmins = async function() {
+  const raw = await DB.get('orgAdmins');
+  allOrgAdmins = raw || {};
+  renderPermChecks('oa-perm-new', []);
+  renderOAList();
+};
+
+window.renderOAList = function() {
+  const q = (document.getElementById('oa-search')?.value || '').toLowerCase();
+  const tbody = document.getElementById('oa-tbody');
+  if (!tbody) return;
+  const entries = Object.entries(allOrgAdmins).filter(([k, a]) =>
+    !q || k.includes(q) || (a.name||'').toLowerCase().includes(q) || (a.org||'').toLowerCase().includes(q)
+  );
+  if (!entries.length) {
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--text-light);padding:24px">등록된 관리자 없음</td></tr>';
+    return;
+  }
+  tbody.innerHTML = entries.map(([key, a]) => {
+    const perms = (a.permissions || []);
+    const permHtml = perms.length
+      ? perms.map(pk => { const p=ALL_PERMS.find(x=>x.key===pk); return p ? `<span class="perm-pill">${p.icon} ${p.label}</span>` : ''; }).join('')
+      : '<span style="font-size:11px;color:var(--text-light)">없음</span>';
+    return `<tr>
+      <td style="font-weight:600;color:var(--navy);font-size:12px">${key}</td>
+      <td>${a.name||'-'}</td>
+      <td><span style="background:rgba(12,31,63,.08);padding:2px 9px;border-radius:8px;font-size:11.5px;font-weight:600">${a.org||'-'}</span></td>
+      <td style="font-size:11.5px;color:var(--text-mid)">${a.phone||'-'}</td>
+      <td style="max-width:240px;white-space:normal">${permHtml}</td>
+      <td>${a.disabled
+        ? '<span class="oa-status-off">🔴 비활성</span>'
+        : '<span class="oa-status-on">🟢 활성</span>'}</td>
+      <td style="font-size:11px;color:var(--text-light)">${a.createdAt ? fmtDate(new Date(a.createdAt)) : '-'}</td>
+      <td>
+        <div style="display:flex;gap:4px;flex-wrap:wrap">
+          <button class="tbl-btn tb-edit"    onclick="openEditOA('${key}')">✏️ 수정</button>
+          <button class="tbl-btn ${a.disabled?'tb-approve':'tb-reject'}" onclick="toggleOA('${key}',${!a.disabled})">${a.disabled?'✅ 활성화':'🔒 비활성'}</button>
+          <button class="tbl-btn tb-delete"  onclick="deleteOA('${key}','${a.name||key}')">🗑</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+};
+
+window.saveNewOA = async function() {
+  const rawId = document.getElementById('oa-id').value.trim();
+  const name  = document.getElementById('oa-name').value.trim();
+  const org   = document.getElementById('oa-org').value.trim();
+  const pw    = document.getElementById('oa-pw').value;
+  const phone = document.getElementById('oa-phone').value.trim();
+  if (!rawId) { alert('아이디 필수'); return; }
+  if (!name)  { alert('이름 필수'); return; }
+  if (!org)   { alert('소속 회사 필수'); return; }
+  if (!pw || pw.length < 6) { alert('비밀번호 6자 이상'); return; }
+  const key = rawId.replace(/[.#$[\]/\s]/g, '_');
+  if (allOrgAdmins[key]) { alert(`"${key}" 아이디가 이미 존재합니다.`); return; }
+  const permissions = getCheckedPerms('oa-perm-new');
+  await DB.set(`orgAdmins/${key}`, {
+    name, org, phone, password: pw,
+    permissions, disabled: false,
+    createdAt: new Date().toISOString()
+  });
+  showToast(`${name}님 관리자 계정 등록 완료`, 'success');
+  clearOAForm();
+  loadOrgAdmins();
+};
+
+window.clearOAForm = function() {
+  ['oa-id','oa-name','oa-org','oa-pw','oa-phone'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+  renderPermChecks('oa-perm-new', []);
+};
+
+window.openEditOA = function(key) {
+  const a = allOrgAdmins[key]; if (!a) return;
+  document.getElementById('oa-edit-key').value = key;
+  document.getElementById('oa-edit-id-label').textContent = key;
+  document.getElementById('oa-edit-name').value  = a.name  || '';
+  document.getElementById('oa-edit-org').value   = a.org   || '';
+  document.getElementById('oa-edit-pw').value    = '';
+  document.getElementById('oa-edit-phone').value = a.phone || '';
+  renderPermChecks('oa-perm-edit', a.permissions || []);
+  document.getElementById('modal-edit-oa').classList.remove('hidden');
+};
+
+window.doEditOA = async function() {
+  const key   = document.getElementById('oa-edit-key').value;
+  const name  = document.getElementById('oa-edit-name').value.trim();
+  const org   = document.getElementById('oa-edit-org').value.trim();
+  const pw    = document.getElementById('oa-edit-pw').value;
+  const phone = document.getElementById('oa-edit-phone').value.trim();
+  if (!name) { alert('이름 필수'); return; }
+  if (!org)  { alert('소속 회사 필수'); return; }
+  const permissions = getCheckedPerms('oa-perm-edit');
+  const upd = { name, org, phone, permissions };
+  if (pw) {
+    if (pw.length < 6) { alert('비밀번호 6자 이상'); return; }
+    upd.password = pw;
+  }
+  await DB.update(`orgAdmins/${key}`, upd);
+  showToast('수정 완료', 'success');
+  closeModal('modal-edit-oa');
+  // 현재 세션이 이 계정이면 permissions 업데이트
+  if (!SUPER && SESSION.id === key) {
+    const updated = { ...SESSION, permissions };
+    sessionStorage.setItem('kasg_admin', JSON.stringify(updated));
+  }
+  loadOrgAdmins();
+};
+
+window.toggleOA = async function(key, disable) {
+  const a = allOrgAdmins[key];
+  if (!a) return;
+  const msg = disable ? `"${a.name||key}"님을 비활성화합니까?` : `"${a.name||key}"님을 활성화합니까?`;
+  if (!confirm(msg)) return;
+  await DB.update(`orgAdmins/${key}`, { disabled: disable });
+  showToast(disable ? '비활성화 완료' : '활성화 완료', disable ? 'warn' : 'success');
+  loadOrgAdmins();
+};
+
+window.deleteOA = async function(key, name) {
+  if (!confirm(`"${name}" 관리자 계정을 삭제합니까?\n이 작업은 되돌릴 수 없습니다.`)) return;
+  await DB.remove(`orgAdmins/${key}`);
+  showToast('삭제 완료', 'warn');
+  loadOrgAdmins();
 };
 
 // ── SETTINGS ──
