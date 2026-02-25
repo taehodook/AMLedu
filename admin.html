@@ -5,40 +5,41 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>관리자 대시보드 — KASG LMS</title>
 <link rel="stylesheet" href="css/main.css">
+<!-- SheetJS for Excel parsing -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 body{background:#ECEAE4;min-height:100vh}
 .admin-layout{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 66px)}
 
-/* ── Nav ── */
+/* Nav */
 .admin-nav{background:var(--navy);position:sticky;top:66px;height:calc(100vh - 66px);overflow-y:auto;display:flex;flex-direction:column;flex-shrink:0}
-.nav-sec{padding:16px 16px 6px;font-size:9px;font-weight:600;color:rgba(255,255,255,.28);letter-spacing:1.5px;text-transform:uppercase}
-.nav-item{display:flex;align-items:center;gap:9px;padding:10px 16px;color:rgba(255,255,255,.6);font-size:12.5px;cursor:pointer;border-left:3px solid transparent;transition:all .14s}
+.nav-sec{padding:14px 14px 5px;font-size:9px;font-weight:600;color:rgba(255,255,255,.28);letter-spacing:1.5px;text-transform:uppercase}
+.nav-item{display:flex;align-items:center;gap:9px;padding:10px 14px;color:rgba(255,255,255,.6);font-size:12.5px;cursor:pointer;border-left:3px solid transparent;transition:all .14s}
 .nav-item:hover{background:rgba(255,255,255,.06);color:#fff}
 .nav-item.active{background:rgba(255,255,255,.09);color:#fff;border-left-color:var(--kasg-gold)}
 .nav-icon{width:16px;text-align:center;font-size:13px;flex-shrink:0}
-.nav-divider{height:1px;background:rgba(255,255,255,.07);margin:5px 0}
+.nav-divider{height:1px;background:rgba(255,255,255,.07);margin:4px 0}
 .nav-badge{min-width:17px;height:17px;border-radius:9px;background:var(--kasg-red);color:#fff;font-size:9.5px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;padding:0 4px;margin-left:auto}
 .nav-bottom{margin-top:auto;border-top:1px solid rgba(255,255,255,.07);padding:8px 0}
 
-/* ── Content ── */
-.admin-content{padding:24px;min-width:0;overflow-x:hidden}
+/* Content */
+.admin-content{padding:22px;min-width:0;overflow-x:hidden}
 .content-sec{display:none}
 .content-sec.active{display:block}
 
-/* ── Stats ── */
-.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+/* Stats grid */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
 @media(max-width:1200px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
 
-/* ── Tables ── */
-.tbl-toolbar{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
-.filter-input{padding:7px 12px;border:1.5px solid var(--border);border-radius:var(--radius);font-size:12.5px;color:var(--text);background:#fff;width:220px;outline:none}
+/* Tables */
+.tbl-toolbar{display:flex;align-items:center;gap:8px;margin-bottom:11px;flex-wrap:wrap}
+.filter-input{padding:7px 11px;border:1.5px solid var(--border);border-radius:var(--radius);font-size:12.5px;color:var(--text);background:#fff;width:200px;outline:none}
 .filter-input:focus{border-color:var(--navy)}
-.filter-select{padding:7px 28px 7px 10px;border:1.5px solid var(--border);border-radius:var(--radius);font-size:12.5px;background:#fff;outline:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%235A6070' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;cursor:pointer}
+.filter-select{padding:7px 26px 7px 10px;border:1.5px solid var(--border);border-radius:var(--radius);font-size:12.5px;background:#fff;outline:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%235A6070' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 7px center;cursor:pointer}
 .ml-auto{margin-left:auto}
 .tbl-wrap{background:#fff;border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-sm)}
-.tbl-wrap table{min-width:100%}
 
-/* Inline action btns */
+/* Action btns */
 .tbl-btn{padding:4px 9px;border-radius:3px;font-size:10.5px;font-weight:600;cursor:pointer;border:none;white-space:nowrap;transition:all .12s}
 .tb-approve{background:#D1FAE5;color:var(--success)}.tb-approve:hover{background:var(--success);color:#fff}
 .tb-reject {background:#FEE2E2;color:var(--error)}.tb-reject:hover{background:var(--error);color:#fff}
@@ -47,51 +48,80 @@ body{background:#ECEAE4;min-height:100vh}
 .tb-pw     {background:#DBEAFE;color:#1E40AF}.tb-pw:hover{background:#1E40AF;color:#fff}
 .tb-assign {background:#EDE9FF;color:#5B21B6}.tb-assign:hover{background:#5B21B6;color:#fff}
 .tb-edit   {background:#F0FFF4;color:var(--success)}.tb-edit:hover{background:var(--success);color:#fff}
+.tb-grade  {background:#FFF3DC;color:#8B4A00}.tb-grade:hover{background:#D97706;color:#fff}
 
 /* Course cards */
-.course-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.course-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:12px}
 .cc{background:#fff;border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-sm);border-left:4px solid var(--kasg-gold)}
 .cc-hd{padding:13px 15px}
 .cc-title{font-family:'Noto Serif KR',serif;font-size:13px;font-weight:700;color:var(--navy);margin-bottom:3px}
 .cc-meta{font-size:10.5px;color:var(--text-mid);line-height:1.5}
 .cc-url{font-size:10px;color:var(--kasg-blue);word-break:break-all;margin-top:3px;text-decoration:underline;cursor:pointer}
-.cc-ft{padding:9px 13px;background:var(--cream);border-top:1px solid var(--border);display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.cc-ft{padding:9px 12px;background:var(--cream);border-top:1px solid var(--border);display:flex;gap:5px;flex-wrap:wrap;align-items:center}
 
 /* YT preview */
-.yt-preview{margin-top:9px;border-radius:var(--radius);overflow:hidden;background:#000;aspect-ratio:16/9;display:none}
+.yt-preview{margin-top:8px;border-radius:var(--radius);overflow:hidden;background:#000;aspect-ratio:16/9;display:none}
 .yt-preview.show{display:block}
 .yt-preview iframe{width:100%;height:100%;border:none}
 
 /* Settings */
-.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media(max-width:900px){.settings-grid{grid-template-columns:1fr}}
-.sbox{background:#fff;border-radius:var(--radius-lg);padding:18px 20px;box-shadow:var(--shadow-sm)}
-.sbox-title{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:12px}
+.sbox{background:#fff;border-radius:var(--radius-lg);padding:17px 19px;box-shadow:var(--shadow-sm)}
+.sbox-t{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:11px}
 
 /* Grade pill */
-.gp{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:10px;font-size:10.5px;font-weight:600;white-space:nowrap}
+.gp{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:9px;font-size:10.5px;font-weight:600;white-space:nowrap}
 .gp-board   {background:rgba(200,150,10,.12);color:#8B6800;border:1px solid rgba(200,150,10,.25)}
 .gp-aml     {background:rgba(26,62,160,.1);color:#1A3EA0;border:1px solid rgba(26,62,160,.2)}
 .gp-general {background:#F1F0EC;color:#5A6070;border:1px solid var(--border)}
 .gp-research{background:rgba(200,48,42,.08);color:#8B1818;border:1px solid rgba(200,48,42,.15)}
 
-/* ── Assign Modal ── */
-.assign-modal .modal-box{width:640px}
-.course-check-list{display:flex;flex-direction:column;gap:6px;max-height:340px;overflow-y:auto;padding:2px}
-.course-check-item{display:flex;align-items:center;gap:10px;padding:10px 13px;border:1.5px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all .12s}
+/* Excel upload */
+.upload-zone{border:2px dashed var(--border);border-radius:var(--radius-lg);padding:32px;text-align:center;cursor:pointer;transition:all .18s;background:#FAFAF8;position:relative}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--navy);background:rgba(12,31,63,.04)}
+.upload-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.upload-icon{font-size:36px;margin-bottom:10px}
+.upload-title{font-size:14px;font-weight:600;color:var(--navy);margin-bottom:4px}
+.upload-sub{font-size:12px;color:var(--text-mid)}
+.excel-preview{margin-top:16px}
+.ep-table-wrap{overflow-x:auto;max-height:320px;overflow-y:auto;border:1px solid var(--border);border-radius:var(--radius);background:#fff}
+.ep-table{width:100%;border-collapse:collapse;font-size:12px}
+.ep-table th{padding:7px 10px;background:var(--navy);color:rgba(255,255,255,.8);font-weight:600;font-size:11px;white-space:nowrap;text-align:left;position:sticky;top:0}
+.ep-table td{padding:7px 10px;border-bottom:1px solid rgba(0,0,0,.05)}
+.ep-table tr.err td{background:#FEE2E2}
+.ep-table tr.ok td{background:#F0FFF4}
+.ep-status{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;padding:2px 7px;border-radius:8px}
+.ep-status.new{background:#D1FAE5;color:var(--success)}
+.ep-status.dup{background:#FEE2E2;color:var(--error)}
+.ep-status.upd{background:#FEF3C7;color:#7A4F00}
+.tmpl-guide{background:var(--cream);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin-top:12px}
+.tmpl-guide-t{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:7px}
+.tmpl-cols{display:flex;flex-wrap:wrap;gap:6px}
+.tmpl-col{padding:3px 9px;background:#fff;border:1px solid var(--border);border-radius:8px;font-size:11px;color:var(--text-mid)}
+.tmpl-col strong{color:var(--navy)}
+
+/* Assign modal */
+.assign-modal .modal-box{width:620px;max-width:95vw}
+.course-check-list{display:flex;flex-direction:column;gap:6px;max-height:320px;overflow-y:auto;padding:2px}
+.course-check-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all .12s}
 .course-check-item:hover{border-color:var(--navy);background:rgba(12,31,63,.02)}
 .course-check-item.checked{border-color:var(--navy);background:rgba(12,31,63,.04)}
-.course-check-item input[type=checkbox]{width:15px;height:15px;accent-color:var(--navy);cursor:pointer;flex-shrink:0}
-.cck-title{font-size:13px;font-weight:600;color:var(--navy)}
-.cck-meta{font-size:11px;color:var(--text-mid)}
-.assign-grade-bar{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}
-.agb-btn{padding:5px 13px;border-radius:14px;font-size:11.5px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:#fff;color:var(--text-mid);transition:all .12s}
+.course-check-item input{width:14px;height:14px;accent-color:var(--navy);cursor:pointer;flex-shrink:0}
+.cck-title{font-size:12.5px;font-weight:600;color:var(--navy)}
+.cck-meta{font-size:10.5px;color:var(--text-mid)}
+
+/* Bulk assign */
+.agb-btn{padding:5px 12px;border-radius:12px;font-size:11.5px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:#fff;color:var(--text-mid);transition:all .12s}
 .agb-btn:hover{border-color:var(--navy);color:var(--navy)}
 .agb-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}
 
-/* Edit learner modal */
-.edit-section{margin-bottom:16px}
-.edit-section-title{font-size:11px;font-weight:700;color:var(--text-mid);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid var(--border)}
+/* Stats link card */
+.stats-cta{background:linear-gradient(135deg,var(--navy),#1A3EA0);border-radius:var(--radius-lg);padding:18px 22px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:transform .18s;margin-bottom:16px}
+.stats-cta:hover{transform:translateY(-2px)}
+.stats-cta-left .t{font-family:'Noto Serif KR',serif;font-size:15px;font-weight:700;color:#fff}
+.stats-cta-left .s{font-size:12px;color:rgba(255,255,255,.5);margin-top:2px}
+.stats-cta-arr{font-size:22px;color:var(--kasg-gold)}
 </style>
 </head>
 <body>
@@ -99,29 +129,33 @@ body{background:#ECEAE4;min-height:100vh}
 <header class="site-header">
   <div class="header-brand">
     <img class="header-logo-img" src="assets/logo-wide.png" alt="KASG">
-    <span style="color:var(--kasg-red);font-size:10.5px;font-weight:700;letter-spacing:1px;background:rgba(200,48,42,.13);padding:2px 9px;border-radius:9px;margin-left:8px">ADMIN</span>
+    <span style="color:var(--kasg-red);font-size:10px;font-weight:700;letter-spacing:1px;background:rgba(200,48,42,.13);padding:2px 9px;border-radius:9px;margin-left:8px">ADMIN</span>
   </div>
   <div class="header-nav">
+    <button class="header-btn" onclick="window.open('stats.html','_blank')">📊 통계 현황</button>
     <button class="header-btn" onclick="window.open('index.html','_blank')">수강생 화면</button>
     <button class="header-btn" onclick="adminLogout()">로그아웃</button>
   </div>
 </header>
 
 <div class="admin-layout">
-  <!-- ── Sidebar ── -->
   <nav class="admin-nav">
     <div class="nav-sec">대시보드</div>
     <div class="nav-item active" data-sec="overview" onclick="go(this)"><span class="nav-icon">📊</span>전체 현황</div>
     <div class="nav-divider"></div>
     <div class="nav-sec">수강생 관리</div>
-    <div class="nav-item" data-sec="pending" onclick="go(this)"><span class="nav-icon">⏳</span>가입 승인 대기<span class="nav-badge" id="pending-cnt">0</span></div>
+    <div class="nav-item" data-sec="pending" onclick="go(this)"><span class="nav-icon">⏳</span>가입 승인<span class="nav-badge" id="pending-cnt">0</span></div>
     <div class="nav-item" data-sec="learners" onclick="go(this)"><span class="nav-icon">👥</span>수강생 목록</div>
-    <div class="nav-item" data-sec="assign" onclick="go(this)"><span class="nav-icon">📋</span>강의 배정 관리</div>
+    <div class="nav-item" data-sec="bulk-register" onclick="go(this)"><span class="nav-icon">📤</span>대량 등록</div>
+    <div class="nav-item" data-sec="assign" onclick="go(this)"><span class="nav-icon">📋</span>강의 배정</div>
     <div class="nav-item" data-sec="completions" onclick="go(this)"><span class="nav-icon">🏆</span>수료 현황</div>
     <div class="nav-divider"></div>
     <div class="nav-sec">강의 관리</div>
     <div class="nav-item" data-sec="courses" onclick="go(this)"><span class="nav-icon">🎬</span>강의 목록</div>
     <div class="nav-item" data-sec="add-course" onclick="go(this)"><span class="nav-icon">➕</span>강의 등록</div>
+    <div class="nav-divider"></div>
+    <div class="nav-sec">통계·증적</div>
+    <div class="nav-item" onclick="window.open('stats.html','_blank')"><span class="nav-icon">📈</span>통계 현황 보고서</div>
     <div class="nav-divider"></div>
     <div class="nav-sec">시스템</div>
     <div class="nav-item" data-sec="settings" onclick="go(this)"><span class="nav-icon">⚙️</span>설정</div>
@@ -130,48 +164,52 @@ body{background:#ECEAE4;min-height:100vh}
     </div>
   </nav>
 
-  <!-- ── Content ── -->
   <div class="admin-content">
 
     <!-- ══ OVERVIEW ══ -->
     <div class="content-sec active" id="sec-overview">
       <div class="section-title">📊 전체 현황</div>
+      <!-- Stats CTA -->
+      <div class="stats-cta" onclick="window.open('stats.html','_blank')">
+        <div class="stats-cta-left">
+          <div class="t">📊 교육 현황 통계 보고서</div>
+          <div class="s">기관별·등급별·부서별 통계 · 인쇄·PDF·CSV 다운로드</div>
+        </div>
+        <div class="stats-cta-arr">→</div>
+      </div>
       <div class="stats-grid">
         <div class="stat-card"><div class="stat-value" id="ov-total">0</div><div class="stat-label">전체 수강생</div></div>
         <div class="stat-card" style="border-left-color:#FCA311"><div class="stat-value" id="ov-pending">0</div><div class="stat-label">승인 대기</div></div>
         <div class="stat-card" style="border-left-color:var(--success)"><div class="stat-value" id="ov-done">0</div><div class="stat-label">수료 완료</div></div>
         <div class="stat-card" style="border-left-color:var(--kasg-blue)"><div class="stat-value" id="ov-rate">0%</div><div class="stat-label">수료율</div></div>
       </div>
-      <!-- Grade breakdown -->
-      <div class="card" style="margin-bottom:18px">
+      <div class="card" style="margin-bottom:16px">
         <div class="card-header"><span class="card-title">등급별 현황</span></div>
-        <div class="card-body" style="padding:16px">
-          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px" id="grade-stats"></div>
-        </div>
+        <div class="card-body" style="padding:14px"><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px" id="grade-stats"></div></div>
       </div>
       <div class="card">
         <div class="card-header"><span class="card-title">최근 수료자</span></div>
-        <div style="padding:0"><table class="data-table"><thead><tr><th>성명</th><th>등급</th><th>소속</th><th>강의명</th><th>점수</th><th>수료일</th></tr></thead><tbody id="ov-recent"></tbody></table></div>
+        <div><table class="data-table"><thead><tr><th>성명</th><th>등급</th><th>소속</th><th>강의명</th><th>점수</th><th>수료일</th></tr></thead><tbody id="ov-recent"></tbody></table></div>
       </div>
     </div>
 
     <!-- ══ PENDING ══ -->
     <div class="content-sec" id="sec-pending">
-      <div class="section-title">⏳ 가입 승인 대기</div>
-      <div class="alert alert-info" style="margin-bottom:14px;font-size:12.5px">승인 시 수강생이 로그인 가능해집니다. 승인 후 강의 배정을 진행하세요.</div>
-      <div class="tbl-wrap">
-        <table class="data-table">
-          <thead><tr><th>성명</th><th>아이디</th><th>소속</th><th>등급</th><th>연락처</th><th>신청일</th><th style="text-align:center">처리</th></tr></thead>
-          <tbody id="pending-tbody"></tbody>
-        </table>
+      <div class="section-title">⏳ 가입 승인</div>
+      <div class="alert alert-info" style="margin-bottom:12px;font-size:12.5px">
+        승인 시 수강생이 로그인 가능합니다. 승인 후 <strong>등급 지정 및 강의 배정</strong>을 진행하세요.
       </div>
+      <div class="tbl-wrap"><table class="data-table">
+        <thead><tr><th>성명</th><th>아이디</th><th>소속</th><th>부서</th><th>연락처</th><th>신청일</th><th style="text-align:center">처리</th></tr></thead>
+        <tbody id="pending-tbody"></tbody>
+      </table></div>
     </div>
 
     <!-- ══ LEARNERS ══ -->
     <div class="content-sec" id="sec-learners">
       <div class="section-title">👥 수강생 목록</div>
       <div class="tbl-toolbar">
-        <input class="filter-input" id="lf-search" placeholder="🔍 성명·아이디·소속 검색" oninput="filterLearners()">
+        <input class="filter-input" id="lf-search" placeholder="🔍 성명·아이디·소속" oninput="filterLearners()">
         <select class="filter-select" id="lf-grade" onchange="filterLearners()">
           <option value="">전체 등급</option>
           <option value="board">이사회·임원</option>
@@ -179,39 +217,90 @@ body{background:#ECEAE4;min-height:100vh}
           <option value="general">일반</option>
           <option value="research">연구회</option>
         </select>
+        <select class="filter-select" id="lf-org" onchange="filterLearners()"><option value="">전체 기관</option></select>
         <select class="filter-select" id="lf-status" onchange="filterLearners()">
           <option value="">전체 상태</option>
-          <option value="approved">승인됨</option>
-          <option value="in_progress">수강 중</option>
+          <option value="approved">미시작</option>
+          <option value="in_progress">수강중</option>
           <option value="completed">수료</option>
         </select>
-        <div class="ml-auto" style="display:flex;gap:7px">
+        <div class="ml-auto" style="display:flex;gap:6px">
           <button class="btn btn-sm btn-outline" onclick="exportLearners()">📥 CSV</button>
         </div>
       </div>
       <div class="tbl-wrap" style="overflow-x:auto">
-        <table class="data-table" style="min-width:900px">
-          <thead><tr><th>성명</th><th>등급</th><th>소속·부서</th><th>배정강의</th><th>진도</th><th>점수</th><th>상태</th><th>등록일</th><th style="text-align:center">관리</th></tr></thead>
+        <table class="data-table" style="min-width:960px">
+          <thead><tr><th>성명</th><th>등급</th><th>소속·부서</th><th>배정강의</th><th>진도</th><th>점수</th><th>상태</th><th>등록일</th><th style="text-align:center;min-width:200px">관리</th></tr></thead>
           <tbody id="learners-tbody"></tbody>
         </table>
+      </div>
+    </div>
+
+    <!-- ══ BULK REGISTER ══ -->
+    <div class="content-sec" id="sec-bulk-register">
+      <div class="section-title">📤 대량 등록 (엑셀 업로드)</div>
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-header">
+          <span class="card-title">엑셀 파일 업로드</span>
+          <button class="btn btn-sm btn-outline" onclick="downloadTemplate()">📥 양식 다운로드</button>
+        </div>
+        <div class="card-body">
+          <div class="tmpl-guide">
+            <div class="tmpl-guide-t">📋 엑셀 양식 컬럼 안내</div>
+            <div class="tmpl-cols">
+              <div class="tmpl-col"><strong>아이디*</strong> 로그인 ID</div>
+              <div class="tmpl-col"><strong>성명*</strong> 실명</div>
+              <div class="tmpl-col"><strong>소속*</strong> 회사·기관명</div>
+              <div class="tmpl-col">부서</div>
+              <div class="tmpl-col">연락처</div>
+              <div class="tmpl-col"><strong>등급*</strong> board/aml/general/research</div>
+              <div class="tmpl-col"><strong>비밀번호*</strong> 초기 비밀번호</div>
+            </div>
+            <div style="margin-top:8px;font-size:11px;color:var(--text-light)">
+              * 표시 항목 필수 · 등급: board(이사회·임원) / aml(AML담당자) / general(일반) / research(연구회)
+            </div>
+          </div>
+
+          <div class="upload-zone" id="upload-zone" style="margin-top:16px">
+            <input type="file" id="excel-file" accept=".xlsx,.xls,.csv" onchange="parseExcel(this.files[0])">
+            <div class="upload-icon">📂</div>
+            <div class="upload-title">엑셀 파일을 클릭하거나 드래그하여 업로드</div>
+            <div class="upload-sub">.xlsx · .xls · .csv 지원 · 최대 1,000행</div>
+          </div>
+
+          <div class="excel-preview" id="excel-preview" style="display:none">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+              <div style="font-size:13px;font-weight:600;color:var(--navy)" id="preview-summary"></div>
+              <div style="display:flex;gap:7px">
+                <button class="btn btn-outline btn-sm" onclick="clearExcel()">✕ 초기화</button>
+                <button class="btn btn-gold" id="upload-btn" onclick="doUpload()">📤 등록 실행</button>
+              </div>
+            </div>
+            <div class="ep-table-wrap">
+              <table class="ep-table"><thead><tr><th>#</th><th>아이디</th><th>성명</th><th>소속</th><th>부서</th><th>연락처</th><th>등급</th><th>비밀번호</th><th>상태</th></tr></thead>
+              <tbody id="ep-tbody"></tbody></table>
+            </div>
+          </div>
+
+          <div id="upload-result" style="margin-top:12px"></div>
+        </div>
       </div>
     </div>
 
     <!-- ══ ASSIGN ══ -->
     <div class="content-sec" id="sec-assign">
       <div class="section-title">📋 강의 배정 관리</div>
-      <div class="alert alert-info" style="margin-bottom:16px;font-size:12.5px">
-        수강생의 등급·소속에 따라 강의를 개별 또는 일괄 배정하세요.
+      <div class="alert alert-info" style="margin-bottom:14px;font-size:12.5px">
+        수강생 등급·소속별로 강의를 개별 또는 일괄 배정하세요.
       </div>
-
-      <!-- Bulk assign by grade -->
-      <div class="card" style="margin-bottom:18px">
+      <!-- Bulk by grade -->
+      <div class="card" style="margin-bottom:16px">
         <div class="card-header"><span class="card-title">🎯 등급별 일괄 배정</span></div>
         <div class="card-body">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start">
             <div>
-              <div class="form-label" style="margin-bottom:8px">대상 등급 선택</div>
-              <div style="display:flex;gap:7px;flex-wrap:wrap" id="bulk-grade-btns">
+              <div class="form-label" style="margin-bottom:7px">대상 등급</div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap">
                 <button class="agb-btn" data-grade="board"    onclick="toggleBulkGrade(this)">🏛 이사회·임원</button>
                 <button class="agb-btn" data-grade="aml"      onclick="toggleBulkGrade(this)">🔍 AML 담당자</button>
                 <button class="agb-btn" data-grade="general"  onclick="toggleBulkGrade(this)">👤 일반</button>
@@ -219,20 +308,19 @@ body{background:#ECEAE4;min-height:100vh}
               </div>
             </div>
             <div>
-              <div class="form-label" style="margin-bottom:8px">배정할 강의</div>
-              <div id="bulk-course-checks" style="display:flex;flex-direction:column;gap:5px;max-height:160px;overflow-y:auto"></div>
+              <div class="form-label" style="margin-bottom:7px">배정할 강의</div>
+              <div id="bulk-course-checks" style="display:flex;flex-direction:column;gap:5px;max-height:150px;overflow-y:auto"></div>
             </div>
           </div>
-          <div style="margin-top:14px;display:flex;justify-content:flex-end;gap:8px">
+          <div style="margin-top:12px;display:flex;justify-content:flex-end;gap:7px">
             <button class="btn btn-outline btn-sm" onclick="previewBulk()">대상 미리보기</button>
             <button class="btn btn-primary" onclick="doBulkAssign()">일괄 배정 적용</button>
           </div>
-          <div id="bulk-preview" style="margin-top:12px;display:none"></div>
+          <div id="bulk-preview" style="margin-top:10px;display:none"></div>
         </div>
       </div>
-
-      <!-- Individual assign table -->
-      <div class="section-title" style="font-size:15px;margin-top:0">개별 수강생 배정 현황</div>
+      <!-- Individual table -->
+      <div class="section-title" style="font-size:14px;margin-top:0">개별 배정 현황</div>
       <div class="tbl-toolbar">
         <input class="filter-input" id="af-search" placeholder="🔍 성명·소속 검색" oninput="filterAssign()">
         <select class="filter-select" id="af-grade" onchange="filterAssign()">
@@ -244,8 +332,8 @@ body{background:#ECEAE4;min-height:100vh}
         </select>
       </div>
       <div class="tbl-wrap" style="overflow-x:auto">
-        <table class="data-table" style="min-width:760px">
-          <thead><tr><th>성명</th><th>등급</th><th>소속</th><th>배정된 강의</th><th style="text-align:center">배정 수정</th></tr></thead>
+        <table class="data-table" style="min-width:700px">
+          <thead><tr><th>성명</th><th>등급</th><th>소속</th><th>배정된 강의</th><th style="text-align:center">수정</th></tr></thead>
           <tbody id="assign-tbody"></tbody>
         </table>
       </div>
@@ -258,12 +346,10 @@ body{background:#ECEAE4;min-height:100vh}
         <input class="filter-input" id="cf-search" placeholder="🔍 성명·발급번호" oninput="filterCompletions()">
         <div class="ml-auto"><button class="btn btn-sm btn-outline" onclick="exportCompletions()">📥 CSV</button></div>
       </div>
-      <div class="tbl-wrap">
-        <table class="data-table">
-          <thead><tr><th>발급번호</th><th>성명</th><th>등급</th><th>소속</th><th>강의명</th><th>점수</th><th>수료일</th></tr></thead>
-          <tbody id="completions-tbody"></tbody>
-        </table>
-      </div>
+      <div class="tbl-wrap"><table class="data-table">
+        <thead><tr><th>발급번호</th><th>성명</th><th>등급</th><th>소속</th><th>강의명</th><th>점수</th><th>수료일</th></tr></thead>
+        <tbody id="completions-tbody"></tbody>
+      </table></div>
     </div>
 
     <!-- ══ COURSES ══ -->
@@ -278,26 +364,22 @@ body{background:#ECEAE4;min-height:100vh}
       <div class="card">
         <div class="card-header"><span class="card-title">새 강의 등록 (YouTube URL)</span></div>
         <div class="card-body">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
             <div class="form-group"><label class="form-label">강의명 *</label><input class="form-input" id="cf-title" placeholder="예: AML 실무자 교육 2025"></div>
-            <div class="form-group"><label class="form-label">교육 시간(시간) *</label><input class="form-input" id="cf-duration" type="number" value="2" min="1" max="20"></div>
+            <div class="form-group"><label class="form-label">교육 시간(시간)</label><input class="form-input" id="cf-duration" type="number" value="2" min="1" max="20"></div>
           </div>
           <div class="form-group"><label class="form-label">교육목적 *</label><input class="form-input" id="cf-purpose" placeholder="예: 자금세탁방지 실무 이해 및 역량 강화"></div>
           <div class="form-group">
             <label class="form-label">YouTube URL *</label>
             <input class="form-input" id="cf-yturl" placeholder="https://www.youtube.com/watch?v=..." oninput="previewYT()">
-            <div class="form-hint">유튜브 영상 URL 붙여넣기 → 자동 변환</div>
           </div>
           <div class="yt-preview" id="yt-preview"><iframe id="yt-preview-frame" allowfullscreen></iframe></div>
           <div id="add-course-msg" style="margin-top:10px"></div>
-          <div style="margin-top:16px;display:flex;gap:9px;justify-content:flex-end">
+          <div style="margin-top:14px;display:flex;gap:8px;justify-content:flex-end">
             <button class="btn btn-outline btn-sm" onclick="clearCF()">초기화</button>
-            <button class="btn btn-gold" onclick="saveCourse()">강의 등록하기</button>
+            <button class="btn btn-gold" onclick="saveCourse()">강의 등록</button>
           </div>
         </div>
-      </div>
-      <div class="alert alert-info" style="margin-top:14px;font-size:12px">
-        💡 YouTube 영상은 <strong>일부 공개(링크 공유)</strong> 또는 <strong>공개</strong>로 설정해야 재생됩니다.
       </div>
     </div>
 
@@ -306,29 +388,28 @@ body{background:#ECEAE4;min-height:100vh}
       <div class="section-title">⚙️ 시스템 설정</div>
       <div class="settings-grid">
         <div class="sbox">
-          <div class="sbox-title">🔐 관리자 비밀번호 변경</div>
+          <div class="sbox-t">🔐 관리자 비밀번호 변경</div>
           <div class="form-group"><label class="form-label">새 비밀번호</label><input class="form-input" type="password" id="new-pw" placeholder="8자 이상"></div>
           <div class="form-group"><label class="form-label">비밀번호 확인</label><input class="form-input" type="password" id="confirm-pw"></div>
-          <button class="btn btn-primary btn-sm" onclick="changeAdminPw()">변경 적용</button>
+          <button class="btn btn-primary btn-sm" onclick="changeAdminPw()">변경</button>
         </div>
         <div class="sbox">
-          <div class="sbox-title">📋 수료 기준</div>
+          <div class="sbox-t">📋 수료 기준</div>
           <div class="form-group"><label class="form-label">최소 수료 점수 (%)</label><input class="form-input" type="number" id="pass-score" value="70" min="50" max="100"></div>
           <div class="form-group"><label class="form-label">최대 재시험 횟수</label><input class="form-input" type="number" id="max-attempts" value="2" min="1" max="5"></div>
           <button class="btn btn-primary btn-sm" onclick="saveSettings()">저장</button>
         </div>
         <div class="sbox" style="grid-column:1/-1">
-          <div class="sbox-title">🔗 Firebase 설정 안내</div>
+          <div class="sbox-t">🔗 Firebase 설정</div>
           <div class="alert alert-warn" style="margin:0;font-size:12px">
-            <strong>필수:</strong> <code>js/firebase-config.js</code> 에서 <code>apiKey</code>, <code>messagingSenderId</code>, <code>appId</code>를 교체하세요.<br>
-            Firebase Console → 프로젝트 aml-2-5e6d5 → 프로젝트 설정 → 웹 앱에서 확인 가능합니다.
+            <strong>필수:</strong> <code>js/firebase-config.js</code>에서 <code>apiKey</code>, <code>messagingSenderId</code>, <code>appId</code>를 교체하세요.
           </div>
         </div>
       </div>
     </div>
 
-  </div><!-- /admin-content -->
-</div><!-- /admin-layout -->
+  </div>
+</div>
 
 <!-- ══ MODALS ══ -->
 
@@ -342,40 +423,37 @@ body{background:#ECEAE4;min-height:100vh}
     </div>
     <div class="modal-footer">
       <button class="btn btn-outline btn-sm" onclick="closeModal('modal-reset-pw')">취소</button>
-      <button class="btn btn-warn btn-sm" onclick="doResetPw()">초기화 적용</button>
+      <button class="btn btn-warn btn-sm" onclick="doResetPw()">적용</button>
     </div>
   </div>
 </div>
 
-<!-- Edit Learner (grade/info) -->
+<!-- Edit Learner -->
 <div class="modal-backdrop hidden" id="modal-edit-learner">
   <div class="modal-box">
-    <div class="modal-header"><span class="modal-title">✏️ 수강생 정보 수정</span><button class="modal-close" onclick="closeModal('modal-edit-learner')">✕</button></div>
+    <div class="modal-header"><span class="modal-title">✏️ 수강생 정보·등급 수정</span><button class="modal-close" onclick="closeModal('modal-edit-learner')">✕</button></div>
     <div class="modal-body">
       <input type="hidden" id="el-id">
-      <div class="edit-section">
-        <div class="edit-section-title">기본 정보</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-          <div class="form-group"><label class="form-label">성명</label><input class="form-input" id="el-name"></div>
-          <div class="form-group"><label class="form-label">소속</label><input class="form-input" id="el-org"></div>
-          <div class="form-group"><label class="form-label">부서</label><input class="form-input" id="el-dept"></div>
-          <div class="form-group"><label class="form-label">연락처</label><input class="form-input" id="el-phone"></div>
-        </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+        <div class="form-group"><label class="form-label">성명</label><input class="form-input" id="el-name"></div>
+        <div class="form-group"><label class="form-label">소속</label><input class="form-input" id="el-org"></div>
+        <div class="form-group"><label class="form-label">부서</label><input class="form-input" id="el-dept"></div>
+        <div class="form-group"><label class="form-label">연락처</label><input class="form-input" id="el-phone"></div>
       </div>
-      <div class="edit-section">
-        <div class="edit-section-title">수강생 등급</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" id="el-grade-grid">
+      <div class="form-group">
+        <label class="form-label">수강생 등급 <span style="font-size:10px;color:var(--kasg-red);font-weight:600">(관리자 지정)</span></label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:6px" id="el-grade-grid">
           <label style="display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--radius);cursor:pointer;font-size:12.5px">
-            <input type="radio" name="el-grade" value="board"> 🏛 이사회·임원
+            <input type="radio" name="el-grade" value="board" style="accent-color:var(--navy)"> 🏛 이사회·임원
           </label>
           <label style="display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--radius);cursor:pointer;font-size:12.5px">
-            <input type="radio" name="el-grade" value="aml"> 🔍 AML 담당자
+            <input type="radio" name="el-grade" value="aml" style="accent-color:var(--navy)"> 🔍 AML 담당자
           </label>
           <label style="display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--radius);cursor:pointer;font-size:12.5px">
-            <input type="radio" name="el-grade" value="general"> 👤 일반
+            <input type="radio" name="el-grade" value="general" style="accent-color:var(--navy)"> 👤 일반
           </label>
           <label style="display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--radius);cursor:pointer;font-size:12.5px">
-            <input type="radio" name="el-grade" value="research"> 🎓 연구회
+            <input type="radio" name="el-grade" value="research" style="accent-color:var(--navy)"> 🎓 연구회
           </label>
         </div>
       </div>
@@ -387,20 +465,19 @@ body{background:#ECEAE4;min-height:100vh}
   </div>
 </div>
 
-<!-- Assign Courses to Individual -->
+<!-- Assign Courses -->
 <div class="modal-backdrop hidden assign-modal" id="modal-assign">
   <div class="modal-box">
     <div class="modal-header"><span class="modal-title">📋 강의 배정 — <span id="assign-name"></span></span><button class="modal-close" onclick="closeModal('modal-assign')">✕</button></div>
     <div class="modal-body">
-      <div style="margin-bottom:12px">
-        <div style="font-size:12px;color:var(--text-mid);margin-bottom:4px">수강생 등급: <strong id="assign-grade-lbl"></strong></div>
-        <div style="font-size:12px;color:var(--text-mid)">체크된 강의가 수강생에게 배정됩니다.</div>
+      <div style="margin-bottom:11px;font-size:12px;color:var(--text-mid)">
+        등급: <strong id="assign-grade-lbl"></strong> · 체크된 강의가 수강생에게 배정됩니다.
       </div>
       <div class="course-check-list" id="assign-course-list"></div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-outline btn-sm" onclick="closeModal('modal-assign')">취소</button>
-      <button class="btn btn-primary" onclick="doAssign()">배정 저장</button>
+      <button class="btn btn-primary" onclick="doAssign()">저장</button>
     </div>
   </div>
 </div>
@@ -414,11 +491,11 @@ body{background:#ECEAE4;min-height:100vh}
       <div class="form-group"><label class="form-label">강의명</label><input class="form-input" id="ec-title"></div>
       <div class="form-group"><label class="form-label">교육목적</label><input class="form-input" id="ec-purpose"></div>
       <div class="form-group"><label class="form-label">교육 시간(시간)</label><input class="form-input" type="number" id="ec-duration" min="1" max="20"></div>
-      <div class="form-group"><label class="form-label">YouTube URL</label><input class="form-input" id="ec-yturl" placeholder="https://www.youtube.com/watch?v=..."></div>
+      <div class="form-group"><label class="form-label">YouTube URL</label><input class="form-input" id="ec-yturl"></div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-outline btn-sm" onclick="closeModal('modal-edit-course')">취소</button>
-      <button class="btn btn-primary btn-sm" onclick="doEditCourse()">수정 저장</button>
+      <button class="btn btn-primary btn-sm" onclick="doEditCourse()">저장</button>
     </div>
   </div>
 </div>
@@ -427,476 +504,456 @@ body{background:#ECEAE4;min-height:100vh}
 
 <script type="module">
 import { DB } from './js/firebase-config.js';
-import { requireAdmin, fmtDate, toYoutubeEmbed } from './js/utils.js';
-import { showToast } from './js/utils.js';
+import { requireAdmin, fmtDate, toYoutubeEmbed, showToast } from './js/utils.js';
 
 requireAdmin();
 
-// ── State ──────────────────────────────────────
-let allLearners   = [];
-let allCourses    = {};
-let allCompletions= [];
-let assignTargetId= '';
-let resetTargetId = '';
-let bulkGrades    = new Set();
-
 const GRADE_LABEL = { board:'이사회·임원', aml:'AML 담당자', general:'일반', research:'연구회' };
-const GRADE_ICON  = { board:'🏛', aml:'🔍', general:'👤', research:'🎓' };
-const GRADE_CLS   = { board:'gp-board', aml:'gp-aml', general:'gp-general', research:'gp-research' };
+const GRADE_COLOR = { board:'#C8960A', aml:'#1A3EA0', general:'#5A6070', research:'#C8302A' };
+const VALID_GRADES= new Set(['board','aml','general','research']);
 
-function gradePill(g) {
-  const lbl=GRADE_LABEL[g]||g, icon=GRADE_ICON[g]||'👤', cls=GRADE_CLS[g]||'gp-general';
-  return `<span class="gp ${cls}">${icon} ${lbl}</span>`;
+let allLearners=[], allCourses={}, allCompletions=[];
+let assignTargetId='', resetTargetId='';
+let bulkGrades=new Set();
+let parsedRows=[];
+
+function gradePill(g){
+  const cls={board:'gp-board',aml:'gp-aml',general:'gp-general',research:'gp-research'}[g]||'gp-general';
+  const icon={board:'🏛',aml:'🔍',general:'👤',research:'🎓'}[g]||'👤';
+  return `<span class="gp ${cls}">${icon} ${GRADE_LABEL[g]||g}</span>`;
 }
 
-// ── Navigation ─────────────────────────────────
-window.go = function(el) {
+// ── Navigation ──
+window.go=function(el){
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.querySelectorAll('.content-sec').forEach(s=>s.classList.remove('active'));
   el.classList.add('active');
   document.getElementById('sec-'+el.dataset.sec).classList.add('active');
-  const loaders = {
-    overview:'loadOverview', pending:'loadPending', learners:'loadLearners',
-    assign:'loadAssign', completions:'loadCompletions', courses:'loadCourses'
-  };
-  if (loaders[el.dataset.sec]) window[loaders[el.dataset.sec]]();
+  const m={overview:'loadOverview',pending:'loadPending',learners:'loadLearners',
+    assign:'loadAssign',completions:'loadCompletions',courses:'loadCourses','bulk-register':'loadBulkRegister'};
+  if(m[el.dataset.sec]) window[m[el.dataset.sec]]();
 };
+window.adminLogout=()=>{sessionStorage.removeItem('kasg_admin');window.location.href='admin-login.html';};
+window.closeModal=id=>document.getElementById(id).classList.add('hidden');
 
-window.adminLogout = ()=>{ sessionStorage.removeItem('kasg_admin'); window.location.href='admin-login.html'; };
-window.closeModal  = id=>document.getElementById(id).classList.add('hidden');
-
-// ── Data loaders ───────────────────────────────
-async function fetchAll() {
-  const [ld,cd,cmp] = await Promise.all([DB.get('learners'), DB.get('courses'), DB.get('completions')]);
-  allLearners    = ld  ? Object.entries(ld).map(([id,v])=>({...v,_id:id})) : [];
-  allCourses     = cd  || {};
-  allCompletions = cmp ? Object.values(cmp).sort((a,b)=>new Date(b.date)-new Date(a.date)) : [];
+async function fetchAll(){
+  const[ld,cd,cmp]=await Promise.all([DB.get('learners'),DB.get('courses'),DB.get('completions')]);
+  allLearners   =ld ?Object.entries(ld).map(([id,v])=>({...v,_id:id})):[];
+  allCourses    =cd ||{};
+  allCompletions=cmp?Object.values(cmp).sort((a,b)=>new Date(b.date)-new Date(a.date)):[];
 }
 
-// ── OVERVIEW ──────────────────────────────────
-window.loadOverview = async function() {
+// ── OVERVIEW ──
+window.loadOverview=async function(){
   await fetchAll();
-  const approved  = allLearners.filter(l=>l.status!=='pending'&&l.status!=='rejected');
-  const pending   = allLearners.filter(l=>l.status==='pending');
-  const done      = approved.filter(l=>l.completedStatus==='completed'||l.status==='completed');
-  const rate      = approved.length ? Math.round(done.length/approved.length*100) : 0;
+  const approved=allLearners.filter(l=>l.status!=='pending'&&l.status!=='rejected');
+  const pending =allLearners.filter(l=>l.status==='pending');
+  const done    =approved.filter(l=>l.completedStatus==='completed'||l.status==='completed');
+  const rate    =approved.length?Math.round(done.length/approved.length*100):0;
+  document.getElementById('ov-total').textContent  =approved.length;
+  document.getElementById('ov-pending').textContent=pending.length;
+  document.getElementById('ov-done').textContent   =done.length;
+  document.getElementById('ov-rate').textContent   =rate+'%';
+  document.getElementById('pending-cnt').textContent=pending.length;
 
-  document.getElementById('ov-total').textContent   = approved.length;
-  document.getElementById('ov-pending').textContent = pending.length;
-  document.getElementById('ov-done').textContent    = done.length;
-  document.getElementById('ov-rate').textContent    = rate+'%';
-  document.getElementById('pending-cnt').textContent= pending.length;
-
-  // Grade stats
-  const gradeStats = document.getElementById('grade-stats');
-  const grades = ['board','aml','general','research'];
-  gradeStats.innerHTML = grades.map(g => {
-    const members = approved.filter(l=>l.grade===g);
-    const gDone   = members.filter(l=>l.completedStatus==='completed'||l.status==='completed').length;
-    return `<div class="stat-card" style="border-left-color:var(--kasg-gold)">
-      <div class="stat-value" style="font-size:26px">${members.length}</div>
-      <div class="stat-label">${gradePill(g)}<br><span style="font-size:10px;color:var(--text-light)">수료 ${gDone}명</span></div>
-    </div>`;
+  const grades=['board','aml','general','research'];
+  document.getElementById('grade-stats').innerHTML=grades.map(g=>{
+    const m=approved.filter(l=>l.grade===g);
+    const d=m.filter(l=>l.completedStatus==='completed'||l.status==='completed').length;
+    return `<div class="stat-card" style="border-left-color:${GRADE_COLOR[g]}"><div class="stat-value" style="font-size:26px">${m.length}</div>
+      <div class="stat-label">${gradePill(g)}<br><span style="font-size:10px;color:var(--text-light)">수료 ${d}명</span></div></div>`;
   }).join('');
 
-  // Recent completions
-  document.getElementById('ov-recent').innerHTML = allCompletions.slice(0,6).map(c=>
-    `<tr>
-      <td><strong>${c.name}</strong></td>
-      <td>${gradePill(c.grade||'general')}</td>
-      <td>${c.org||'-'}</td>
-      <td style="max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${c.courseTitle||'-'}</td>
-      <td><span class="badge badge-success">${c.score}점</span></td>
-      <td style="font-size:10.5px;color:var(--text-light)">${fmtDate(new Date(c.date))}</td>
-    </tr>`
-  ).join('') || '<tr class="empty-row"><td colspan="6">수료자 없음</td></tr>';
+  document.getElementById('ov-recent').innerHTML=allCompletions.slice(0,6).map(c=>
+    `<tr><td><strong>${c.name}</strong></td><td>${gradePill(c.grade||'general')}</td><td>${c.org||'-'}</td>
+    <td style="max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${c.courseTitle||'-'}</td>
+    <td><span class="badge badge-success">${c.score}점</span></td>
+    <td style="font-size:10.5px;color:var(--text-light)">${fmtDate(new Date(c.date))}</td></tr>`
+  ).join('')||'<tr class="empty-row"><td colspan="6">수료자 없음</td></tr>';
 };
 
-// ── PENDING ───────────────────────────────────
-window.loadPending = async function() {
+// ── PENDING ──
+window.loadPending=async function(){
   await fetchAll();
-  const pending = allLearners.filter(l=>l.status==='pending');
-  document.getElementById('pending-cnt').textContent = pending.length;
-  document.getElementById('pending-tbody').innerHTML = pending.length
-    ? pending.map(l=>`<tr>
-        <td><strong>${l.name}</strong></td>
-        <td style="font-family:'DM Mono',monospace;font-size:10.5px;color:var(--text-mid)">${l._id}</td>
-        <td>${l.org}${l.dept?'<br><span style="font-size:10px;color:var(--text-light)">'+l.dept+'</span>':''}</td>
-        <td>${gradePill(l.grade||'general')}</td>
-        <td>${l.phone||'-'}</td>
-        <td style="font-size:10.5px;color:var(--text-light)">${fmtDate(new Date(l.createdAt||Date.now()))}</td>
-        <td style="text-align:center">
-          <div style="display:flex;gap:5px;justify-content:center">
-            <button class="tbl-btn tb-approve" onclick="approveLearner('${l._id}','${l.name}')">✅ 승인</button>
-            <button class="tbl-btn tb-reject"  onclick="rejectLearner('${l._id}','${l.name}')">❌ 거절</button>
-          </div>
-        </td>
-      </tr>`).join('')
-    : '<tr class="empty-row"><td colspan="7">승인 대기 없음</td></tr>';
+  const pending=allLearners.filter(l=>l.status==='pending');
+  document.getElementById('pending-cnt').textContent=pending.length;
+  document.getElementById('pending-tbody').innerHTML=pending.length
+    ?pending.map(l=>`<tr>
+      <td><strong>${l.name}</strong></td>
+      <td style="font-family:'DM Mono',monospace;font-size:10.5px">${l._id}</td>
+      <td>${l.org||'-'}</td><td>${l.dept||'-'}</td><td>${l.phone||'-'}</td>
+      <td style="font-size:10.5px;color:var(--text-light)">${fmtDate(new Date(l.createdAt||Date.now()))}</td>
+      <td style="text-align:center"><div style="display:flex;gap:5px;justify-content:center">
+        <button class="tbl-btn tb-approve" onclick="approveLearner('${l._id}','${l.name}')">✅ 승인</button>
+        <button class="tbl-btn tb-reject"  onclick="rejectLearner('${l._id}','${l.name}')">❌ 거절</button>
+      </div></td></tr>`)
+    .join(''):'<tr class="empty-row"><td colspan="7">승인 대기 없음</td></tr>';
 };
-
-window.approveLearner = async function(id,name) {
-  if (!confirm(`${name}님을 승인하시겠습니까?`)) return;
+window.approveLearner=async function(id,name){
+  if(!confirm(`${name}님을 승인하시겠습니까?`))return;
   await DB.update(`learners/${id}`,{status:'approved',approved:true,approvedAt:new Date().toISOString()});
-  showToast(`${name}님이 승인되었습니다.`,'success');
-  loadPending(); loadOverview();
+  showToast(`${name}님 승인 완료`,'success');loadPending();loadOverview();
 };
-window.rejectLearner = async function(id,name) {
-  if (!confirm(`${name}님을 거절하시겠습니까?`)) return;
+window.rejectLearner=async function(id,name){
+  if(!confirm(`${name}님을 거절하시겠습니까?`))return;
   await DB.update(`learners/${id}`,{status:'rejected'});
-  showToast(`거절 처리되었습니다.`,'warn');
-  loadPending();
+  showToast('거절 처리 완료','warn');loadPending();
 };
 
-// ── LEARNERS ─────────────────────────────────
-window.loadLearners = async function() {
+// ── LEARNERS ──
+window.loadLearners=async function(){
   await fetchAll();
+  // Populate org filter
+  const orgs=[...new Set(allLearners.filter(l=>l.status!=='pending'&&l.status!=='rejected').map(l=>l.org||'').filter(Boolean))].sort();
+  const sel=document.getElementById('lf-org');
+  sel.innerHTML='<option value="">전체 기관</option>'+orgs.map(o=>`<option value="${o}">${o}</option>`).join('');
   renderLearners(allLearners.filter(l=>l.status!=='pending'&&l.status!=='rejected'));
 };
-
-function renderLearners(list) {
-  document.getElementById('learners-tbody').innerHTML = list.length
-    ? list.map(l=>{
-        const prog = Math.round((l.progress||0)*100);
-        const score= l.finalScore!=null?l.finalScore+'점':'-';
-        const st   = l.completedStatus||l.status||'approved';
-        const bCls = st==='completed'?'badge-success':st==='in_progress'||st==='watched'?'badge-warn':'badge-neutral';
-        const bLbl = st==='completed'?'수료':st==='in_progress'||st==='watched'?'수강중':'미시작';
-        const assigned=(l.assignedCourses||[]).length;
-        return `<tr>
-          <td><strong>${l.name}</strong><br><span style="font-size:10px;color:var(--text-light);font-family:'DM Mono',monospace">${l._id}</span></td>
-          <td>${gradePill(l.grade||'general')}</td>
-          <td>${l.org||'-'}${l.dept?'<br><span style="font-size:10px;color:var(--text-light)">'+l.dept+'</span>':''}</td>
-          <td><span class="badge badge-info">${assigned}개</span></td>
-          <td><div style="display:flex;align-items:center;gap:7px">
-            <div class="progress-wrap" style="height:4px;width:60px"><div class="progress-fill" style="width:${prog}%"></div></div>
-            <span style="font-size:10.5px;color:var(--text-mid)">${prog}%</span>
-          </div></td>
-          <td>${score}</td>
-          <td><span class="badge ${bCls}">${bLbl}</span></td>
-          <td style="font-size:10px;color:var(--text-light)">${fmtDate(new Date(l.createdAt||Date.now()))}</td>
-          <td>
-            <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center">
-              <button class="tbl-btn tb-edit"   onclick="openEditLearner('${l._id}')">✏️ 정보</button>
-              <button class="tbl-btn tb-assign" onclick="openAssign('${l._id}')">📋 배정</button>
-              <button class="tbl-btn tb-pw"     onclick="openResetPw('${l._id}','${l.name}')">🔑 비번</button>
-              <button class="tbl-btn tb-reset"  onclick="resetProgress('${l._id}','${l.name}')">🔄 초기화</button>
-              <button class="tbl-btn tb-delete" onclick="deleteLearner('${l._id}','${l.name}')">🗑</button>
-            </div>
-          </td>
-        </tr>`;
-      }).join('')
-    : '<tr class="empty-row"><td colspan="9">수강생 없음</td></tr>';
+function renderLearners(list){
+  document.getElementById('learners-tbody').innerHTML=list.length?list.map(l=>{
+    const prog=Math.round((l.progress||0)*100);
+    const score=l.finalScore!=null?l.finalScore+'점':'-';
+    const st=l.completedStatus||l.status||'approved';
+    const bCls=st==='completed'?'badge-success':st==='in_progress'||st==='watched'?'badge-warn':'badge-neutral';
+    const bLbl=st==='completed'?'수료':st==='in_progress'||st==='watched'?'수강중':'미시작';
+    return `<tr>
+      <td><strong>${l.name}</strong><br><span style="font-size:10px;color:var(--text-light);font-family:'DM Mono',monospace">${l._id}</span></td>
+      <td>${gradePill(l.grade||'general')}</td>
+      <td>${l.org||'-'}${l.dept?'<br><span style="font-size:10px;color:var(--text-light)">'+l.dept+'</span>':''}</td>
+      <td><span class="badge badge-info">${(l.assignedCourses||[]).length}개</span></td>
+      <td><div style="display:flex;align-items:center;gap:6px">
+        <div class="progress-wrap" style="height:4px;width:55px"><div class="progress-fill" style="width:${prog}%"></div></div>
+        <span style="font-size:10.5px;color:var(--text-mid)">${prog}%</span></div></td>
+      <td>${score}</td>
+      <td><span class="badge ${bCls}">${bLbl}</span></td>
+      <td style="font-size:10px;color:var(--text-light)">${fmtDate(new Date(l.createdAt||Date.now()))}</td>
+      <td><div style="display:flex;gap:3px;flex-wrap:wrap;justify-content:center">
+        <button class="tbl-btn tb-edit"   onclick="openEditLearner('${l._id}')">✏️ 정보·등급</button>
+        <button class="tbl-btn tb-assign" onclick="openAssign('${l._id}')">📋 배정</button>
+        <button class="tbl-btn tb-pw"     onclick="openResetPw('${l._id}','${l.name}')">🔑</button>
+        <button class="tbl-btn tb-reset"  onclick="resetProgress('${l._id}','${l.name}')">🔄</button>
+        <button class="tbl-btn tb-delete" onclick="deleteLearner('${l._id}','${l.name}')">🗑</button>
+      </div></td></tr>`;
+  }).join(''):'<tr class="empty-row"><td colspan="9">수강생 없음</td></tr>';
 }
-
-window.filterLearners = function() {
-  const q  = document.getElementById('lf-search').value.toLowerCase();
-  const gr = document.getElementById('lf-grade').value;
-  const st = document.getElementById('lf-status').value;
+window.filterLearners=function(){
+  const q=document.getElementById('lf-search').value.toLowerCase();
+  const gr=document.getElementById('lf-grade').value;
+  const org=document.getElementById('lf-org').value;
+  const st=document.getElementById('lf-status').value;
   renderLearners(allLearners.filter(l=>{
-    if (l.status==='pending'||l.status==='rejected') return false;
-    if (gr && l.grade!==gr) return false;
-    if (st) {
-      const s=l.completedStatus||l.status||'approved';
-      if (st==='completed'&&s!=='completed') return false;
-      if (st==='in_progress'&&s!=='in_progress'&&s!=='watched') return false;
-      if (st==='approved'&&s!=='approved') return false;
+    if(l.status==='pending'||l.status==='rejected') return false;
+    if(gr&&l.grade!==gr) return false;
+    if(org&&l.org!==org) return false;
+    if(st){const s=l.completedStatus||l.status||'approved';
+      if(st==='completed'&&s!=='completed') return false;
+      if(st==='in_progress'&&s!=='in_progress'&&s!=='watched') return false;
+      if(st==='approved'&&s!=='approved') return false;
     }
-    return !q || l.name?.toLowerCase().includes(q)||l.org?.toLowerCase().includes(q)||(l._id||'').toLowerCase().includes(q);
+    return !q||l.name?.toLowerCase().includes(q)||l.org?.toLowerCase().includes(q)||(l._id||'').toLowerCase().includes(q);
   }));
 };
 
-// ── Edit Learner ─────────────────────────────
-window.openEditLearner = function(id) {
-  const l = allLearners.find(x=>x._id===id); if(!l) return;
-  document.getElementById('el-id').value    = id;
-  document.getElementById('el-name').value  = l.name||'';
-  document.getElementById('el-org').value   = l.org||'';
-  document.getElementById('el-dept').value  = l.dept||'';
-  document.getElementById('el-phone').value = l.phone||'';
-  document.querySelectorAll('#el-grade-grid input[name="el-grade"]').forEach(r=>{ r.checked = r.value===(l.grade||'general'); });
+// ── Edit Learner / Grade ──
+window.openEditLearner=function(id){
+  const l=allLearners.find(x=>x._id===id);if(!l)return;
+  document.getElementById('el-id').value   =id;
+  document.getElementById('el-name').value =l.name||'';
+  document.getElementById('el-org').value  =l.org||'';
+  document.getElementById('el-dept').value =l.dept||'';
+  document.getElementById('el-phone').value=l.phone||'';
+  document.querySelectorAll('#el-grade-grid input[name="el-grade"]').forEach(r=>{r.checked=r.value===(l.grade||'general');});
   document.getElementById('modal-edit-learner').classList.remove('hidden');
 };
-window.doEditLearner = async function() {
-  const id    = document.getElementById('el-id').value;
-  const name  = document.getElementById('el-name').value.trim();
-  const org   = document.getElementById('el-org').value.trim();
-  const dept  = document.getElementById('el-dept').value.trim();
-  const phone = document.getElementById('el-phone').value.trim();
-  const grade = document.querySelector('#el-grade-grid input[name="el-grade"]:checked')?.value||'general';
+window.doEditLearner=async function(){
+  const id   =document.getElementById('el-id').value;
+  const name =document.getElementById('el-name').value.trim();
+  const org  =document.getElementById('el-org').value.trim();
+  const dept =document.getElementById('el-dept').value.trim();
+  const phone=document.getElementById('el-phone').value.trim();
+  const grade=document.querySelector('#el-grade-grid input[name="el-grade"]:checked')?.value||'general';
   await DB.update(`learners/${id}`,{name,org,dept,phone,grade,gradeLabel:GRADE_LABEL[grade]});
-  showToast('수강생 정보가 수정되었습니다.','success');
-  closeModal('modal-edit-learner'); loadLearners();
+  showToast('수정 완료','success');closeModal('modal-edit-learner');loadLearners();
 };
 
-// ── Password Reset ────────────────────────────
-window.openResetPw = function(id,name) {
-  resetTargetId=id;
-  document.getElementById('rp-name').textContent=name;
-  document.getElementById('rp-new').value='kasg1234';
-  document.getElementById('modal-reset-pw').classList.remove('hidden');
-};
-window.doResetPw = async function() {
+// ── PW Reset ──
+window.openResetPw=function(id,name){resetTargetId=id;document.getElementById('rp-name').textContent=name;document.getElementById('rp-new').value='kasg1234';document.getElementById('modal-reset-pw').classList.remove('hidden');};
+window.doResetPw=async function(){
   const pw=document.getElementById('rp-new').value.trim();
-  if(!pw||pw.length<4){alert('4자 이상 입력하세요.');return;}
+  if(!pw||pw.length<4){alert('4자 이상');return;}
   await DB.update(`learners/${resetTargetId}`,{pw});
-  showToast('비밀번호가 초기화되었습니다.','success');
-  closeModal('modal-reset-pw');
+  showToast('비밀번호 초기화 완료','success');closeModal('modal-reset-pw');
 };
 
-// ── Reset Progress ────────────────────────────
-window.resetProgress = async function(id,name) {
-  if(!confirm(`${name}님의 수강 진도를 초기화합니까?\n(계정은 유지, 진도·점수·수료 기록만 삭제)`)) return;
-  await DB.update(`learners/${id}`,{
-    progress:0, midQuizCorrect:0, midQuizTotal:0,
-    finalScore:null, finalPassed:null, attempt:0,
-    completedStatus:null, certNo:null, certDate:null,
-    courseProgress:null, courseStatus:null,
-    midAnswered:null, courseCerts:null, generatedQuizzes:null
-  });
-  showToast(`${name}님의 진도가 초기화되었습니다.`,'success');
-  loadLearners();
+// ── Reset Progress ──
+window.resetProgress=async function(id,name){
+  if(!confirm(`${name}님의 수강 진도를 초기화합니까?`))return;
+  await DB.update(`learners/${id}`,{progress:0,midQuizCorrect:0,midQuizTotal:0,finalScore:null,finalPassed:null,attempt:0,completedStatus:null,certNo:null,certDate:null,courseProgress:null,courseStatus:null,midAnswered:null,courseCerts:null,generatedQuizzes:null});
+  showToast('진도 초기화 완료','success');loadLearners();
 };
 
-// ── Delete ────────────────────────────────────
-window.deleteLearner = async function(id,name) {
-  if(!confirm(`${name}님을 완전히 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`)) return;
-  await DB.remove(`learners/${id}`);
-  showToast(`${name}님이 삭제되었습니다.`,'warn');
-  loadLearners();
+// ── Delete ──
+window.deleteLearner=async function(id,name){
+  if(!confirm(`${name}님을 완전히 삭제합니까?`))return;
+  await DB.remove(`learners/${id}`);showToast('삭제 완료','warn');loadLearners();
 };
 
-// ── ASSIGN (individual) ───────────────────────
-window.openAssign = function(id) {
-  assignTargetId = id;
-  const l = allLearners.find(x=>x._id===id); if(!l) return;
-  document.getElementById('assign-name').textContent    = l.name;
-  document.getElementById('assign-grade-lbl').textContent= GRADE_LABEL[l.grade||'general']||'일반';
-  const courses = Object.entries(allCourses);
-  const current = new Set(l.assignedCourses||[]);
-  document.getElementById('assign-course-list').innerHTML = courses.length
-    ? courses.map(([cid,c])=>`
-        <div class="course-check-item ${current.has(cid)?'checked':''}" onclick="toggleCourseCheck(this,'${cid}')">
-          <input type="checkbox" ${current.has(cid)?'checked':''} onclick="event.stopPropagation()">
-          <div>
-            <div class="cck-title">${c.title}</div>
-            <div class="cck-meta">🕐 ${c.duration||'?'}시간 · ${c.purpose||'-'}</div>
-          </div>
-        </div>`).join('')
-    : '<div style="text-align:center;padding:20px;color:var(--text-light)">등록된 강의 없음</div>';
+// ── BULK REGISTER (Excel) ──
+window.loadBulkRegister=function(){/* nothing to init */};
+
+window.parseExcel=function(file){
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const wb=XLSX.read(e.target.result,{type:'binary'});
+    const ws=wb.Sheets[wb.SheetNames[0]];
+    const raw=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+    if(raw.length<2){alert('데이터가 없습니다.');return;}
+    // Find header row
+    const header=raw[0].map(h=>String(h).trim().toLowerCase());
+    const col=k=>header.findIndex(h=>h.includes(k));
+    const ci={id:col('아이디'),name:col('성명'),org:col('소속'),dept:col('부서'),phone:col('연락처'),grade:col('등급'),pw:col('비밀번호')};
+
+    parsedRows=raw.slice(1).filter(r=>r.some(v=>String(v).trim())).map(r=>{
+      const id  =String(ci.id  >=0?r[ci.id]  :'').trim().replace(/[.#$[\] ]/g,'_');
+      const name=String(ci.name>=0?r[ci.name] :'').trim();
+      const org =String(ci.org >=0?r[ci.org]  :'').trim();
+      const dept=String(ci.dept>=0?r[ci.dept] :'').trim();
+      const phone=String(ci.phone>=0?r[ci.phone]:'').trim();
+      const gradeRaw=String(ci.grade>=0?r[ci.grade]:'general').trim().toLowerCase();
+      const grade=VALID_GRADES.has(gradeRaw)?gradeRaw:'general';
+      const pw  =String(ci.pw>=0?r[ci.pw]:'kasg1234').trim()||'kasg1234';
+      const err =!id?'아이디 없음':!name?'성명 없음':!org?'소속 없음':'';
+      return {id,name,org,dept,phone,grade,pw,err,status:'new'};
+    });
+
+    // Check duplicates against existing
+    const existing=new Set(allLearners.map(l=>l._id));
+    parsedRows.forEach(r=>{if(!r.err&&existing.has(r.id)) r.status='dup';});
+
+    const ok=parsedRows.filter(r=>!r.err&&r.status==='new').length;
+    const dup=parsedRows.filter(r=>r.status==='dup').length;
+    const err=parsedRows.filter(r=>r.err).length;
+    document.getElementById('preview-summary').textContent=`총 ${parsedRows.length}행 · 신규 ${ok}명 · 중복 ${dup}명 · 오류 ${err}건`;
+    document.getElementById('ep-tbody').innerHTML=parsedRows.map((r,i)=>{
+      const cls=r.err?'err':r.status==='dup'?'err':'ok';
+      const stTag=r.err?`<span class="ep-status dup">⚠️ ${r.err}</span>`:r.status==='dup'?'<span class="ep-status dup">중복</span>':'<span class="ep-status new">신규</span>';
+      return `<tr class="${cls}"><td>${i+1}</td><td>${r.id}</td><td>${r.name}</td><td>${r.org}</td><td>${r.dept}</td><td>${r.phone}</td>
+        <td>${GRADE_LABEL[r.grade]||r.grade}</td><td style="font-family:'DM Mono',monospace;font-size:11px">${r.pw}</td><td>${stTag}</td></tr>`;
+    }).join('');
+    document.getElementById('excel-preview').style.display='';
+    const uploadBtn=document.getElementById('upload-btn');
+    uploadBtn.disabled=ok===0;
+    uploadBtn.textContent=`📤 신규 ${ok}명 등록 실행`;
+  };
+  reader.readAsBinaryString(file);
+};
+
+window.clearExcel=function(){
+  parsedRows=[];
+  document.getElementById('excel-file').value='';
+  document.getElementById('excel-preview').style.display='none';
+  document.getElementById('upload-result').innerHTML='';
+};
+
+window.doUpload=async function(){
+  const toAdd=parsedRows.filter(r=>!r.err&&r.status==='new');
+  if(!toAdd.length){showToast('등록할 신규 수강생이 없습니다.','warn');return;}
+  if(!confirm(`${toAdd.length}명을 등록합니까?\n- 등급: 지정된 등급으로 자동 설정\n- 상태: 승인됨(바로 로그인 가능)`))return;
+  const btn=document.getElementById('upload-btn');
+  btn.disabled=true;btn.textContent='등록 중...';
+  let done=0,fail=0;
+  for(const r of toAdd){
+    try{
+      await DB.set(`learners/${r.id}`,{
+        id:r.id,name:r.name,org:r.org,dept:r.dept,phone:r.phone,pw:r.pw,
+        grade:r.grade,gradeLabel:GRADE_LABEL[r.grade]||'일반',
+        status:'approved',approved:true,approvedAt:new Date().toISOString(),
+        assignedCourses:[],progress:0,midQuizCorrect:0,midQuizTotal:0,
+        finalScore:null,attempt:0,certNo:null,certDate:null,
+        createdAt:new Date().toISOString(),bulkRegistered:true
+      });
+      done++;
+    }catch(e){ fail++; }
+  }
+  document.getElementById('upload-result').innerHTML=`<div class="alert ${fail?'alert-warn':'alert-success'}">
+    ✅ ${done}명 등록 완료${fail?` · ⚠️ ${fail}건 실패`:''}</div>`;
+  showToast(`${done}명 등록 완료`,'success');
+  btn.disabled=false;btn.textContent='완료';
+  await fetchAll();// refresh allLearners for dup check
+};
+
+window.downloadTemplate=function(){
+  const wb=XLSX.utils.book_new();
+  const ws=XLSX.utils.aoa_to_sheet([
+    ['아이디','성명','소속','부서','연락처','등급','비밀번호'],
+    ['hong_gildong','홍길동','한국은행','AML팀','010-1234-5678','aml','kasg1234'],
+    ['kim_manager','김관리','ABC캐피탈','준법감시','010-2345-6789','general','kasg1234'],
+    ['lee_board','이이사','XYZ금융','이사회','010-3456-7890','board','kasg1234'],
+  ]);
+  ws['!cols']=[{wch:20},{wch:10},{wch:20},{wch:12},{wch:16},{wch:12},{wch:12}];
+  XLSX.utils.book_append_sheet(wb,ws,'수강생목록');
+  XLSX.writeFile(wb,'KASG_수강생_등록양식.xlsx');
+};
+
+// ── ASSIGN (individual) ──
+window.openAssign=function(id){
+  assignTargetId=id;
+  const l=allLearners.find(x=>x._id===id);if(!l)return;
+  document.getElementById('assign-name').textContent    =l.name;
+  document.getElementById('assign-grade-lbl').textContent=GRADE_LABEL[l.grade||'general'];
+  const courses=Object.entries(allCourses);
+  const current=new Set(l.assignedCourses||[]);
+  document.getElementById('assign-course-list').innerHTML=courses.length
+    ?courses.map(([cid,c])=>`
+      <div class="course-check-item ${current.has(cid)?'checked':''}" onclick="toggleCourseCheck(this)">
+        <input type="checkbox" data-cid="${cid}" ${current.has(cid)?'checked':''} onclick="event.stopPropagation()">
+        <div><div class="cck-title">${c.title}</div><div class="cck-meta">🕐 ${c.duration||'?'}시간 · ${c.purpose||'-'}</div></div>
+      </div>`).join('')
+    :'<div style="text-align:center;padding:20px;color:var(--text-light)">등록된 강의 없음</div>';
   document.getElementById('modal-assign').classList.remove('hidden');
 };
-
-window.toggleCourseCheck = function(el, cid) {
+window.toggleCourseCheck=function(el){
   el.classList.toggle('checked');
-  el.querySelector('input[type=checkbox]').checked = el.classList.contains('checked');
+  el.querySelector('input[type=checkbox]').checked=el.classList.contains('checked');
 };
-
-window.doAssign = async function() {
-  const checked = [...document.querySelectorAll('#assign-course-list .course-check-item.checked')].map(el=>{
-    const m = el.getAttribute('onclick').match(/'([^']+)'(?:,'[^']+')?\)$/);
-    return m?m[1]:null;
-  }).filter(Boolean);
+window.doAssign=async function(){
+  const checked=[...document.querySelectorAll('#assign-course-list input[type=checkbox]:checked')].map(el=>el.dataset.cid).filter(Boolean);
   await DB.update(`learners/${assignTargetId}`,{assignedCourses:checked});
-  showToast('강의 배정이 저장되었습니다.','success');
-  closeModal('modal-assign'); loadLearners(); loadAssign();
+  showToast('강의 배정 저장 완료','success');closeModal('modal-assign');loadLearners();loadAssign();
 };
 
-// ── ASSIGN section (table view) ───────────────
-window.loadAssign = async function() {
+// ── ASSIGN section ──
+window.loadAssign=async function(){
   await fetchAll();
   buildBulkCourseChecks();
   renderAssign(allLearners.filter(l=>l.status!=='pending'&&l.status!=='rejected'));
 };
-
-function buildBulkCourseChecks() {
-  const wrap = document.getElementById('bulk-course-checks');
-  const courseArr = Object.entries(allCourses);
-  wrap.innerHTML = courseArr.length
-    ? courseArr.map(([id,c])=>
-        `<label style="display:flex;align-items:center;gap:7px;font-size:12px;padding:4px 0;cursor:pointer">
-          <input type="checkbox" data-cid="${id}" style="accent-color:var(--navy)"> ${c.title}
-        </label>`
-      ).join('')
-    : '<span style="font-size:11.5px;color:var(--text-light)">등록된 강의 없음</span>';
+function buildBulkCourseChecks(){
+  document.getElementById('bulk-course-checks').innerHTML=Object.entries(allCourses).map(([id,c])=>
+    `<label style="display:flex;align-items:center;gap:7px;font-size:12px;padding:3px 0;cursor:pointer">
+      <input type="checkbox" data-cid="${id}" style="accent-color:var(--navy)"> ${c.title}</label>`
+  ).join('')||'<span style="font-size:11.5px;color:var(--text-light)">등록된 강의 없음</span>';
 }
-
-function renderAssign(list) {
-  document.getElementById('assign-tbody').innerHTML = list.length
-    ? list.map(l=>{
-        const assigned = l.assignedCourses||[];
-        const names = assigned.map(id=>allCourses[id]?.title||id).join(', ') || '-';
-        return `<tr>
-          <td><strong>${l.name}</strong></td>
-          <td>${gradePill(l.grade||'general')}</td>
-          <td>${l.org||'-'}</td>
-          <td style="max-width:250px;font-size:11.5px;color:var(--text-mid)">${names}</td>
-          <td style="text-align:center">
-            <button class="tbl-btn tb-assign" onclick="openAssign('${l._id}')">📋 배정 수정</button>
-          </td>
-        </tr>`;
-      }).join('')
-    : '<tr class="empty-row"><td colspan="5">수강생 없음</td></tr>';
+function renderAssign(list){
+  document.getElementById('assign-tbody').innerHTML=list.length?list.map(l=>{
+    const names=(l.assignedCourses||[]).map(id=>allCourses[id]?.title||id).join(', ')||'-';
+    return `<tr><td><strong>${l.name}</strong></td><td>${gradePill(l.grade||'general')}</td><td>${l.org||'-'}</td>
+      <td style="max-width:240px;font-size:11.5px;color:var(--text-mid)">${names}</td>
+      <td style="text-align:center"><button class="tbl-btn tb-assign" onclick="openAssign('${l._id}')">📋 수정</button></td></tr>`;
+  }).join(''):'<tr class="empty-row"><td colspan="5">수강생 없음</td></tr>';
 }
-
-window.filterAssign = function() {
-  const q  = document.getElementById('af-search').value.toLowerCase();
-  const gr = document.getElementById('af-grade').value;
+window.filterAssign=function(){
+  const q=document.getElementById('af-search').value.toLowerCase();
+  const gr=document.getElementById('af-grade').value;
   renderAssign(allLearners.filter(l=>{
-    if(l.status==='pending'||l.status==='rejected') return false;
-    if(gr&&l.grade!==gr) return false;
+    if(l.status==='pending'||l.status==='rejected')return false;
+    if(gr&&l.grade!==gr)return false;
     return !q||l.name?.toLowerCase().includes(q)||l.org?.toLowerCase().includes(q);
   }));
 };
-
-// ── Bulk Assign ───────────────────────────────
-window.toggleBulkGrade = function(btn) {
-  const g = btn.dataset.grade;
+window.toggleBulkGrade=function(btn){
   btn.classList.toggle('active');
-  if (btn.classList.contains('active')) bulkGrades.add(g);
-  else bulkGrades.delete(g);
+  bulkGrades[btn.classList.contains('active')?'add':'delete'](btn.dataset.grade);
 };
-
-window.previewBulk = function() {
-  const targets = allLearners.filter(l=>
-    l.status!=='pending'&&l.status!=='rejected' && bulkGrades.has(l.grade||'general')
-  );
-  const courses = [...document.querySelectorAll('#bulk-course-checks input:checked')].map(el=>el.dataset.cid);
-  const wrap = document.getElementById('bulk-preview');
-  wrap.style.display='';
-  if (!bulkGrades.size) { wrap.innerHTML='<div class="alert alert-warn">등급을 선택하세요.</div>'; return; }
-  if (!courses.length)  { wrap.innerHTML='<div class="alert alert-warn">강의를 선택하세요.</div>'; return; }
+window.previewBulk=function(){
+  const targets=allLearners.filter(l=>l.status!=='pending'&&l.status!=='rejected'&&bulkGrades.has(l.grade||'general'));
+  const courses=[...document.querySelectorAll('#bulk-course-checks input:checked')].map(el=>el.dataset.cid);
+  const wrap=document.getElementById('bulk-preview');wrap.style.display='';
+  if(!bulkGrades.size){wrap.innerHTML='<div class="alert alert-warn">등급을 선택하세요.</div>';return;}
+  if(!courses.length){wrap.innerHTML='<div class="alert alert-warn">강의를 선택하세요.</div>';return;}
   wrap.innerHTML=`<div class="alert alert-info" style="font-size:12px">
-    <strong>${[...bulkGrades].map(g=>GRADE_LABEL[g]).join(', ')}</strong> 등급의
-    <strong>${targets.length}명</strong>에게
-    <strong>${courses.length}개</strong> 강의가 추가 배정됩니다.<br>
-    대상: ${targets.map(l=>l.name).join(', ')||'없음'}
-  </div>`;
+    <strong>${[...bulkGrades].map(g=>GRADE_LABEL[g]).join(', ')}</strong> 등급의 <strong>${targets.length}명</strong>에게
+    <strong>${courses.length}개</strong> 강의 추가 배정 예정<br>대상: ${targets.map(l=>l.name).join(', ')||'없음'}</div>`;
 };
-
-window.doBulkAssign = async function() {
-  const targets = allLearners.filter(l=>
-    l.status!=='pending'&&l.status!=='rejected' && bulkGrades.has(l.grade||'general')
-  );
-  const newCourses = [...document.querySelectorAll('#bulk-course-checks input:checked')].map(el=>el.dataset.cid);
-  if (!targets.length){ showToast('대상 수강생 없음','warn'); return; }
-  if (!newCourses.length){ showToast('배정할 강의를 선택하세요','warn'); return; }
-  if (!confirm(`${targets.length}명에게 ${newCourses.length}개 강의를 배정합니까?`)) return;
-  await Promise.all(targets.map(l=>{
-    const merged = [...new Set([...(l.assignedCourses||[]), ...newCourses])];
-    return DB.update(`learners/${l._id}`,{assignedCourses:merged});
-  }));
-  showToast(`${targets.length}명에게 강의가 배정되었습니다.`,'success');
-  await fetchAll(); renderAssign(allLearners.filter(l=>l.status!=='pending'&&l.status!=='rejected'));
+window.doBulkAssign=async function(){
+  const targets=allLearners.filter(l=>l.status!=='pending'&&l.status!=='rejected'&&bulkGrades.has(l.grade||'general'));
+  const newC=[...document.querySelectorAll('#bulk-course-checks input:checked')].map(el=>el.dataset.cid);
+  if(!targets.length){showToast('대상 없음','warn');return;}
+  if(!newC.length){showToast('강의 선택','warn');return;}
+  if(!confirm(`${targets.length}명에게 ${newC.length}개 강의 배정?`))return;
+  await Promise.all(targets.map(l=>DB.update(`learners/${l._id}`,{assignedCourses:[...new Set([...(l.assignedCourses||[]),...newC])]})));
+  showToast(`${targets.length}명에게 강의 배정 완료`,'success');
+  await fetchAll();renderAssign(allLearners.filter(l=>l.status!=='pending'&&l.status!=='rejected'));
   document.getElementById('bulk-preview').style.display='none';
 };
 
-// ── COMPLETIONS ───────────────────────────────
-window.loadCompletions = async function() {
-  await fetchAll();
-  renderCompletions(allCompletions);
+// ── COMPLETIONS ──
+window.loadCompletions=async function(){
+  await fetchAll();renderCompletions(allCompletions);
 };
-function renderCompletions(list) {
-  document.getElementById('completions-tbody').innerHTML = list.length
-    ? list.map(c=>`<tr>
-        <td style="font-family:'DM Mono',monospace;font-size:10.5px">제 ${c.certNo}호</td>
-        <td><strong>${c.name}</strong></td>
-        <td>${gradePill(c.grade||'general')}</td>
-        <td>${c.org||'-'}</td>
-        <td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${c.courseTitle||'-'}</td>
-        <td><span class="badge badge-success">${c.score}점</span></td>
-        <td style="font-size:10.5px;color:var(--text-light)">${fmtDate(new Date(c.date))}</td>
-      </tr>`).join('')
-    : '<tr class="empty-row"><td colspan="7">수료자 없음</td></tr>';
+function renderCompletions(list){
+  document.getElementById('completions-tbody').innerHTML=list.length?list.map(c=>
+    `<tr><td style="font-family:'DM Mono',monospace;font-size:10.5px">제 ${c.certNo}호</td>
+    <td><strong>${c.name}</strong></td><td>${gradePill(c.grade||'general')}</td><td>${c.org||'-'}</td>
+    <td style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${c.courseTitle||'-'}</td>
+    <td><span class="badge badge-success">${c.score}점</span></td>
+    <td style="font-size:10.5px;color:var(--text-light)">${fmtDate(new Date(c.date))}</td></tr>`
+  ).join(''):'<tr class="empty-row"><td colspan="7">수료자 없음</td></tr>';
 }
-window.filterCompletions = function() {
-  const q = document.getElementById('cf-search').value.toLowerCase();
-  renderCompletions(allCompletions.filter(c=>
-    c.name?.toLowerCase().includes(q)||(c.certNo||'').toLowerCase().includes(q)
-  ));
+window.filterCompletions=function(){
+  const q=document.getElementById('cf-search').value.toLowerCase();
+  renderCompletions(allCompletions.filter(c=>c.name?.toLowerCase().includes(q)||(c.certNo||'').toLowerCase().includes(q)));
 };
 
-// ── COURSES ───────────────────────────────────
-window.loadCourses = async function() {
+// ── COURSES ──
+window.loadCourses=async function(){
   await fetchAll();
-  const grid = document.getElementById('course-grid');
-  const arr  = Object.entries(allCourses);
-  if (!arr.length) {
-    grid.innerHTML='<div class="card" style="padding:40px;text-align:center;grid-column:1/-1"><div style="font-size:36px;margin-bottom:10px">📂</div><div style="color:var(--text-mid)">등록된 강의 없음</div></div>';
-    return;
-  }
-  grid.innerHTML = arr.map(([id,c])=>`
-    <div class="cc">
-      <div class="cc-hd">
-        <div class="cc-title">${c.title}</div>
-        <div class="cc-meta">⏱ ${c.duration||'?'}시간 · 등록: ${fmtDate(new Date(c.createdAt||Date.now()))}</div>
-        <div class="cc-meta" style="margin-top:2px">🎯 ${c.purpose||'-'}</div>
-        ${c.videoURL?`<div class="cc-url" onclick="window.open('${c.videoURL}','_blank')">▶ YouTube 영상 열기</div>`:'<div class="cc-meta" style="color:var(--error);margin-top:3px">⚠️ 영상 미등록</div>'}
-      </div>
-      <div class="cc-ft">
-        <span class="badge ${c.locked?'badge-error':'badge-success'}">${c.locked?'🔒 잠김':'✅ 공개'}</span>
-        <button class="tbl-btn ${c.locked?'tb-approve':'tb-reject'}" onclick="toggleLock('${id}',${!c.locked})">${c.locked?'🔓 공개':'🔒 잠금'}</button>
-        <button class="tbl-btn tb-edit" onclick="openEditCourse('${id}')">✏️ 수정</button>
-        <button class="tbl-btn tb-delete" onclick="deleteCourse('${id}','${c.title}')">🗑</button>
-      </div>
-    </div>`).join('');
+  const arr=Object.entries(allCourses);
+  document.getElementById('course-grid').innerHTML=arr.length?arr.map(([id,c])=>`
+    <div class="cc"><div class="cc-hd">
+      <div class="cc-title">${c.title}</div>
+      <div class="cc-meta">⏱ ${c.duration||'?'}시간 · ${fmtDate(new Date(c.createdAt||Date.now()))}</div>
+      <div class="cc-meta">🎯 ${c.purpose||'-'}</div>
+      ${c.videoURL?`<div class="cc-url" onclick="window.open('${c.videoURL}','_blank')">▶ YouTube 영상</div>`:'<div class="cc-meta" style="color:var(--error)">⚠️ 영상 미등록</div>'}
+    </div>
+    <div class="cc-ft">
+      <span class="badge ${c.locked?'badge-error':'badge-success'}">${c.locked?'🔒 잠김':'✅ 공개'}</span>
+      <button class="tbl-btn ${c.locked?'tb-approve':'tb-reject'}" onclick="toggleLock('${id}',${!c.locked})">${c.locked?'🔓 공개':'🔒 잠금'}</button>
+      <button class="tbl-btn tb-edit" onclick="openEditCourse('${id}')">✏️ 수정</button>
+      <button class="tbl-btn tb-delete" onclick="deleteCourse('${id}','${c.title}')">🗑</button>
+    </div></div>`).join('')
+    :'<div class="card" style="padding:40px;text-align:center;grid-column:1/-1"><div style="font-size:36px;margin-bottom:10px">📂</div><div style="color:var(--text-mid)">등록된 강의 없음</div></div>';
 };
-window.toggleLock = async function(id,lock) {
-  await DB.update(`courses/${id}`,{locked:lock});
-  showToast(lock?'강의가 잠겼습니다.':'강의가 공개되었습니다.','success');
-  loadCourses();
-};
-window.deleteCourse = async function(id,title) {
-  if(!confirm(`"${title}" 강의를 삭제합니까?`)) return;
-  await DB.remove(`courses/${id}`);
-  showToast('강의가 삭제되었습니다.','warn'); loadCourses();
-};
-window.openEditCourse = function(id) {
-  const c=allCourses[id]; if(!c) return;
-  document.getElementById('ec-id').value      = id;
-  document.getElementById('ec-title').value   = c.title||'';
-  document.getElementById('ec-purpose').value = c.purpose||'';
-  document.getElementById('ec-duration').value= c.duration||2;
-  document.getElementById('ec-yturl').value   = c.videoURL||'';
+window.toggleLock=async function(id,lock){await DB.update(`courses/${id}`,{locked:lock});showToast(lock?'잠금':'공개','success');loadCourses();};
+window.deleteCourse=async function(id,title){if(!confirm(`"${title}" 삭제?`))return;await DB.remove(`courses/${id}`);showToast('삭제 완료','warn');loadCourses();};
+window.openEditCourse=function(id){
+  const c=allCourses[id];if(!c)return;
+  document.getElementById('ec-id').value=id;document.getElementById('ec-title').value=c.title||'';
+  document.getElementById('ec-purpose').value=c.purpose||'';document.getElementById('ec-duration').value=c.duration||2;
+  document.getElementById('ec-yturl').value=c.videoURL||'';
   document.getElementById('modal-edit-course').classList.remove('hidden');
 };
-window.doEditCourse = async function() {
-  const id   = document.getElementById('ec-id').value;
-  const title= document.getElementById('ec-title').value.trim();
-  const pur  = document.getElementById('ec-purpose').value.trim();
-  const dur  = document.getElementById('ec-duration').value;
-  const yt   = document.getElementById('ec-yturl').value.trim();
-  if(!title){alert('강의명을 입력하세요.');return;}
-  const embed= toYoutubeEmbed(yt)||yt;
+window.doEditCourse=async function(){
+  const id=document.getElementById('ec-id').value,title=document.getElementById('ec-title').value.trim();
+  if(!title){alert('강의명 필수');return;}
+  const pur=document.getElementById('ec-purpose').value.trim(),dur=document.getElementById('ec-duration').value;
+  const yt=document.getElementById('ec-yturl').value.trim();
+  const embed=toYoutubeEmbed(yt)||yt;
   await DB.update(`courses/${id}`,{title,purpose:pur,duration:Number(dur),videoURL:embed});
-  showToast('강의가 수정되었습니다.','success');
-  closeModal('modal-edit-course'); loadCourses();
+  showToast('수정 완료','success');closeModal('modal-edit-course');loadCourses();
 };
 
-// ── ADD COURSE ────────────────────────────────
-window.previewYT = function() {
+// ── ADD COURSE ──
+window.previewYT=function(){
   const url=document.getElementById('cf-yturl').value.trim();
   const embed=toYoutubeEmbed(url);
-  const pv=document.getElementById('yt-preview'), fr=document.getElementById('yt-preview-frame');
-  if(embed){fr.src=embed;pv.classList.add('show');}
-  else{pv.classList.remove('show');fr.src='';}
+  const pv=document.getElementById('yt-preview'),fr=document.getElementById('yt-preview-frame');
+  if(embed){fr.src=embed;pv.classList.add('show');}else{pv.classList.remove('show');fr.src='';}
 };
-window.saveCourse = async function() {
-  const title  = document.getElementById('cf-title').value.trim();
-  const dur    = document.getElementById('cf-duration').value;
-  const purpose= document.getElementById('cf-purpose').value.trim();
-  const yturl  = document.getElementById('cf-yturl').value.trim();
-  if(!title){ alert('강의명을 입력하세요.'); return; }
-  if(!purpose){alert('교육목적을 입력하세요.');return;}
-  if(!yturl){ alert('YouTube URL을 입력하세요.'); return; }
+window.saveCourse=async function(){
+  const title=document.getElementById('cf-title').value.trim();
+  const dur=document.getElementById('cf-duration').value;
+  const purpose=document.getElementById('cf-purpose').value.trim();
+  const yturl=document.getElementById('cf-yturl').value.trim();
+  if(!title){alert('강의명 필수');return;}if(!purpose){alert('교육목적 필수');return;}if(!yturl){alert('YouTube URL 필수');return;}
   const embed=toYoutubeEmbed(yturl);
-  if(!embed){alert('올바른 YouTube URL이 아닙니다.\n예: https://www.youtube.com/watch?v=XXXXXXXXXXX');return;}
+  if(!embed){alert('올바른 YouTube URL이 아닙니다.');return;}
   const id='course_'+Date.now();
   await DB.set(`courses/${id}`,{title,purpose,duration:Number(dur),videoURL:embed,locked:false,createdAt:new Date().toISOString()});
-  document.getElementById('add-course-msg').innerHTML='<div class="alert alert-success">✅ 강의가 등록되었습니다!</div>';
-  showToast('강의 등록 완료!','success');
-  clearCF();
-  setTimeout(()=>{ go(document.querySelector('[data-sec="courses"]')); },1400);
+  document.getElementById('add-course-msg').innerHTML='<div class="alert alert-success">✅ 강의 등록 완료!</div>';
+  showToast('강의 등록 완료!','success');clearCF();
+  setTimeout(()=>go(document.querySelector('[data-sec="courses"]')),1400);
 };
 window.clearCF=function(){
   ['cf-title','cf-purpose','cf-yturl'].forEach(i=>document.getElementById(i).value='');
@@ -906,45 +963,35 @@ window.clearCF=function(){
   document.getElementById('add-course-msg').innerHTML='';
 };
 
-// ── SETTINGS ─────────────────────────────────
-window.changeAdminPw = async function() {
+// ── SETTINGS ──
+window.changeAdminPw=async function(){
   const np=document.getElementById('new-pw').value,cp=document.getElementById('confirm-pw').value;
-  if(!np||np.length<8){alert('8자 이상 입력하세요.');return;}
-  if(np!==cp){alert('비밀번호가 일치하지 않습니다.');return;}
-  await DB.set('admin/password',np);
-  showToast('관리자 비밀번호가 변경되었습니다.','success');
-  document.getElementById('new-pw').value=''; document.getElementById('confirm-pw').value='';
+  if(!np||np.length<8){alert('8자 이상');return;}if(np!==cp){alert('비밀번호 불일치');return;}
+  await DB.set('admin/password',np);showToast('비밀번호 변경 완료','success');
+  document.getElementById('new-pw').value='';document.getElementById('confirm-pw').value='';
 };
-window.saveSettings = async function() {
+window.saveSettings=async function(){
   await DB.set('settings',{passScore:Number(document.getElementById('pass-score').value),maxAttempts:Number(document.getElementById('max-attempts').value)});
-  showToast('설정이 저장되었습니다.','success');
+  showToast('저장 완료','success');
 };
 
-// ── CSV exports ───────────────────────────────
-function csvDl(filename,rows) {
+// ── CSV ──
+function csvDl(fn,rows){
   const bom='\uFEFF',csv=bom+rows.map(r=>r.map(v=>`"${String(v||'').replace(/"/g,'""')}"`).join(',')).join('\n');
-  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));a.download=filename;a.click();
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));a.download=fn;a.click();
 }
-window.exportLearners = function() {
+window.exportLearners=function(){
   const list=allLearners.filter(l=>l.status!=='pending'&&l.status!=='rejected');
   const rows=[['성명','아이디','소속','부서','등급','배정강의수','진도(%)','점수','상태','등록일']];
-  list.forEach(l=>{
-    const st=l.completedStatus||l.status||'-';
-    rows.push([l.name,l._id,l.org||'',l.dept||'',GRADE_LABEL[l.grade||'general']||'-',
-      (l.assignedCourses||[]).length, Math.round((l.progress||0)*100)+'%',
-      l.finalScore!=null?l.finalScore+'점':'-',
-      st==='completed'?'수료':st==='in_progress'||st==='watched'?'수강중':'미시작',
-      fmtDate(new Date(l.createdAt||Date.now()))]);
-  });
+  list.forEach(l=>{const st=l.completedStatus||l.status||'-';rows.push([l.name,l._id,l.org||'',l.dept||'',GRADE_LABEL[l.grade||'general']||'-',(l.assignedCourses||[]).length,Math.round((l.progress||0)*100)+'%',l.finalScore!=null?l.finalScore:'',st==='completed'?'수료':st==='in_progress'||st==='watched'?'수강중':'미시작',fmtDate(new Date(l.createdAt||Date.now()))]);});
   csvDl('learners.csv',rows);
 };
-window.exportCompletions = function() {
+window.exportCompletions=function(){
   const rows=[['발급번호','성명','등급','소속','강의명','점수','수료일']];
   allCompletions.forEach(c=>rows.push([`제 ${c.certNo}호`,c.name,GRADE_LABEL[c.grade||'general']||'-',c.org||'',c.courseTitle||'',c.score+'점',fmtDate(new Date(c.date))]));
   csvDl('completions.csv',rows);
 };
 
-// ── Init ──────────────────────────────────────
 loadOverview();
 </script>
 </body>

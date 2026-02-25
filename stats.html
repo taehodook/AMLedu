@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>교육 현황 통계 — KASG LMS</title>
+<link rel="stylesheet" href="css/main.css">
+<style>
+:root{--pg:24px}
+body{background:#ECEAE4;min-height:100vh}
+
+/* ── Toolbar ── */
+.stat-toolbar{background:var(--navy);padding:14px 28px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;border-bottom:3px solid var(--kasg-gold)}
+.st-title{font-family:'Noto Serif KR',serif;font-size:16px;font-weight:700;color:#fff;margin-right:auto}
+.filter-chip{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.1);padding:5px 12px;border-radius:16px;font-size:12px;color:rgba(255,255,255,.8)}
+.filter-chip select{background:transparent;border:none;color:#fff;font-size:12px;outline:none;cursor:pointer;padding:0 2px}
+.filter-chip select option{background:var(--navy);color:#fff}
+.stat-date-info{font-size:11px;color:rgba(255,255,255,.4)}
+
+.dl-row{display:flex;gap:8px}
+.dl-btn{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--radius);font-size:12px;font-weight:600;cursor:pointer;border:none;transition:all .14s}
+.dl-btn-print{background:var(--kasg-gold);color:var(--navy)}
+.dl-btn-print:hover{background:#DAA010}
+.dl-btn-csv{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.2)}
+.dl-btn-csv:hover{background:rgba(255,255,255,.2)}
+
+/* ── Report Wrap ── */
+.report-outer{max-width:1100px;margin:24px auto;padding:0 var(--pg)}
+
+/* ── Report Cover ── */
+.report-cover{background:#fff;border-radius:var(--radius-lg);padding:30px 36px;margin-bottom:18px;box-shadow:var(--shadow-sm);border-left:6px solid var(--kasg-gold);display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px}
+.rc-left{}
+.rc-org{font-size:11px;font-weight:600;color:var(--kasg-red);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:5px}
+.rc-title{font-family:'Noto Serif KR',serif;font-size:22px;font-weight:900;color:var(--navy);margin-bottom:5px}
+.rc-period{font-size:13px;color:var(--text-mid)}
+.rc-right{text-align:right}
+.rc-stamp{display:inline-flex;flex-direction:column;align-items:center;gap:4px;padding:12px 20px;border:2px solid var(--kasg-red);border-radius:var(--radius);color:var(--kasg-red)}
+.rc-stamp-t{font-size:11px;font-weight:700;letter-spacing:1px}
+.rc-stamp-v{font-family:'Noto Serif KR',serif;font-size:18px;font-weight:900}
+
+/* ── KPI Row ── */
+.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:18px}
+@media(max-width:900px){.kpi-row{grid-template-columns:repeat(3,1fr)}}
+.kpi-card{background:#fff;border-radius:var(--radius-lg);padding:16px 18px;box-shadow:var(--shadow-sm);position:relative;overflow:hidden}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.kpi-card.k1::before{background:var(--navy)}
+.kpi-card.k2::before{background:#FCA311}
+.kpi-card.k3::before{background:var(--success)}
+.kpi-card.k4::before{background:var(--kasg-blue)}
+.kpi-card.k5::before{background:var(--kasg-red)}
+.kpi-icon{font-size:22px;margin-bottom:6px}
+.kpi-val{font-family:'Noto Serif KR',serif;font-size:28px;font-weight:900;color:var(--navy);line-height:1}
+.kpi-label{font-size:11px;color:var(--text-mid);margin-top:4px}
+.kpi-sub{font-size:10px;color:var(--text-light);margin-top:2px}
+
+/* ── Section Cards ── */
+.stat-section{background:#fff;border-radius:var(--radius-lg);padding:20px 22px;box-shadow:var(--shadow-sm);margin-bottom:16px}
+.ss-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+.ss-title{font-family:'Noto Serif KR',serif;font-size:15px;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:8px}
+.ss-export{font-size:11px;color:var(--kasg-blue);cursor:pointer;border:1px solid var(--kasg-blue);padding:3px 10px;border-radius:10px;background:rgba(26,62,160,.05)}
+.ss-export:hover{background:var(--kasg-blue);color:#fff}
+
+/* Bar chart */
+.bar-chart{display:flex;flex-direction:column;gap:8px}
+.bc-row{display:flex;align-items:center;gap:10px;min-height:28px}
+.bc-label{width:130px;font-size:12px;color:var(--text-mid);text-align:right;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bc-bar-wrap{flex:1;background:#F1F0EC;border-radius:3px;height:22px;position:relative;overflow:hidden}
+.bc-fill{height:100%;border-radius:3px;transition:width .6s ease;display:flex;align-items:center;padding-left:8px;font-size:10.5px;font-weight:600;color:#fff;white-space:nowrap}
+.bc-count{font-size:11.5px;color:var(--text-mid);min-width:40px;text-align:right;flex-shrink:0}
+.bc-rate{font-size:10px;color:var(--text-light);min-width:36px;text-align:right}
+
+/* Table style */
+.stat-table{width:100%;border-collapse:collapse;font-size:12.5px}
+.stat-table th{padding:8px 12px;background:var(--navy);color:rgba(255,255,255,.8);font-weight:600;font-size:11px;text-align:left;letter-spacing:.3px;white-space:nowrap}
+.stat-table th:first-child{border-radius:6px 0 0 0}
+.stat-table th:last-child{border-radius:0 6px 0 0}
+.stat-table td{padding:8px 12px;border-bottom:1px solid rgba(0,0,0,.05);color:var(--text);vertical-align:middle}
+.stat-table tr:last-child td{border-bottom:none}
+.stat-table tr:hover td{background:rgba(12,31,63,.02)}
+.rate-cell{display:flex;align-items:center;gap:8px}
+.rate-bar{flex:1;height:6px;background:#F1F0EC;border-radius:3px;overflow:hidden}
+.rate-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--navy),var(--kasg-blue))}
+.rate-fill.done{background:linear-gradient(90deg,var(--success),#2D8A5A)}
+.rate-pct{font-size:11.5px;font-weight:600;color:var(--navy);min-width:32px;text-align:right}
+
+/* Donut placeholder */
+.donut-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.donut-legend{display:flex;flex-direction:column;gap:7px}
+.dl-item{display:flex;align-items:center;gap:9px;font-size:12.5px}
+.dl-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+.dl-name{flex:1;color:var(--text-mid)}
+.dl-cnt{font-weight:700;color:var(--text)}
+.dl-pct{font-size:11px;color:var(--text-light);min-width:34px;text-align:right}
+
+/* Grid layout for charts */
+.charts-2col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:800px){.charts-2col{grid-template-columns:1fr}}
+
+/* Score dist */
+.score-dist{display:flex;align-items:flex-end;gap:4px;height:80px;margin-top:8px}
+.sd-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
+.sd-bar-wrap{flex:1;display:flex;align-items:flex-end;width:100%}
+.sd-bar{width:100%;border-radius:3px 3px 0 0;min-height:2px;transition:height .5s ease}
+.sd-label{font-size:9.5px;color:var(--text-light)}
+.sd-val{font-size:9.5px;font-weight:600;color:var(--text-mid)}
+
+/* Signature area */
+.sig-area{margin-top:24px;padding:18px 24px;border:1px solid var(--border);border-radius:var(--radius-lg);background:#fff}
+.sig-title{font-size:11px;color:var(--text-light);margin-bottom:14px;text-align:center;letter-spacing:1px}
+.sig-row{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.sig-box{text-align:center;padding:12px}
+.sig-line{border-bottom:1.5px solid var(--border);margin-bottom:7px;padding-bottom:24px}
+.sig-lbl{font-size:11px;color:var(--text-mid)}
+
+/* ── PRINT STYLES ── */
+@media print {
+  body{background:#fff}
+  .stat-toolbar,.no-print{display:none!important}
+  .report-outer{max-width:none;margin:0;padding:0}
+  .report-cover,.kpi-card,.stat-section,.sig-area{box-shadow:none!important;border:1px solid #ddd}
+  .kpi-row{grid-template-columns:repeat(5,1fr)!important}
+  .charts-2col{grid-template-columns:1fr 1fr!important}
+  @page{size:A4;margin:15mm}
+}
+</style>
+</head>
+<body>
+
+<!-- Toolbar (no-print) -->
+<div class="stat-toolbar no-print">
+  <div class="st-title">📊 교육 현황 통계</div>
+  <div class="filter-chip">
+    🏢 기관
+    <select id="f-org" onchange="applyFilters()"><option value="">전체</option></select>
+  </div>
+  <div class="filter-chip">
+    🎓 등급
+    <select id="f-grade" onchange="applyFilters()">
+      <option value="">전체</option>
+      <option value="board">이사회·임원</option>
+      <option value="aml">AML 담당자</option>
+      <option value="general">일반</option>
+      <option value="research">연구회</option>
+    </select>
+  </div>
+  <div class="filter-chip">
+    🗂 부서
+    <select id="f-dept" onchange="applyFilters()"><option value="">전체</option></select>
+  </div>
+  <div class="filter-chip">
+    📅 기간
+    <select id="f-period" onchange="applyFilters()">
+      <option value="">전체</option>
+      <option value="30">최근 30일</option>
+      <option value="90">최근 90일</option>
+      <option value="180">최근 180일</option>
+      <option value="365">최근 1년</option>
+    </select>
+  </div>
+  <div class="dl-row">
+    <button class="dl-btn dl-btn-print" onclick="window.print()">🖨 인쇄·PDF</button>
+    <button class="dl-btn dl-btn-csv" onclick="exportAllCSV()">📥 전체 CSV</button>
+    <button class="dl-btn dl-btn-csv" style="background:rgba(255,255,255,.08)" onclick="window.location.href='admin.html'">← 관리자</button>
+  </div>
+</div>
+
+<!-- ══ REPORT ══ -->
+<div class="report-outer" id="report-root">
+
+  <!-- Cover -->
+  <div class="report-cover">
+    <div class="rc-left">
+      <div class="rc-org">KOREA ANTI-MONEY LAUNDERING STUDY GROUP</div>
+      <div class="rc-title">AML 교육 수료 현황 보고서</div>
+      <div class="rc-period" id="rc-period">기준일: <span id="rc-date"></span></div>
+      <div style="margin-top:10px;font-size:12px;color:var(--text-mid)" id="rc-filter-desc"></div>
+    </div>
+    <div class="rc-right">
+      <div class="rc-stamp">
+        <span class="rc-stamp-t">한국자금세탁방지연구회</span>
+        <img src="assets/logo-circle.png" style="width:42px;height:42px;margin:2px 0">
+        <span class="rc-stamp-t">교육 수료 증적 자료</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- KPI Row -->
+  <div class="kpi-row">
+    <div class="kpi-card k1"><div class="kpi-icon">👥</div><div class="kpi-val" id="kpi-total">0</div><div class="kpi-label">전체 수강생</div><div class="kpi-sub" id="kpi-total-sub"></div></div>
+    <div class="kpi-card k2"><div class="kpi-icon">📖</div><div class="kpi-val" id="kpi-inprog">0</div><div class="kpi-label">수강 중</div><div class="kpi-sub"></div></div>
+    <div class="kpi-card k3"><div class="kpi-icon">🏆</div><div class="kpi-val" id="kpi-done">0</div><div class="kpi-label">수료 완료</div><div class="kpi-sub" id="kpi-done-sub"></div></div>
+    <div class="kpi-card k4"><div class="kpi-icon">📊</div><div class="kpi-val" id="kpi-rate">0%</div><div class="kpi-label">수료율</div><div class="kpi-sub" id="kpi-rate-sub"></div></div>
+    <div class="kpi-card k5"><div class="kpi-icon">📝</div><div class="kpi-val" id="kpi-avg">-</div><div class="kpi-label">평균 점수</div><div class="kpi-sub">최종 평가 기준</div></div>
+  </div>
+
+  <!-- Row 1: Grade + Dept -->
+  <div class="charts-2col">
+    <div class="stat-section">
+      <div class="ss-head">
+        <div class="ss-title">🎖 등급별 수강 현황</div>
+        <span class="ss-export no-print" onclick="exportSection('grade')">CSV</span>
+      </div>
+      <div class="bar-chart" id="chart-grade"></div>
+    </div>
+    <div class="stat-section">
+      <div class="ss-head">
+        <div class="ss-title">🗂 부서별 수강 현황</div>
+        <span class="ss-export no-print" onclick="exportSection('dept')">CSV</span>
+      </div>
+      <div class="bar-chart" id="chart-dept"></div>
+    </div>
+  </div>
+
+  <!-- Row 2: Company table -->
+  <div class="stat-section">
+    <div class="ss-head">
+      <div class="ss-title">🏢 기관별 수강 현황</div>
+      <span class="ss-export no-print" onclick="exportSection('org')">CSV</span>
+    </div>
+    <table class="stat-table" id="tbl-org">
+      <thead><tr><th>#</th><th>기관명</th><th>전체</th><th>수강중</th><th>수료</th><th>수료율</th><th>평균점수</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <!-- Row 3: Course + Score dist -->
+  <div class="charts-2col">
+    <div class="stat-section">
+      <div class="ss-head">
+        <div class="ss-title">🎬 강의별 수료 현황</div>
+        <span class="ss-export no-print" onclick="exportSection('course')">CSV</span>
+      </div>
+      <div class="bar-chart" id="chart-course"></div>
+    </div>
+    <div class="stat-section">
+      <div class="ss-head"><div class="ss-title">📈 점수 분포</div></div>
+      <div class="score-dist" id="score-dist"></div>
+      <div style="display:flex;justify-content:space-between;margin-top:4px">
+        <span style="font-size:10px;color:var(--text-light)">0점</span>
+        <span style="font-size:10px;color:var(--text-light)">100점</span>
+      </div>
+      <div style="margin-top:10px;font-size:12px;color:var(--text-mid);text-align:center" id="score-stats"></div>
+    </div>
+  </div>
+
+  <!-- Row 4: Learner detail table -->
+  <div class="stat-section">
+    <div class="ss-head">
+      <div class="ss-title">👤 수강생별 상세 현황</div>
+      <span class="ss-export no-print" onclick="exportSection('detail')">CSV</span>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="stat-table" id="tbl-detail">
+        <thead><tr><th>#</th><th>성명</th><th>등급</th><th>소속</th><th>부서</th><th>배정강의</th><th>진도</th><th>점수</th><th>상태</th><th>수료일</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Signature -->
+  <div class="sig-area">
+    <div class="sig-title">[ 작성 확인 ]</div>
+    <div class="sig-row">
+      <div class="sig-box"><div class="sig-line"></div><div class="sig-lbl">작성자</div></div>
+      <div class="sig-box"><div class="sig-line"></div><div class="sig-lbl">검토자</div></div>
+      <div class="sig-box"><div class="sig-line"></div><div class="sig-lbl">승인자 (AML 책임자)</div></div>
+    </div>
+  </div>
+
+</div><!-- /report-root -->
+
+<script type="module">
+import { DB } from './js/firebase-config.js';
+import { requireAdmin, fmtDate } from './js/utils.js';
+
+requireAdmin();
+
+const GRADE_LABEL = { board:'이사회·임원', aml:'AML 담당자', general:'일반', research:'연구회' };
+const GRADE_COLOR = { board:'#C8960A', aml:'#1A3EA0', general:'#5A6070', research:'#C8302A' };
+const BAR_COLORS  = ['#0C1F3F','#1A3EA0','#2D6A9F','#5A8FBF','#8BB4D4','#C8960A','#E8A020'];
+
+let rawLearners=[], rawCompletions=[], rawCourses={};
+let filtered=[];
+
+// Helpers
+function pct(n,d){ return d?Math.round(n/d*100):0; }
+function gradePill(g){
+  const lbl=GRADE_LABEL[g]||g, col=GRADE_COLOR[g]||'#5A6070';
+  return `<span style="background:${col}1A;color:${col};border:1px solid ${col}44;padding:2px 7px;border-radius:8px;font-size:10.5px;font-weight:600;white-space:nowrap">${lbl}</span>`;
+}
+
+async function init(){
+  document.getElementById('rc-date').textContent = new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'});
+  const [ld,cd,cmp]=await Promise.all([DB.get('learners'),DB.get('courses'),DB.get('completions')]);
+  rawLearners    = ld  ? Object.entries(ld).map(([id,v])=>({...v,_id:id})).filter(l=>l.status!=='pending'&&l.status!=='rejected') : [];
+  rawCourses     = cd  || {};
+  rawCompletions = cmp ? Object.values(cmp) : [];
+  buildFilters();
+  applyFilters();
+}
+
+function buildFilters(){
+  const orgs  = [...new Set(rawLearners.map(l=>l.org||'').filter(Boolean))].sort();
+  const depts = [...new Set(rawLearners.map(l=>l.dept||'').filter(Boolean))].sort();
+  const os = document.getElementById('f-org');
+  const ds = document.getElementById('f-dept');
+  orgs.forEach(o=>{const op=document.createElement('option');op.value=o;op.textContent=o;os.appendChild(op);});
+  depts.forEach(d=>{const op=document.createElement('option');op.value=d;op.textContent=d;ds.appendChild(op);});
+}
+
+window.applyFilters = function(){
+  const org    = document.getElementById('f-org').value;
+  const grade  = document.getElementById('f-grade').value;
+  const dept   = document.getElementById('f-dept').value;
+  const period = document.getElementById('f-period').value;
+  const cutoff = period ? new Date(Date.now()-Number(period)*86400000) : null;
+
+  filtered = rawLearners.filter(l=>{
+    if(org   && l.org  !==org)   return false;
+    if(grade && l.grade!==grade) return false;
+    if(dept  && (l.dept||'')!==dept) return false;
+    if(cutoff && l.createdAt && new Date(l.createdAt)<cutoff) return false;
+    return true;
+  });
+
+  // Update filter desc
+  const parts=[];
+  if(org)   parts.push('기관: '+org);
+  if(grade) parts.push('등급: '+GRADE_LABEL[grade]);
+  if(dept)  parts.push('부서: '+dept);
+  if(period)parts.push('기간: 최근 '+period+'일');
+  document.getElementById('rc-filter-desc').textContent = parts.length ? '필터: '+parts.join(' · ') : '';
+
+  renderAll();
+};
+
+function renderAll(){
+  const total    = filtered.length;
+  const inprog   = filtered.filter(l=>{const s=l.completedStatus||l.status||'';return s==='in_progress'||s==='watched';}).length;
+  const done     = filtered.filter(l=>l.completedStatus==='completed'||l.status==='completed').length;
+  const rate     = pct(done,total);
+  const scores   = filtered.map(l=>l.finalScore).filter(v=>v!=null);
+  const avg      = scores.length ? Math.round(scores.reduce((a,b)=>a+b,0)/scores.length) : null;
+
+  document.getElementById('kpi-total').textContent    = total;
+  document.getElementById('kpi-inprog').textContent   = inprog;
+  document.getElementById('kpi-done').textContent     = done;
+  document.getElementById('kpi-rate').textContent     = rate+'%';
+  document.getElementById('kpi-avg').textContent      = avg!=null ? avg+'점' : '-';
+  document.getElementById('kpi-total-sub').textContent= '승인된 수강생';
+  document.getElementById('kpi-done-sub').textContent = `목표 100%`;
+  document.getElementById('kpi-rate-sub').textContent = rate>=70?'✅ 양호':'⚠️ 개선 필요';
+
+  renderGradeChart();
+  renderDeptChart();
+  renderOrgTable();
+  renderCourseChart();
+  renderScoreDist(scores);
+  renderDetailTable();
+}
+
+// ── Grade chart ──
+function renderGradeChart(){
+  const grades=['board','aml','general','research'];
+  const data=grades.map(g=>{
+    const members=filtered.filter(l=>l.grade===g);
+    const done=members.filter(l=>l.completedStatus==='completed'||l.status==='completed').length;
+    return {label:GRADE_LABEL[g],total:members.length,done,rate:pct(done,members.length),color:GRADE_COLOR[g]};
+  }).filter(d=>d.total>0);
+  const maxT=Math.max(...data.map(d=>d.total),1);
+  document.getElementById('chart-grade').innerHTML=data.map(d=>`
+    <div class="bc-row">
+      <div class="bc-label">${d.label}</div>
+      <div class="bc-bar-wrap">
+        <div class="bc-fill" style="width:${d.total/maxT*100}%;background:${d.color}">${d.total}명</div>
+        <div style="position:absolute;top:0;left:0;height:100%;width:${d.done/maxT*100}%;background:${d.color};opacity:.35;border-radius:3px;pointer-events:none"></div>
+      </div>
+      <div class="bc-count">${d.total}명</div>
+      <div class="bc-rate">${d.rate}%</div>
+    </div>`).join('') || '<div style="text-align:center;padding:20px;color:var(--text-light);font-size:12px">데이터 없음</div>';
+}
+
+// ── Dept chart ──
+function renderDeptChart(){
+  const deptMap={};
+  filtered.forEach(l=>{
+    const k=l.dept||'(부서미상)';
+    if(!deptMap[k]) deptMap[k]={total:0,done:0};
+    deptMap[k].total++;
+    if(l.completedStatus==='completed'||l.status==='completed') deptMap[k].done++;
+  });
+  const data=Object.entries(deptMap).sort((a,b)=>b[1].total-a[1].total).slice(0,8);
+  const maxT=Math.max(...data.map(([,v])=>v.total),1);
+  document.getElementById('chart-dept').innerHTML=data.map(([k,v],i)=>`
+    <div class="bc-row">
+      <div class="bc-label">${k}</div>
+      <div class="bc-bar-wrap">
+        <div class="bc-fill" style="width:${v.total/maxT*100}%;background:${BAR_COLORS[i%BAR_COLORS.length]}">${v.total}명</div>
+      </div>
+      <div class="bc-count">${v.total}명</div>
+      <div class="bc-rate">${pct(v.done,v.total)}%</div>
+    </div>`).join('') || '<div style="text-align:center;padding:20px;color:var(--text-light);font-size:12px">데이터 없음</div>';
+}
+
+// ── Org table ──
+function renderOrgTable(){
+  const orgMap={};
+  filtered.forEach(l=>{
+    const k=l.org||'(소속미상)';
+    if(!orgMap[k]) orgMap[k]={total:0,inprog:0,done:0,scores:[]};
+    orgMap[k].total++;
+    const s=l.completedStatus||l.status||'';
+    if(s==='in_progress'||s==='watched') orgMap[k].inprog++;
+    if(s==='completed') orgMap[k].done++;
+    if(l.finalScore!=null) orgMap[k].scores.push(l.finalScore);
+  });
+  const rows=Object.entries(orgMap).sort((a,b)=>b[1].total-a[1].total);
+  const tbody=document.querySelector('#tbl-org tbody');
+  tbody.innerHTML=rows.map(([org,v],i)=>{
+    const rate=pct(v.done,v.total);
+    const avg=v.scores.length?Math.round(v.scores.reduce((a,b)=>a+b,0)/v.scores.length):null;
+    return `<tr>
+      <td style="color:var(--text-light);font-size:11px">${i+1}</td>
+      <td><strong>${org}</strong></td>
+      <td>${v.total}</td>
+      <td>${v.inprog}</td>
+      <td><span style="font-weight:700;color:var(--success)">${v.done}</span></td>
+      <td>
+        <div class="rate-cell">
+          <div class="rate-bar"><div class="rate-fill done" style="width:${rate}%"></div></div>
+          <span class="rate-pct">${rate}%</span>
+        </div>
+      </td>
+      <td>${avg!=null?avg+'점':'-'}</td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--text-light)">데이터 없음</td></tr>';
+}
+
+// ── Course chart ──
+function renderCourseChart(){
+  const cMap={};
+  filtered.forEach(l=>{
+    (l.assignedCourses||[]).forEach(cid=>{
+      const title=rawCourses[cid]?.title||cid;
+      if(!cMap[title]) cMap[title]={assigned:0,done:0};
+      cMap[title].assigned++;
+      const cs=l.courseStatus?.[cid];
+      if(cs==='completed') cMap[title].done++;
+    });
+  });
+  const data=Object.entries(cMap).sort((a,b)=>b[1].assigned-a[1].assigned).slice(0,6);
+  const maxT=Math.max(...data.map(([,v])=>v.assigned),1);
+  document.getElementById('chart-course').innerHTML=data.map(([title,v],i)=>`
+    <div class="bc-row">
+      <div class="bc-label" title="${title}">${title}</div>
+      <div class="bc-bar-wrap">
+        <div class="bc-fill" style="width:${v.assigned/maxT*100}%;background:${BAR_COLORS[i%BAR_COLORS.length]}">${v.assigned}명</div>
+        <div style="position:absolute;top:0;left:0;height:100%;width:${v.done/maxT*100}%;background:var(--success);opacity:.4;border-radius:3px;pointer-events:none"></div>
+      </div>
+      <div class="bc-count">${v.assigned}명</div>
+      <div class="bc-rate">${pct(v.done,v.assigned)}%</div>
+    </div>`).join('') || '<div style="text-align:center;padding:20px;color:var(--text-light);font-size:12px">배정된 강의 없음</div>';
+}
+
+// ── Score distribution ──
+function renderScoreDist(scores){
+  const bins=Array(10).fill(0); // 0-9, 10-19, ... 90-100
+  scores.forEach(s=>{ const b=Math.min(Math.floor(s/10),9); bins[b]++; });
+  const maxB=Math.max(...bins,1);
+  const el=document.getElementById('score-dist');
+  const labels=['0-9','10-19','20-29','30-39','40-49','50-59','60-69','70-79','80-89','90+'];
+  const colors=bins.map((_,i)=>i>=7?'var(--success)':i>=5?'var(--kasg-gold)':'var(--kasg-red)');
+  el.innerHTML=bins.map((v,i)=>`
+    <div class="sd-col">
+      <div class="sd-val">${v||''}</div>
+      <div class="sd-bar-wrap"><div class="sd-bar" style="height:${v/maxB*100}%;background:${colors[i]}"></div></div>
+      <div class="sd-label">${labels[i]}</div>
+    </div>`).join('');
+  const pass=scores.filter(s=>s>=70).length;
+  document.getElementById('score-stats').textContent = scores.length
+    ? `응시자 ${scores.length}명 · 합격 ${pass}명(${pct(pass,scores.length)}%) · 평균 ${Math.round(scores.reduce((a,b)=>a+b,0)/scores.length)}점`
+    : '시험 응시자 없음';
+}
+
+// ── Detail table ──
+function renderDetailTable(){
+  const tbody=document.querySelector('#tbl-detail tbody');
+  tbody.innerHTML=filtered.map((l,i)=>{
+    const prog=Math.round((l.progress||0)*100);
+    const st=l.completedStatus||l.status||'approved';
+    const stLbl=st==='completed'?'<span style="color:var(--success);font-weight:700">수료</span>':st==='in_progress'||st==='watched'?'<span style="color:var(--kasg-gold);font-weight:600">수강중</span>':'<span style="color:var(--text-light)">미시작</span>';
+    const certDate=l.certDate?fmtDate(new Date(l.certDate)):'-';
+    const assigned=(l.assignedCourses||[]).length;
+    return `<tr>
+      <td style="font-size:10.5px;color:var(--text-light)">${i+1}</td>
+      <td><strong>${l.name}</strong></td>
+      <td>${gradePill(l.grade||'general')}</td>
+      <td>${l.org||'-'}</td>
+      <td>${l.dept||'-'}</td>
+      <td style="text-align:center">${assigned}개</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:7px">
+          <div style="flex:1;height:5px;background:#F1F0EC;border-radius:3px;overflow:hidden;min-width:40px">
+            <div style="height:100%;width:${prog}%;background:var(--navy);border-radius:3px"></div>
+          </div>
+          <span style="font-size:11px;font-weight:600;color:var(--text-mid)">${prog}%</span>
+        </div>
+      </td>
+      <td style="font-weight:600">${l.finalScore!=null?l.finalScore+'점':'-'}</td>
+      <td>${stLbl}</td>
+      <td style="font-size:10.5px;color:var(--text-light)">${certDate}</td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="10" style="text-align:center;padding:20px;color:var(--text-light)">해당 데이터 없음</td></tr>';
+}
+
+// ── CSV Export ──
+function csvDl(filename,rows){
+  const bom='\uFEFF',csv=bom+rows.map(r=>r.map(v=>`"${String(v||'').replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));a.download=filename;a.click();
+}
+
+window.exportAllCSV = function(){
+  const rows=[['성명','등급','소속','부서','배정강의수','진도(%)','점수','상태','수료일','등록일']];
+  filtered.forEach(l=>{
+    const st=l.completedStatus||l.status||'-';
+    rows.push([l.name,GRADE_LABEL[l.grade||'general']||'-',l.org||'',l.dept||'',
+      (l.assignedCourses||[]).length,Math.round((l.progress||0)*100)+'%',
+      l.finalScore!=null?l.finalScore:'',
+      st==='completed'?'수료':st==='in_progress'||st==='watched'?'수강중':'미시작',
+      l.certDate?new Date(l.certDate).toLocaleDateString('ko-KR'):'',
+      l.createdAt?new Date(l.createdAt).toLocaleDateString('ko-KR'):'']);
+  });
+  csvDl('kasg_aml_statistics_'+new Date().toISOString().slice(0,10)+'.csv',rows);
+};
+
+window.exportSection = function(type){
+  let rows=[],filename='';
+  if(type==='org'){
+    rows=[['기관명','전체','수강중','수료','수료율','평균점수']];
+    const orgMap={};
+    filtered.forEach(l=>{
+      const k=l.org||'(소속미상)';
+      if(!orgMap[k]) orgMap[k]={total:0,inprog:0,done:0,scores:[]};
+      orgMap[k].total++;
+      const s=l.completedStatus||l.status||'';
+      if(s==='in_progress'||s==='watched') orgMap[k].inprog++;
+      if(s==='completed') orgMap[k].done++;
+      if(l.finalScore!=null) orgMap[k].scores.push(l.finalScore);
+    });
+    Object.entries(orgMap).forEach(([org,v])=>{
+      const avg=v.scores.length?Math.round(v.scores.reduce((a,b)=>a+b,0)/v.scores.length):'';
+      rows.push([org,v.total,v.inprog,v.done,pct(v.done,v.total)+'%',avg]);
+    });
+    filename='org_stats.csv';
+  } else if(type==='grade'){
+    rows=[['등급','전체','수료','수료율']];
+    ['board','aml','general','research'].forEach(g=>{
+      const members=filtered.filter(l=>l.grade===g);
+      const done=members.filter(l=>l.completedStatus==='completed'||l.status==='completed').length;
+      rows.push([GRADE_LABEL[g],members.length,done,pct(done,members.length)+'%']);
+    });
+    filename='grade_stats.csv';
+  } else if(type==='dept'){
+    rows=[['부서','전체','수료','수료율']];
+    const dm={};
+    filtered.forEach(l=>{const k=l.dept||'(미지정)';if(!dm[k])dm[k]={t:0,d:0};dm[k].t++;if(l.completedStatus==='completed'||l.status==='completed')dm[k].d++;});
+    Object.entries(dm).forEach(([k,v])=>rows.push([k,v.t,v.d,pct(v.d,v.t)+'%']));
+    filename='dept_stats.csv';
+  } else if(type==='course'){
+    rows=[['강의명','배정수','수료','수료율']];
+    const cm={};
+    filtered.forEach(l=>{(l.assignedCourses||[]).forEach(cid=>{const t=rawCourses[cid]?.title||cid;if(!cm[t])cm[t]={a:0,d:0};cm[t].a++;if(l.courseStatus?.[cid]==='completed')cm[t].d++;});});
+    Object.entries(cm).forEach(([t,v])=>rows.push([t,v.a,v.d,pct(v.d,v.a)+'%']));
+    filename='course_stats.csv';
+  } else {
+    window.exportAllCSV(); return;
+  }
+  csvDl(filename,rows);
+};
+
+init();
+</script>
+</body>
+</html>
