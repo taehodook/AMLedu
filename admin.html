@@ -172,6 +172,32 @@ body{background:#ECEAE4;min-height:100vh}
 .import-bank-btn:hover{background:rgba(26,62,160,.1)}
 .quiz-modal .modal-box{width:min(900px,96vw);max-height:92vh;display:flex;flex-direction:column}
 .quiz-modal .modal-body{overflow-y:auto;flex:1}
+
+/* Q add tabs */
+.q-add-tab{padding:5px 14px;font-size:12px;font-weight:600;cursor:pointer;border:none;background:#fff;color:var(--text-mid);transition:all .13s}
+.q-add-tab.active{background:var(--navy);color:#fff}
+.q-add-tab:first-child{border-right:1px solid var(--border)}
+
+/* Q excel upload */
+.q-upload-zone{border:2px dashed var(--border);border-radius:var(--radius);padding:22px;text-align:center;cursor:pointer;transition:all .16s;background:#FAFAF8;position:relative}
+.q-upload-zone:hover{border-color:var(--navy);background:rgba(12,31,63,.04)}
+.q-upload-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.q-excel-tmpl-guide{background:rgba(26,62,160,.05);border:1px solid rgba(26,62,160,.15);border-radius:var(--radius);padding:8px 12px}
+.q-col-chip{padding:2px 8px;background:#fff;border:1px solid var(--border);border-radius:8px;font-size:11px;color:var(--text-mid)}
+
+/* Q excel preview table */
+.qp-wrap{margin-top:10px;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;max-height:260px;overflow-y:auto}
+.qp-table{width:100%;border-collapse:collapse;font-size:11.5px}
+.qp-table th{padding:6px 10px;background:var(--navy);color:rgba(255,255,255,.8);font-size:10.5px;font-weight:600;text-align:left;white-space:nowrap;position:sticky;top:0;z-index:1}
+.qp-table td{padding:6px 10px;border-bottom:1px solid rgba(0,0,0,.05);vertical-align:top}
+.qp-table tr.qp-ok td{background:#F0FFF4}
+.qp-table tr.qp-err td{background:#FEE2E2}
+.qp-status{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:600;padding:1px 6px;border-radius:6px}
+.qp-status.ok{background:#D1FAE5;color:var(--success)}
+.qp-status.err{background:#FEE2E2;color:var(--error)}
+.qp-q-text{max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500;color:var(--navy)}
+.qp-actions{display:flex;align-items:center;gap:7px;margin-top:9px;flex-wrap:wrap}
+.qp-summary{font-size:12.5px;font-weight:600;color:var(--navy)}
 </style>
 </head>
 <body>
@@ -457,20 +483,53 @@ body{background:#ECEAE4;min-height:100vh}
           </div>
           <!-- 문제 추가 폼 -->
           <div style="background:#F8F7F4;border:1.5px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:12px" id="cf-add-q-form">
-            <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:10px">➕ 문제 추가</div>
-            <div class="form-group" style="margin-bottom:8px">
-              <textarea class="mqc-q-input" id="cf-new-q" placeholder="문제를 입력하세요..." style="min-height:56px"></textarea>
+            <!-- 탭 토글 -->
+            <div style="display:flex;gap:0;margin-bottom:12px;border-radius:var(--radius);overflow:hidden;border:1.5px solid var(--border);width:fit-content">
+              <button id="cf-tab-manual" class="q-add-tab active" onclick="switchQTab('cf','manual')">✍️ 직접 입력</button>
+              <button id="cf-tab-excel"  class="q-add-tab"        onclick="switchQTab('cf','excel')">📂 엑셀 업로드</button>
             </div>
-            <div class="opts-grid" id="cf-new-opts-grid">
-              <!-- 보기 4개 (JS 렌더) -->
+
+            <!-- 직접 입력 패널 -->
+            <div id="cf-panel-manual">
+              <div class="form-group" style="margin-bottom:8px">
+                <textarea class="mqc-q-input" id="cf-new-q" placeholder="문제를 입력하세요..." style="min-height:56px"></textarea>
+              </div>
+              <div class="opts-grid" id="cf-new-opts-grid"></div>
+              <div class="form-group" style="margin-bottom:6px">
+                <input class="mqc-expl-input" id="cf-new-expl" placeholder="정답 해설 (선택사항)">
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                <button class="btn btn-sm btn-primary" onclick="addQToBank('cf')">문제 추가</button>
+                <button class="import-bank-btn" onclick="importDefaultBank('cf')">📚 기본 문제 은행 가져오기 (20문항)</button>
+                <span style="font-size:11px;color:var(--text-light)">① 정답 라디오 버튼 선택 필수</span>
+              </div>
             </div>
-            <div class="form-group" style="margin-bottom:6px">
-              <input class="mqc-expl-input" id="cf-new-expl" placeholder="정답 해설 (선택사항)">
-            </div>
-            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-              <button class="btn btn-sm btn-primary" onclick="addQToBank('cf')">문제 추가</button>
-              <button class="import-bank-btn" onclick="importDefaultBank('cf')">📚 기본 문제 은행 가져오기 (20문항)</button>
-              <span style="font-size:11px;color:var(--text-light)">① 정답 라디오 버튼 선택 필수</span>
+
+            <!-- 엑셀 업로드 패널 -->
+            <div id="cf-panel-excel" style="display:none">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;flex-wrap:wrap;gap:6px">
+                <div style="font-size:11.5px;color:var(--text-mid)">엑셀 파일로 문제를 일괄 등록합니다.</div>
+                <button class="btn btn-sm btn-outline" onclick="downloadQTemplate()">📥 양식 다운로드</button>
+              </div>
+              <div class="q-excel-tmpl-guide">
+                <div style="font-size:11px;font-weight:700;color:var(--navy);margin-bottom:5px">📋 엑셀 컬럼</div>
+                <div style="display:flex;flex-wrap:wrap;gap:4px">
+                  <span class="q-col-chip"><strong>문제*</strong></span>
+                  <span class="q-col-chip"><strong>보기1*</strong></span>
+                  <span class="q-col-chip"><strong>보기2*</strong></span>
+                  <span class="q-col-chip"><strong>보기3*</strong></span>
+                  <span class="q-col-chip"><strong>보기4*</strong></span>
+                  <span class="q-col-chip"><strong>정답*</strong> (1~4 숫자)</span>
+                  <span class="q-col-chip">해설 (선택)</span>
+                </div>
+              </div>
+              <div class="q-upload-zone" id="cf-q-upload-zone" style="margin-top:10px">
+                <input type="file" id="cf-q-excel-file" accept=".xlsx,.xls,.csv" onchange="parseQExcel(this.files[0],'cf')">
+                <div style="font-size:22px;margin-bottom:6px">📂</div>
+                <div style="font-size:12.5px;font-weight:600;color:var(--navy)">엑셀 파일 클릭 또는 드래그</div>
+                <div style="font-size:11px;color:var(--text-light);margin-top:3px">.xlsx · .xls · .csv</div>
+              </div>
+              <div id="cf-q-excel-preview"></div>
             </div>
           </div>
           <!-- 문제 목록 -->
@@ -623,13 +682,39 @@ body{background:#ECEAE4;min-height:100vh}
         </div>
         <!-- 문제 추가 폼 -->
         <div style="background:#F8F7F4;border:1.5px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:11px">
-          <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:9px">➕ 문제 추가</div>
-          <textarea class="mqc-q-input" id="ec-new-q" placeholder="문제를 입력하세요..." style="min-height:52px"></textarea>
-          <div class="opts-grid" id="ec-new-opts-grid"></div>
-          <input class="mqc-expl-input" id="ec-new-expl" placeholder="정답 해설 (선택사항)" style="margin-bottom:8px">
-          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:6px">
-            <button class="btn btn-sm btn-primary" onclick="addQToBank('ec')">문제 추가</button>
-            <button class="import-bank-btn" onclick="importDefaultBank('ec')">📚 기본 문제 은행 가져오기</button>
+          <!-- 탭 토글 -->
+          <div style="display:flex;gap:0;margin-bottom:10px;border-radius:var(--radius);overflow:hidden;border:1.5px solid var(--border);width:fit-content">
+            <button id="ec-tab-manual" class="q-add-tab active" onclick="switchQTab('ec','manual')">✍️ 직접 입력</button>
+            <button id="ec-tab-excel"  class="q-add-tab"        onclick="switchQTab('ec','excel')">📂 엑셀 업로드</button>
+          </div>
+
+          <!-- 직접 입력 -->
+          <div id="ec-panel-manual">
+            <textarea class="mqc-q-input" id="ec-new-q" placeholder="문제를 입력하세요..." style="min-height:52px"></textarea>
+            <div class="opts-grid" id="ec-new-opts-grid"></div>
+            <input class="mqc-expl-input" id="ec-new-expl" placeholder="정답 해설 (선택사항)" style="margin-bottom:8px">
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:6px">
+              <button class="btn btn-sm btn-primary" onclick="addQToBank('ec')">문제 추가</button>
+              <button class="import-bank-btn" onclick="importDefaultBank('ec')">📚 기본 문제 은행 가져오기</button>
+            </div>
+          </div>
+
+          <!-- 엑셀 업로드 -->
+          <div id="ec-panel-excel" style="display:none">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:6px">
+              <div style="font-size:11.5px;color:var(--text-mid)">엑셀로 문제를 일괄 등록합니다.</div>
+              <button class="btn btn-sm btn-outline" onclick="downloadQTemplate()">📥 양식 다운로드</button>
+            </div>
+            <div class="q-excel-tmpl-guide">
+              <div style="font-size:11px;font-weight:700;color:var(--navy);margin-bottom:5px">📋 컬럼: 문제 / 보기1~4 / 정답(숫자1~4) / 해설</div>
+            </div>
+            <div class="q-upload-zone" id="ec-q-upload-zone" style="margin-top:9px">
+              <input type="file" id="ec-q-excel-file" accept=".xlsx,.xls,.csv" onchange="parseQExcel(this.files[0],'ec')">
+              <div style="font-size:22px;margin-bottom:5px">📂</div>
+              <div style="font-size:12.5px;font-weight:600;color:var(--navy)">엑셀 파일 클릭 또는 드래그</div>
+              <div style="font-size:11px;color:var(--text-light);margin-top:2px">.xlsx · .xls · .csv</div>
+            </div>
+            <div id="ec-q-excel-preview"></div>
           </div>
         </div>
         <div id="ec-q-list"></div>
@@ -1236,6 +1321,203 @@ window.importDefaultBank=function(pfx){
   renderQBank(pfx);
   updateExamCountWarn(pfx);
   showToast(`${added.length}문항이 추가되었습니다.`,'success');
+};
+
+// ── 탭 전환 ──────────────────────────────────────────────────
+window.switchQTab=function(pfx, tab){
+  document.getElementById(`${pfx}-tab-manual`).classList.toggle('active', tab==='manual');
+  document.getElementById(`${pfx}-tab-excel`).classList.toggle('active', tab==='excel');
+  document.getElementById(`${pfx}-panel-manual`).style.display = tab==='manual' ? '' : 'none';
+  document.getElementById(`${pfx}-panel-excel`).style.display  = tab==='excel'  ? '' : 'none';
+};
+
+// ── 엑셀 양식 다운로드 ────────────────────────────────────────
+window.downloadQTemplate=function(){
+  const wb=XLSX.utils.book_new();
+  const ws=XLSX.utils.aoa_to_sheet([
+    ['문제','보기1','보기2','보기3','보기4','정답(1~4숫자)','해설(선택)'],
+    ['자금세탁방지(AML)의 주요 목적은?',
+     '범죄 수익의 합법화를 차단하여 금융시스템 건전성 보호',
+     '고객 서비스 품질 향상','금융기관의 수익 증대','직원 교육 비용 절감','1',
+     'AML의 핵심 목적은 범죄 수익이 합법 금융시스템에 유입되는 것을 차단합니다.'],
+    ['STR(의심거래보고)의 기준은?',
+     '일정 금액 이상 무조건 보고','자금세탁 위법행위 의심 시 보고',
+     '고객 요청 시 보고','감독원 승인 후 보고','2',
+     'STR은 금액이 아닌 의심 여부를 기준으로 합니다.'],
+    ['KYC에서 필수 확인 사항은?',
+     '취미 및 여가 활동','신원·거래목적·자금출처','학력 및 경력','가족 구성원 수','2',''],
+  ]);
+  ws['!cols']=[{wch:40},{wch:28},{wch:22},{wch:22},{wch:22},{wch:12},{wch:40}];
+  XLSX.utils.book_append_sheet(wb, ws, '최종문제은행');
+
+  // 중간 퀴즈 시트
+  const ws2=XLSX.utils.aoa_to_sheet([
+    ['번호(1~3)','문제','보기1','보기2','보기3','보기4','정답(1~4)','해설'],
+    ['1','자금세탁 3단계 중 배치 단계란?',
+     '금융시스템에 최초 유입','자금 출처 은폐','세탁 자금 재투입','STR 제출','1',''],
+    ['2','Tipping-off 금지 원칙이란?',
+     '수상 거래를 언론에 제보','STR 보고 사실을 고객에게 알리는 것 금지',
+     '내부 보고 금지','언론 제보 권고','2',''],
+    ['3','RBA(위험 기반 접근법)의 핵심은?',
+     '모든 고객 동일 확인','고위험에 자원 집중',
+     '저위험 확인 생략','정형화된 절차 준수','2',''],
+  ]);
+  ws2['!cols']=[{wch:8},{wch:40},{wch:22},{wch:22},{wch:22},{wch:22},{wch:10},{wch:35}];
+  XLSX.utils.book_append_sheet(wb, ws2, '중간퀴즈(선택)');
+
+  XLSX.writeFile(wb,'KASG_문제_등록양식.xlsx');
+};
+
+// ── 엑셀 파싱 (최종 + 중간) ──────────────────────────────────
+window.parseQExcel=function(file, pfx){
+  if(!file) return;
+  const preview=document.getElementById(`${pfx}-q-excel-preview`);
+  preview.innerHTML='<div style="text-align:center;padding:14px;color:var(--text-mid);font-size:12px">📊 파일 분석 중...</div>';
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const wb=XLSX.read(e.target.result,{type:'binary'});
+
+      // ── Sheet 1: 최종 문제 은행 ──
+      const ws=wb.Sheets[wb.SheetNames[0]];
+      const raw=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+      if(raw.length<2){ preview.innerHTML='<div class="alert alert-warn">데이터 행이 없습니다.</div>'; return; }
+
+      const header=raw[0].map(h=>String(h).trim().toLowerCase());
+      const colI=k=>header.findIndex(h=>h.includes(k));
+      const ci={
+        q   : colI('문제'),
+        o1  : header.findIndex(h=>/보기\s*1/.test(h)),
+        o2  : header.findIndex(h=>/보기\s*2/.test(h)),
+        o3  : header.findIndex(h=>/보기\s*3/.test(h)),
+        o4  : header.findIndex(h=>/보기\s*4/.test(h)),
+        ans : header.findIndex(h=>h.includes('정답')||h.includes('답')),
+        expl: header.findIndex(h=>h.includes('해설')||h.includes('설명'))
+      };
+
+      const rows=raw.slice(1).filter(r=>r.some(v=>String(v).trim()));
+      const parsed=rows.map((r,i)=>{
+        const q   =String(ci.q  >=0?r[ci.q]  :'').trim();
+        const o1  =String(ci.o1 >=0?r[ci.o1] :'').trim();
+        const o2  =String(ci.o2 >=0?r[ci.o2] :'').trim();
+        const o3  =String(ci.o3 >=0?r[ci.o3] :'').trim();
+        const o4  =String(ci.o4 >=0?r[ci.o4] :'').trim();
+        const ansR=String(ci.ans>=0?r[ci.ans] :'').trim();
+        const ansN=parseInt(ansR);
+        const expl=String(ci.expl>=0?r[ci.expl]:'').trim();
+        let err='';
+        if(!q)                               err='문제 없음';
+        else if(!o1||!o2||!o3||!o4)         err='보기 누락';
+        else if(isNaN(ansN)||ansN<1||ansN>4) err='정답 오류(1~4)';
+        return {q,opts:[o1,o2,o3,o4],ans:ansN-1,explanation:expl,_row:i+2,_err:err};
+      });
+
+      // ── Sheet 2 (optional): 중간 퀴즈 ──
+      let midDetected=0;
+      if(wb.SheetNames.length>1){
+        const ws2=wb.Sheets[wb.SheetNames[1]];
+        const raw2=XLSX.utils.sheet_to_json(ws2,{header:1,defval:''});
+        const mq=parseMidQuizSheet(raw2);
+        mq.forEach((q,i)=>{ if(q){ qState[pfx].midQuizzes[i]=q; midDetected++; } });
+        if(midDetected>0){
+          renderMidQuizForms(pfx);
+          showToast(`중간 퀴즈 ${midDetected}개 가져옴`,'success');
+        }
+      }
+
+      renderQExcelPreview(parsed, pfx, midDetected);
+    }catch(err2){
+      preview.innerHTML=`<div class="alert alert-warn">파일 파싱 오류: ${err2.message}</div>`;
+    }
+  };
+  reader.readAsBinaryString(file);
+};
+
+function parseMidQuizSheet(raw){
+  if(!raw||raw.length<2) return [null,null,null];
+  const h=raw[0].map(v=>String(v).trim().toLowerCase());
+  const ci={
+    num :h.findIndex(v=>v.includes('번호')||v==='no'||v==='num'),
+    q   :h.findIndex(v=>v.includes('문제')),
+    o1  :h.findIndex(v=>/보기\s*1/.test(v)),
+    o2  :h.findIndex(v=>/보기\s*2/.test(v)),
+    o3  :h.findIndex(v=>/보기\s*3/.test(v)),
+    o4  :h.findIndex(v=>/보기\s*4/.test(v)),
+    ans :h.findIndex(v=>v.includes('정답')||v.includes('답')),
+    expl:h.findIndex(v=>v.includes('해설')||v.includes('설명'))
+  };
+  const result=[null,null,null];
+  raw.slice(1).filter(r=>r.some(v=>String(v).trim())).forEach(r=>{
+    const numRaw=parseInt(String(ci.num>=0?r[ci.num]:'0').trim());
+    const idx=(numRaw>=1&&numRaw<=3)?numRaw-1:-1;
+    if(idx<0) return;
+    const q   =String(ci.q  >=0?r[ci.q]  :'').trim();
+    const o1  =String(ci.o1 >=0?r[ci.o1] :'').trim();
+    const o2  =String(ci.o2 >=0?r[ci.o2] :'').trim();
+    const o3  =String(ci.o3 >=0?r[ci.o3] :'').trim();
+    const o4  =String(ci.o4 >=0?r[ci.o4] :'').trim();
+    const ansN=parseInt(String(ci.ans>=0?r[ci.ans]:'1').trim());
+    const expl=String(ci.expl>=0?r[ci.expl]:'').trim();
+    if(q&&o1&&o2&&o3&&o4&&ansN>=1&&ansN<=4){
+      result[idx]={q,opts:[o1,o2,o3,o4],ans:ansN-1,explanation:expl};
+    }
+  });
+  return result;
+}
+
+function renderQExcelPreview(parsed, pfx, midDetected=0){
+  const preview=document.getElementById(`${pfx}-q-excel-preview`);
+  const ok =parsed.filter(r=>!r._err);
+  const bad=parsed.filter(r=>r._err);
+
+  let html=`<div class="qp-actions"><span class="qp-summary">
+    총 ${parsed.length}행 · <span style="color:var(--success);font-weight:700">${ok.length}문항 유효</span>
+    ${bad.length?`· <span style="color:var(--error)">${bad.length}건 오류</span>`:''}
+    ${midDetected?`· <span style="color:var(--navy)">⚡중간퀴즈 ${midDetected}개</span>`:''}
+  </span>`;
+  if(ok.length>0){
+    // Store parsed data in a temporary dataset to avoid innerHTML attribute encoding issues
+    html+=`<button class="btn btn-primary btn-sm" id="${pfx}-import-btn" data-pfx="${pfx}">✅ ${ok.length}문항 추가</button>`;
+  }
+  html+=`<button class="btn btn-outline btn-sm" onclick="clearQExcel('${pfx}')">✕ 초기화</button></div>`;
+
+  html+=`<div class="qp-wrap"><table class="qp-table">
+    <thead><tr><th>행</th><th>문제</th><th>보기1</th><th>보기2</th><th>보기3</th><th>보기4</th><th>정답</th><th>해설</th><th>상태</th></tr></thead>
+    <tbody>${parsed.map(r=>`<tr class="${r._err?'qp-err':'qp-ok'}">
+      <td style="font-size:10.5px;color:var(--text-light)">${r._row}</td>
+      <td><div class="qp-q-text" title="${r.q.replace(/"/g,'&quot;')}">${r.q||'-'}</div></td>
+      ${r.opts.map(o=>`<td style="font-size:10.5px;color:var(--text-mid);max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${o.replace(/"/g,'&quot;')}">${o||'-'}</td>`).join('')}
+      <td style="text-align:center;font-weight:700;color:var(--navy)">${r._err?'-':(r.ans+1)+'번'}</td>
+      <td style="font-size:10px;color:var(--text-light);max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.explanation||'-'}</td>
+      <td>${r._err?`<span class="qp-status err">⚠ ${r._err}</span>`:'<span class="qp-status ok">✓</span>'}</td>
+    </tr>`).join('')}</tbody></table></div>`;
+
+  preview.innerHTML=html;
+
+  // Attach click handler using stored data (avoids JSON encoding in HTML attr)
+  const importBtn=document.getElementById(`${pfx}-import-btn`);
+  if(importBtn){
+    importBtn._okRows=ok;
+    importBtn.addEventListener('click',function(){
+      const questions=this._okRows;
+      const dupes=questions.filter(q=>qState[pfx].bank.find(e=>e.q===q.q)).length;
+      let msg=`${questions.length}문항을 문제 은행에 추가합니다.`;
+      if(dupes>0) msg+=`\n(중복 ${dupes}건 포함)`;
+      if(!confirm(msg)) return;
+      qState[pfx].bank.push(...questions.map(({q,opts,ans,explanation})=>({q,opts,ans,explanation:explanation||''})));
+      renderQBank(pfx);
+      updateExamCountWarn(pfx);
+      showToast(`${questions.length}문항 추가 완료`,'success');
+      clearQExcel(pfx);
+    });
+  }
+}
+
+window.clearQExcel=function(pfx){
+  const fileEl=document.getElementById(`${pfx}-q-excel-file`);
+  if(fileEl) fileEl.value='';
+  const prev=document.getElementById(`${pfx}-q-excel-preview`);
+  if(prev) prev.innerHTML='';
 };
 
 // ── COURSES ──────────────────────────────────────────────────
