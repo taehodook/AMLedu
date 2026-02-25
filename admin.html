@@ -107,9 +107,46 @@ body{background:#ECEAE4;min-height:100vh}
 .course-check-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all .12s}
 .course-check-item:hover{border-color:var(--navy);background:rgba(12,31,63,.02)}
 .course-check-item.checked{border-color:var(--navy);background:rgba(12,31,63,.04)}
-.course-check-item input{width:14px;height:14px;accent-color:var(--navy);cursor:pointer;flex-shrink:0}
+.course-check-item input[type="checkbox"]{width:14px;height:14px;accent-color:var(--navy);cursor:pointer;flex-shrink:0}
 .cck-title{font-size:12.5px;font-weight:600;color:var(--navy)}
 .cck-meta{font-size:10.5px;color:var(--text-mid)}
+
+/* Assign with deadline */
+.assign-course-row{border:1.5px solid var(--border);border-radius:var(--radius);margin-bottom:7px;overflow:hidden;transition:border-color .12s}
+.assign-course-row.checked{border-color:var(--navy)}
+.acr-top{display:flex;align-items:center;gap:10px;padding:9px 12px;cursor:pointer;background:#fff;transition:background .12s}
+.acr-top:hover{background:rgba(12,31,63,.02)}
+.assign-course-row.checked .acr-top{background:rgba(12,31,63,.03)}
+.acr-deadline{padding:8px 12px;border-top:1px dashed var(--border);background:#F8F7F4;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.dl-label{font-size:11.5px;color:var(--navy);font-weight:600;flex-shrink:0}
+.dl-input{padding:5px 9px;border:1.5px solid var(--border);border-radius:var(--radius);font-size:12.5px;color:var(--navy);cursor:pointer}
+.dl-input:focus{border-color:var(--navy);outline:none}
+.dl-clear{background:none;border:none;cursor:pointer;color:var(--text-light);font-size:11px;padding:2px 6px;border-radius:3px}
+.dl-clear:hover{color:var(--error);background:#FEE2E2}
+.dl-badge{font-size:10px;padding:2px 7px;border-radius:8px;font-weight:600}
+.dl-badge.urgent{background:#FEE2E2;color:var(--error)}
+.dl-badge.soon{background:#FEF3C7;color:#7A4F00}
+.dl-badge.ok{background:#D1FAE5;color:var(--success)}
+
+/* Email / notification */
+.email-notif-panel{background:#F8F7F4;border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px}
+.enp-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px}
+.enp-title{font-size:13px;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:7px}
+.enp-desc{font-size:11.5px;color:var(--text-mid);margin-bottom:12px;line-height:1.6}
+.notif-row{display:flex;align-items:center;justify-content:space-between;padding:8px 11px;background:#fff;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:6px}
+.notif-row:last-child{margin-bottom:0}
+.notif-label{font-size:12.5px;color:var(--text);display:flex;align-items:center;gap:7px}
+.notif-cnt{font-size:11px;color:var(--text-light)}
+.notif-actions{display:flex;gap:6px;align-items:center}
+.btn-send-now{padding:4px 11px;border:1.5px solid var(--kasg-blue);border-radius:var(--radius);font-size:11.5px;font-weight:600;color:var(--kasg-blue);background:rgba(26,62,160,.04);cursor:pointer;transition:all .13s}
+.btn-send-now:hover{background:var(--kasg-blue);color:#fff}
+.btn-send-now:disabled{opacity:.4;cursor:not-allowed}
+.toggle-switch{position:relative;width:38px;height:21px;flex-shrink:0}
+.toggle-switch input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;inset:0;background:#DDD;border-radius:21px;cursor:pointer;transition:.2s}
+.toggle-slider:before{content:'';position:absolute;height:15px;width:15px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.2s}
+.toggle-switch input:checked+.toggle-slider{background:var(--success)}
+.toggle-switch input:checked+.toggle-slider:before{transform:translateX(17px)}
 
 /* Bulk assign */
 .agb-btn{padding:5px 12px;border-radius:12px;font-size:11.5px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:#fff;color:var(--text-mid);transition:all .12s}
@@ -338,7 +375,7 @@ body{background:#ECEAE4;min-height:100vh}
       </div>
       <div class="tbl-wrap" style="overflow-x:auto">
         <table class="data-table" style="min-width:960px">
-          <thead><tr><th>성명</th><th>등급</th><th>소속·부서</th><th>배정강의</th><th>진도</th><th>점수</th><th>상태</th><th>등록일</th><th style="text-align:center;min-width:200px">관리</th></tr></thead>
+          <thead><tr><th>성명</th><th>등급</th><th>소속·부서</th><th>이메일</th><th>배정강의</th><th>진도</th><th>점수</th><th>상태</th><th>등록일</th><th style="text-align:center;min-width:200px">관리</th></tr></thead>
           <tbody id="learners-tbody"></tbody>
         </table>
       </div>
@@ -592,6 +629,82 @@ body{background:#ECEAE4;min-height:100vh}
           <div class="form-group"><label class="form-label">최대 재시험 횟수</label><input class="form-input" type="number" id="max-attempts" value="2" min="1" max="5"></div>
           <button class="btn btn-primary btn-sm" onclick="saveSettings()">저장</button>
         </div>
+
+        <!-- 이메일 발신 설정 -->
+        <div class="sbox" style="grid-column:1/-1">
+          <div class="sbox-t">📧 이메일 알림 설정</div>
+          <div class="alert alert-info" style="margin-bottom:14px;font-size:12px">
+            수강기한 알림 이메일은 <strong>EmailJS</strong>를 통해 발송됩니다.
+            아래에 EmailJS 서비스 정보를 입력하고 저장하세요.
+            알림은 매일 1회 관리자가 <strong>「알림 실행」</strong>을 클릭하거나, 자동 실행(브라우저 탭 열어두기)으로 동작합니다.
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px">
+            <div class="form-group">
+              <label class="form-label">EmailJS Service ID</label>
+              <input class="form-input" id="ejs-service" placeholder="service_xxxxxxx">
+            </div>
+            <div class="form-group">
+              <label class="form-label">EmailJS Template ID</label>
+              <input class="form-input" id="ejs-template" placeholder="template_xxxxxxx">
+            </div>
+            <div class="form-group">
+              <label class="form-label">EmailJS Public Key</label>
+              <input class="form-input" id="ejs-pubkey" placeholder="xxxxxxxxxxxxxxxxxxxx">
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom:12px">
+            <label class="form-label">발신자 이름 (메일에 표시)</label>
+            <input class="form-input" id="ejs-sender-name" placeholder="한국자금세탁방지연구회 교육팀" style="max-width:340px">
+          </div>
+          <div style="display:flex;gap:8px;margin-bottom:14px">
+            <button class="btn btn-primary btn-sm" onclick="saveEmailSettings()">💾 저장</button>
+            <button class="btn btn-outline btn-sm" onclick="loadEmailSettings()">↺ 불러오기</button>
+          </div>
+
+          <!-- 알림 트리거 -->
+          <div style="font-size:12.5px;font-weight:700;color:var(--navy);margin-bottom:9px">📬 수강기한 알림 발송</div>
+          <div class="enp-desc">수강기한이 <strong>10일·5일·1일·당일</strong>인 수강생에게 자동으로 알림 이메일을 발송합니다.</div>
+
+          <div class="notif-row">
+            <div class="notif-label">🔴 오늘 마감 수강생 <span class="notif-cnt" id="cnt-d0"></span></div>
+            <div class="notif-actions">
+              <button class="btn-send-now" onclick="sendDeadlineNotif(0)">📧 즉시 발송</button>
+            </div>
+          </div>
+          <div class="notif-row">
+            <div class="notif-label">🟠 1일 전 수강생 <span class="notif-cnt" id="cnt-d1"></span></div>
+            <div class="notif-actions">
+              <button class="btn-send-now" onclick="sendDeadlineNotif(1)">📧 즉시 발송</button>
+            </div>
+          </div>
+          <div class="notif-row">
+            <div class="notif-label">🟡 5일 전 수강생 <span class="notif-cnt" id="cnt-d5"></span></div>
+            <div class="notif-actions">
+              <button class="btn-send-now" onclick="sendDeadlineNotif(5)">📧 즉시 발송</button>
+            </div>
+          </div>
+          <div class="notif-row">
+            <div class="notif-label">🔵 10일 전 수강생 <span class="notif-cnt" id="cnt-d10"></span></div>
+            <div class="notif-actions">
+              <button class="btn-send-now" onclick="sendDeadlineNotif(10)">📧 즉시 발송</button>
+            </div>
+          </div>
+
+          <div style="margin-top:12px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+            <button class="btn btn-primary" onclick="runAllDeadlineNotifs()" id="btn-run-all-notifs">
+              🚀 전체 알림 일괄 실행 (10·5·1·당일)
+            </button>
+            <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--text-mid)">
+              <label class="toggle-switch">
+                <input type="checkbox" id="auto-notif-toggle" onchange="toggleAutoNotif(this.checked)">
+                <span class="toggle-slider"></span>
+              </label>
+              <span>자동 알림 활성화 <span style="font-size:10.5px">(페이지를 열어둔 동안 매일 자정 자동 실행)</span></span>
+            </div>
+          </div>
+          <div id="notif-log" style="margin-top:10px;max-height:120px;overflow-y:auto;font-size:11px;color:var(--text-light);background:#F8F7F4;border-radius:var(--radius);padding:8px 10px;display:none"></div>
+        </div>
+
         <div class="sbox" style="grid-column:1/-1">
           <div class="sbox-t">🔗 Firebase 설정</div>
           <div class="alert alert-warn" style="margin:0;font-size:12px">
@@ -711,11 +824,15 @@ body{background:#ECEAE4;min-height:100vh}
     <div class="modal-header"><span class="modal-title">✏️ 수강생 정보·등급 수정</span><button class="modal-close" onclick="closeModal('modal-edit-learner')">✕</button></div>
     <div class="modal-body">
       <input type="hidden" id="el-id">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
         <div class="form-group"><label class="form-label">성명</label><input class="form-input" id="el-name"></div>
         <div class="form-group"><label class="form-label">소속</label><input class="form-input" id="el-org"></div>
         <div class="form-group"><label class="form-label">부서</label><input class="form-input" id="el-dept"></div>
         <div class="form-group"><label class="form-label">연락처</label><input class="form-input" id="el-phone"></div>
+      </div>
+      <div class="form-group" style="margin-bottom:14px">
+        <label class="form-label">이메일 <span style="font-size:10px;color:var(--kasg-blue)">(수강기한 알림 수신)</span></label>
+        <input class="form-input" type="email" id="el-email" placeholder="example@company.com">
       </div>
       <div class="form-group">
         <label class="form-label">수강생 등급 <span style="font-size:10px;color:var(--kasg-red);font-weight:600">(관리자 지정)</span></label>
@@ -744,17 +861,21 @@ body{background:#ECEAE4;min-height:100vh}
 
 <!-- Assign Courses -->
 <div class="modal-backdrop hidden assign-modal" id="modal-assign">
-  <div class="modal-box">
-    <div class="modal-header"><span class="modal-title">📋 강의 배정 — <span id="assign-name"></span></span><button class="modal-close" onclick="closeModal('modal-assign')">✕</button></div>
-    <div class="modal-body">
-      <div style="margin-bottom:11px;font-size:12px;color:var(--text-mid)">
-        등급: <strong id="assign-grade-lbl"></strong> · 체크된 강의가 수강생에게 배정됩니다.
+  <div class="modal-box" style="width:min(680px,96vw);max-height:90vh;display:flex;flex-direction:column">
+    <div class="modal-header">
+      <span class="modal-title">📋 강의 배정 — <span id="assign-name"></span></span>
+      <button class="modal-close" onclick="closeModal('modal-assign')">✕</button>
+    </div>
+    <div class="modal-body" style="overflow-y:auto;flex:1;padding:16px 20px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap">
+        <div style="font-size:12px;color:var(--text-mid)">등급: <strong id="assign-grade-lbl"></strong></div>
+        <div style="font-size:11px;color:var(--text-light);margin-left:auto">강의별 수강기한을 설정하면 이메일 알림이 자동 발송됩니다</div>
       </div>
-      <div class="course-check-list" id="assign-course-list"></div>
+      <div id="assign-course-list"></div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-outline btn-sm" onclick="closeModal('modal-assign')">취소</button>
-      <button class="btn btn-primary" onclick="doAssign()">저장</button>
+      <button class="btn btn-primary" onclick="doAssign()">💾 저장</button>
     </div>
   </div>
 </div>
@@ -980,6 +1101,7 @@ window.go=function(el){
   const m={overview:'loadOverview',pending:'loadPending',learners:'loadLearners',
     assign:'loadAssign',completions:'loadCompletions',courses:'loadCourses',
     'bulk-register':'loadBulkRegister','add-course':'initAddCourseForm',
+    'settings':'loadSettings',
     'org-admins':'loadOrgAdmins'};
   if(m[el.dataset.sec]) window[m[el.dataset.sec]]();
 };
@@ -1083,6 +1205,7 @@ function renderLearners(list){
       <td><strong>${l.name}</strong><br><span style="font-size:10px;color:var(--text-light);font-family:'DM Mono',monospace">${l._id}</span></td>
       <td>${gradePill(l.grade||'general')}</td>
       <td>${l.org||'-'}${l.dept?'<br><span style="font-size:10px;color:var(--text-light)">'+l.dept+'</span>':''}</td>
+      <td style="font-size:11px;color:var(--text-mid)">${l.email?`<a href="mailto:${l.email}" style="color:var(--kasg-blue)">${l.email}</a>`:'<span style="color:var(--error);font-size:10px">미등록</span>'}</td>
       <td><span class="badge badge-info">${(l.assignedCourses||[]).length}개</span></td>
       <td><div style="display:flex;align-items:center;gap:6px">
         <div class="progress-wrap" style="height:4px;width:55px"><div class="progress-fill" style="width:${prog}%"></div></div>
@@ -1098,7 +1221,7 @@ function renderLearners(list){
         ${SUPER ? `<button class="tbl-btn tb-delete" onclick="deleteLearner('${l._id}','${l.name}')">🗑</button>` : ''}
         ${!window._canEditLearner && !SUPER ? '<span style="font-size:11px;color:var(--text-light)">열람 전용</span>' : ''}
       </div></td></tr>`;
-  }).join(''):'<tr class="empty-row"><td colspan="9">수강생 없음</td></tr>';
+  }).join(''):'<tr class="empty-row"><td colspan="10">수강생 없음</td></tr>';
 }
 window.filterLearners=function(){
   const q=document.getElementById('lf-search').value.toLowerCase();
@@ -1121,11 +1244,12 @@ window.filterLearners=function(){
 // ── Edit Learner / Grade ──
 window.openEditLearner=function(id){
   const l=allLearners.find(x=>x._id===id);if(!l)return;
-  document.getElementById('el-id').value   =id;
-  document.getElementById('el-name').value =l.name||'';
-  document.getElementById('el-org').value  =l.org||'';
-  document.getElementById('el-dept').value =l.dept||'';
-  document.getElementById('el-phone').value=l.phone||'';
+  document.getElementById('el-id').value    =id;
+  document.getElementById('el-name').value  =l.name||'';
+  document.getElementById('el-org').value   =l.org||'';
+  document.getElementById('el-dept').value  =l.dept||'';
+  document.getElementById('el-phone').value =l.phone||'';
+  document.getElementById('el-email').value =l.email||'';
   document.querySelectorAll('#el-grade-grid input[name="el-grade"]').forEach(r=>{r.checked=r.value===(l.grade||'general');});
   document.getElementById('modal-edit-learner').classList.remove('hidden');
 };
@@ -1135,8 +1259,9 @@ window.doEditLearner=async function(){
   const org  =document.getElementById('el-org').value.trim();
   const dept =document.getElementById('el-dept').value.trim();
   const phone=document.getElementById('el-phone').value.trim();
+  const email=document.getElementById('el-email').value.trim();
   const grade=document.querySelector('#el-grade-grid input[name="el-grade"]:checked')?.value||'general';
-  await DB.update(`learners/${id}`,{name,org,dept,phone,grade,gradeLabel:GRADE_LABEL[grade]});
+  await DB.update(`learners/${id}`,{name,org,dept,phone,email,grade,gradeLabel:GRADE_LABEL[grade]});
   showToast('수정 완료','success');closeModal('modal-edit-learner');loadLearners();
 };
 
@@ -1268,23 +1393,61 @@ window.openAssign=function(id){
   document.getElementById('assign-grade-lbl').textContent=GRADE_LABEL[l.grade||'general'];
   const courses=Object.entries(allCourses);
   const current=new Set(l.assignedCourses||[]);
+  const deadlines=l.courseDeadlines||{};
   document.getElementById('assign-course-list').innerHTML=courses.length
-    ?courses.map(([cid,c])=>`
-      <div class="course-check-item ${current.has(cid)?'checked':''}" onclick="toggleCourseCheck(this)">
-        <input type="checkbox" data-cid="${cid}" ${current.has(cid)?'checked':''} onclick="event.stopPropagation()">
-        <div><div class="cck-title">${c.title}</div><div class="cck-meta">🕐 ${c.duration||'?'}시간 · ${c.purpose||'-'}</div></div>
-      </div>`).join('')
+    ?courses.map(([cid,c])=>{
+      const checked=current.has(cid);
+      const dl=deadlines[cid]||'';
+      return `<div class="assign-course-row ${checked?'checked':''}" id="acr-${cid}">
+        <div class="acr-top" onclick="toggleACR('${cid}')">
+          <input type="checkbox" data-cid="${cid}" ${checked?'checked':''} onclick="event.stopPropagation();this.closest('.assign-course-row').classList.toggle('checked',this.checked)">
+          <div style="flex:1">
+            <div class="cck-title">${c.title}</div>
+            <div class="cck-meta">🕐 ${c.duration||'?'}시간 · ${c.purpose||'-'}</div>
+          </div>
+          ${dl?`<span class="dl-badge ${getDlBadgeClass(dl)}">📅 ${dl}</span>`:'<span style="font-size:10.5px;color:var(--text-light)">기한 미설정</span>'}
+        </div>
+        <div class="acr-deadline">
+          <span class="dl-label">📅 수강기한:</span>
+          <input type="date" class="dl-input" data-deadline-cid="${cid}" value="${dl}"
+            min="${new Date().toISOString().slice(0,10)}">
+          <button class="dl-clear" onclick="document.querySelector('[data-deadline-cid=${cid}]').value=''">✕ 기한 삭제</button>
+          <span style="font-size:11px;color:var(--text-light)">마감 10·5·1일전·당일 이메일 발송</span>
+        </div>
+      </div>`;
+    }).join('')
     :'<div style="text-align:center;padding:20px;color:var(--text-light)">등록된 강의 없음</div>';
   document.getElementById('modal-assign').classList.remove('hidden');
+};
+function getDlBadgeClass(dl){
+  if(!dl) return '';
+  const diff=Math.round((new Date(dl)-new Date())/86400000);
+  if(diff<0) return 'urgent';
+  if(diff<=5) return 'soon';
+  return 'ok';
+}
+window.toggleACR=function(cid){
+  const row=document.getElementById(`acr-${cid}`);
+  const cb=row.querySelector('input[type=checkbox]');
+  cb.checked=!cb.checked;
+  row.classList.toggle('checked',cb.checked);
 };
 window.toggleCourseCheck=function(el){
   el.classList.toggle('checked');
   el.querySelector('input[type=checkbox]').checked=el.classList.contains('checked');
 };
 window.doAssign=async function(){
-  const checked=[...document.querySelectorAll('#assign-course-list input[type=checkbox]:checked')].map(el=>el.dataset.cid).filter(Boolean);
-  await DB.update(`learners/${assignTargetId}`,{assignedCourses:checked});
-  showToast('강의 배정 저장 완료','success');closeModal('modal-assign');loadLearners();loadAssign();
+  const checked=[...document.querySelectorAll('#assign-course-list input[type=checkbox][data-cid]:checked')].map(el=>el.dataset.cid).filter(Boolean);
+  // 수강기한 수집
+  const deadlines={};
+  document.querySelectorAll('#assign-course-list input[data-deadline-cid]').forEach(el=>{
+    if(el.value) deadlines[el.dataset.deadlineCid]=el.value;
+  });
+  await DB.update(`learners/${assignTargetId}`,{assignedCourses:checked,courseDeadlines:deadlines});
+  showToast('강의 배정 및 수강기한 저장 완료','success');
+  closeModal('modal-assign');loadLearners();loadAssign();
+  // 배정 완료 후 마감알림 카운트 업데이트
+  updateDeadlineCounts();
 };
 
 // ── ASSIGN section ──
@@ -2046,6 +2209,176 @@ window.saveSettings=async function(){
   showToast('저장 완료','success');
 };
 
+// ── EMAIL SETTINGS ──────────────────────────────────────────────
+window.saveEmailSettings=async function(){
+  const cfg={
+    serviceId:  document.getElementById('ejs-service').value.trim(),
+    templateId: document.getElementById('ejs-template').value.trim(),
+    pubKey:     document.getElementById('ejs-pubkey').value.trim(),
+    senderName: document.getElementById('ejs-sender-name').value.trim()||'KASG 교육팀',
+  };
+  if(!cfg.serviceId||!cfg.templateId||!cfg.pubKey){alert('Service ID, Template ID, Public Key를 모두 입력하세요.');return;}
+  await DB.set('emailSettings',cfg);
+  showToast('이메일 설정 저장 완료','success');
+  // EmailJS 재초기화
+  if(window.emailjs) emailjs.init(cfg.pubKey);
+};
+window.loadEmailSettings=async function(){
+  const cfg=await DB.get('emailSettings');
+  if(!cfg){showToast('저장된 이메일 설정 없음','warn');return;}
+  document.getElementById('ejs-service').value     =cfg.serviceId||'';
+  document.getElementById('ejs-template').value    =cfg.templateId||'';
+  document.getElementById('ejs-pubkey').value      =cfg.pubKey||'';
+  document.getElementById('ejs-sender-name').value =cfg.senderName||'';
+  if(window.emailjs&&cfg.pubKey) emailjs.init(cfg.pubKey);
+  showToast('이메일 설정 불러옴','success');
+  updateDeadlineCounts();
+};
+
+// ── DEADLINE NOTIFICATION ENGINE ───────────────────────────────
+// 오늘 기준 D-N인 수강생 + 강의 목록 반환
+function getDeadlineTargets(daysLeft){
+  const today=new Date(); today.setHours(0,0,0,0);
+  const targets=[];
+  allLearners.forEach(l=>{
+    if(l.status==='pending'||l.status==='rejected') return;
+    const deadlines=l.courseDeadlines||{};
+    Object.entries(deadlines).forEach(([cid,dl])=>{
+      if(!dl) return;
+      const due=new Date(dl); due.setHours(0,0,0,0);
+      const diff=Math.round((due-today)/86400000);
+      if(diff!==daysLeft) return;
+      // 이미 수료한 강의는 제외
+      const cs=l.courseStatus?.[cid];
+      if(cs==='completed') return;
+      // 이메일 있는 경우만
+      if(!l.email) return;
+      const course=allCourses[cid];
+      if(!course) return;
+      targets.push({learner:l, courseId:cid, course, deadline:dl, daysLeft:diff});
+    });
+  });
+  return targets;
+}
+
+window.updateDeadlineCounts=function(){
+  [0,1,5,10].forEach(d=>{
+    const el=document.getElementById(`cnt-d${d}`);
+    if(el){ const n=getDeadlineTargets(d).length; el.textContent=n?`(${n}명)`:''; }
+  });
+};
+
+function addNotifLog(msg){
+  const log=document.getElementById('notif-log');
+  if(!log) return;
+  log.style.display='';
+  const ts=new Date().toLocaleTimeString('ko-KR');
+  log.innerHTML+=`<div>[${ts}] ${msg}</div>`;
+  log.scrollTop=log.scrollHeight;
+}
+
+async function getEmailConfig(){
+  const cfg=await DB.get('emailSettings');
+  if(!cfg||!cfg.serviceId||!cfg.templateId||!cfg.pubKey){
+    showToast('이메일 설정을 먼저 저장하세요 (⚙️ 설정 메뉴)','warn');return null;
+  }
+  if(window.emailjs) emailjs.init(cfg.pubKey);
+  return cfg;
+}
+
+async function sendOneEmail(cfg, learner, course, deadline, daysLeft){
+  const pageOrigin=window.location.origin+window.location.pathname.replace('admin.html','');
+  const courseLink=`${pageOrigin}player.html`;
+  const dLabel=daysLeft===0?'오늘이 마감입니다':
+               daysLeft===1?'내일이 마감입니다':
+               `${daysLeft}일 후 마감입니다`;
+  try{
+    await emailjs.send(cfg.serviceId, cfg.templateId, {
+      to_name:    learner.name,
+      to_email:   learner.email,
+      from_name:  cfg.senderName||'KASG 교육팀',
+      course_title: course.title,
+      deadline_date: deadline,
+      days_left:  dLabel,
+      course_link: courseLink,
+      learner_id: learner._id,
+      learner_org: learner.org||'-',
+    });
+    // 발송 기록 저장
+    const logKey=`emailLogs/${learner._id}_${course.title.replace(/\s/g,'_')}_d${daysLeft}_${deadline}`;
+    await DB.set(logKey,{sentAt:new Date().toISOString(),daysLeft,email:learner.email});
+    return true;
+  }catch(e){
+    return false;
+  }
+}
+
+window.sendDeadlineNotif=async function(daysLeft){
+  const cfg=await getEmailConfig(); if(!cfg) return;
+  const targets=getDeadlineTargets(daysLeft);
+  if(!targets.length){showToast(`D-${daysLeft}: 해당 수강생 없음`,'info');return;}
+  const label=daysLeft===0?'당일 마감':`D-${daysLeft}`;
+  if(!confirm(`${label} 수강생 ${targets.length}명에게 이메일을 발송합니까?`)) return;
+  const btn=event.target; btn.disabled=true; btn.textContent='발송 중...';
+  let ok=0,fail=0;
+  for(const t of targets){
+    const res=await sendOneEmail(cfg,t.learner,t.course,t.deadline,t.daysLeft);
+    res?ok++:fail++;
+    addNotifLog(`${res?'✅':'❌'} ${t.learner.name} (${t.learner.email}) — ${t.course.title} [${label}]`);
+  }
+  showToast(`발송 완료: 성공 ${ok}건 / 실패 ${fail}건`,fail>0?'warn':'success');
+  btn.disabled=false; btn.textContent='📧 즉시 발송';
+};
+
+window.runAllDeadlineNotifs=async function(){
+  const cfg=await getEmailConfig(); if(!cfg) return;
+  const allTargets=[0,1,5,10].flatMap(d=>getDeadlineTargets(d));
+  if(!allTargets.length){showToast('발송 대상 수강생 없음','info');return;}
+  if(!confirm(`총 ${allTargets.length}건 이메일을 일괄 발송합니까?\n(10·5·1일 전·당일 마감 수강생)`)) return;
+  const btn=document.getElementById('btn-run-all-notifs');
+  btn.disabled=true; btn.textContent='⏳ 발송 중...';
+  let ok=0,fail=0;
+  for(const t of allTargets){
+    const res=await sendOneEmail(cfg,t.learner,t.course,t.deadline,t.daysLeft);
+    res?ok++:fail++;
+    addNotifLog(`${res?'✅':'❌'} ${t.learner.name} — ${t.course.title} [D-${t.daysLeft}]`);
+  }
+  // 오늘 실행 기록
+  await DB.set('lastNotifRun',{date:new Date().toISOString().slice(0,10),ok,fail});
+  showToast(`일괄 발송 완료: ✅${ok} / ❌${fail}`,fail>0?'warn':'success');
+  btn.disabled=false; btn.textContent='🚀 전체 알림 일괄 실행 (10·5·1·당일)';
+};
+
+// 자동 알림 (자정 체크)
+let _autoNotifTimer=null;
+window.toggleAutoNotif=async function(on){
+  if(_autoNotifTimer){clearTimeout(_autoNotifTimer);_autoNotifTimer=null;}
+  if(!on) return;
+  const stored=await DB.get('lastNotifRun');
+  const today=new Date().toISOString().slice(0,10);
+  if(stored?.date===today){
+    addNotifLog(`ℹ️ 오늘(${today}) 이미 발송 완료. 내일 자정에 재실행됩니다.`);
+  } else {
+    addNotifLog('🔄 자동 알림 활성화 — 오늘 알림 실행 중...');
+    await runAllDeadlineNotifs();
+  }
+  // 다음 자정까지 대기
+  const now=new Date();
+  const midnight=new Date(now); midnight.setDate(midnight.getDate()+1); midnight.setHours(0,5,0,0);
+  const ms=midnight-now;
+  _autoNotifTimer=setTimeout(()=>{ if(document.getElementById('auto-notif-toggle')?.checked) window.runAllDeadlineNotifs(); },ms);
+  addNotifLog(`⏰ 다음 자동 실행: ${midnight.toLocaleString('ko-KR')}`);
+};
+
+// settings 섹션 진입 시 설정 불러오기 및 카운트 업데이트
+window.loadSettings=async function(){
+  await loadEmailSettings();
+  const cfg=await DB.get('settings')||{};
+  if(cfg.passScore) document.getElementById('pass-score').value=cfg.passScore;
+  if(cfg.maxAttempts) document.getElementById('max-attempts').value=cfg.maxAttempts;
+  updateDeadlineCounts();
+};
+
 window.initAddCourseForm=function(){
   if(document.getElementById('cf-mid-quizzes')?.children.length>0) return;
   qState.cf.midQuizzes=[null,null,null];
@@ -2082,6 +2415,8 @@ window.exportCompletions=function(){
 loadOverview();
 setTimeout(()=>window.initAddCourseForm(),200);
 </script>
+<!-- EmailJS SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </body>
 </html>
 

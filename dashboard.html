@@ -170,7 +170,8 @@ async function init() {
     listEl.innerHTML = `<div class="empty-courses">
       <div class="empty-icon">📭</div>
       <div class="empty-title">배정된 강의가 없습니다</div>
-      <div class="empty-sub">관리자가 회원님의 등급과 소속에 맞는<br>강의를 배정하면 이곳에 표시됩니다.</div>
+      <div class="empty-sub">관리자가 강의를 배정하면 이곳에 표시됩니다.<br>
+      수강기한 알림은 등록 이메일로 자동 발송됩니다.</div>
     </div>`;
     return;
   }
@@ -195,14 +196,38 @@ async function init() {
       : '<span class="badge badge-neutral">🆕 미시작</span>';
     const btnLbl = cs==='completed'?'재수강':cs==='in_progress'||cs==='watched'?'이어보기':'수강 시작';
     const btnCls = cs==='completed'?'btn-outline':'btn-primary';
+
+    // 수강기한 표시
+    const dl = learner?.courseDeadlines?.[c.id];
+    let deadlineBadge = '';
+    if (dl) {
+      const today = new Date(); today.setHours(0,0,0,0);
+      const due   = new Date(dl); due.setHours(0,0,0,0);
+      const diff  = Math.round((due - today) / 86400000);
+      if (cs !== 'completed') {
+        if (diff < 0) {
+          deadlineBadge = `<span class="c-tag" style="background:#FEE2E2;color:var(--error);font-weight:700">⛔ 기한 만료</span>`;
+        } else if (diff === 0) {
+          deadlineBadge = `<span class="c-tag" style="background:#FEE2E2;color:var(--error);font-weight:700">🔴 오늘 마감</span>`;
+        } else if (diff <= 5) {
+          deadlineBadge = `<span class="c-tag" style="background:#FEF3C7;color:#7A4F00;font-weight:700">⚠️ D-${diff}</span>`;
+        } else {
+          deadlineBadge = `<span class="c-tag" style="color:var(--text-light)">📅 ${due.getFullYear()}.${String(due.getMonth()+1).padStart(2,'0')}.${String(due.getDate()).padStart(2,'0')} 까지</span>`;
+        }
+      } else {
+        deadlineBadge = `<span class="c-tag" style="color:var(--text-light)">📅 ${due.getFullYear()}.${String(due.getMonth()+1).padStart(2,'0')}.${String(due.getDate()).padStart(2,'0')}</span>`;
+      }
+    }
+
     return `<div class="course-card" onclick="goCourse('${c.id}')">
       <div class="course-thumb">🎬</div>
       <div class="course-body">
         <div class="course-title">${c.title}</div>
         <div class="course-tags">
           <span class="c-tag">🕐 ${c.duration||'?'}시간</span>
-          <span class="c-tag">📋 20문항</span>
+          <span class="c-tag">📋 ${c.examCount||20}문항</span>
           ${badge}
+          ${deadlineBadge}
         </div>
         <div class="c-prog">
           <div class="prog-bar"><div class="progress-wrap" style="height:4px"><div class="progress-fill" style="width:${pct}%"></div></div></div>
