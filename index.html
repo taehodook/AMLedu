@@ -6,56 +6,54 @@
 <title>로그인 — KASG AML 교육 시스템</title>
 <link rel="stylesheet" href="css/main.css">
 <style>
-body{background:linear-gradient(150deg,#050D1F 0%,#0C1F3F 55%,#091428 100%);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;position:relative;overflow:hidden}
-body::before{content:'';position:absolute;width:700px;height:700px;border-radius:50%;border:1px solid rgba(200,150,10,.05);top:-280px;right:-180px;pointer-events:none}
-body::after{content:'';position:absolute;width:500px;height:500px;border-radius:50%;border:1px solid rgba(200,48,42,.04);bottom:-220px;left:-120px;pointer-events:none}
-.auth-wrap{width:440px;max-width:100%;position:relative;z-index:1}
-.auth-logo{text-align:center;margin-bottom:20px}
-.auth-logo img{height:48px;margin:0 auto 7px}
-.auth-logo-sub{font-size:10px;color:rgba(255,255,255,.35);letter-spacing:2px;text-transform:uppercase}
-.auth-card{background:#fff;border-radius:var(--radius-lg);overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,.55);border-top:5px solid var(--kasg-gold);animation:cardIn .4s ease}
-@keyframes cardIn{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:none}}
+body{background:linear-gradient(150deg,#050D1F 0%,#0C1F3F 55%,#091428 100%);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;position:relative;overflow-y:auto}
+body::before{content:'';position:absolute;width:600px;height:600px;border-radius:50%;border:1px solid rgba(200,150,10,.05);top:-240px;right:-160px;pointer-events:none}
+.auth-wrap{width:400px;max-width:100%;position:relative;z-index:1;margin:auto}
+.auth-logo{text-align:center;margin-bottom:12px}
+.auth-logo img{height:38px;margin:0 auto 5px}
+.auth-logo-sub{font-size:9px;color:rgba(255,255,255,.3);letter-spacing:2px;text-transform:uppercase}
+.auth-card{background:#fff;border-radius:var(--radius-lg);overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.55);border-top:4px solid var(--kasg-gold);animation:cardIn .35s ease}
+@keyframes cardIn{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:none}}
 .auth-tabs{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--border)}
-.auth-tab{padding:13px;text-align:center;font-size:13px;font-weight:500;cursor:pointer;color:var(--text-mid);border-bottom:3px solid transparent;margin-bottom:-1px;transition:all .18s}
+.auth-tab{padding:10px;text-align:center;font-size:12.5px;font-weight:500;cursor:pointer;color:var(--text-mid);border-bottom:3px solid transparent;margin-bottom:-1px;transition:all .18s}
 .auth-tab.active{color:var(--navy);border-bottom-color:var(--kasg-gold);font-weight:700}
-.auth-body{padding:22px 28px 26px}
+.auth-body{padding:16px 20px 18px}
 .tab-panel{display:none}
-.tab-panel.active{display:block;animation:fadeIn .2s ease}
+.tab-panel.active{display:block;animation:fadeIn .18s ease}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-.panel-title{font-family:'Noto Serif KR',serif;font-size:16px;font-weight:700;color:var(--navy);text-align:center;margin-bottom:16px}
-.err-box{background:#FEE2E2;color:var(--error);padding:9px 13px;border-radius:var(--radius);font-size:12px;margin-bottom:12px;border-left:3px solid var(--error);display:none}
+.panel-title{font-family:'Noto Serif KR',serif;font-size:14px;font-weight:700;color:var(--navy);text-align:center;margin-bottom:12px}
+.err-box{background:#FEE2E2;color:var(--error);padding:7px 10px;border-radius:var(--radius);font-size:11px;margin-bottom:9px;border-left:3px solid var(--error);display:none}
 .err-box.show{display:block}
-.ok-box{background:#D1FAE5;color:var(--success);padding:9px 13px;border-radius:var(--radius);font-size:12px;margin-bottom:12px;border-left:3px solid var(--success);display:none}
+.ok-box{background:#D1FAE5;color:var(--success);padding:7px 10px;border-radius:var(--radius);font-size:11px;margin-bottom:9px;border-left:3px solid var(--success);display:none}
 .ok-box.show{display:block}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.auth-body .form-group{margin-bottom:8px}
+.auth-body .form-label{font-size:11px;margin-bottom:3px;display:block;font-weight:600;color:var(--text-mid)}
+.auth-body .form-input{padding:7px 10px;font-size:12px;height:34px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .pw-wrap{position:relative}
-.pw-wrap input{padding-right:36px}
-.pw-eye{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-light);font-size:14px;padding:0}
-.auth-footer{padding:10px 28px;background:var(--cream);border-top:1px solid var(--border);font-size:10px;color:var(--text-light);text-align:center}
-.admin-link{text-align:center;margin-top:10px;font-size:11px;color:rgba(255,255,255,.35)}
-.admin-link a{color:rgba(255,255,255,.55);cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.pw-wrap input{padding-right:32px}
+.pw-eye{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-light);font-size:12px;padding:0}
+.reg-notice{background:rgba(12,31,63,.04);border:1px solid rgba(12,31,63,.1);border-radius:var(--radius);padding:6px 10px;font-size:10px;color:var(--text-mid);margin-bottom:9px;line-height:1.5}
+.auth-footer{padding:7px 20px;background:var(--cream);border-top:1px solid var(--border);font-size:9px;color:var(--text-light);text-align:center}
+.admin-link{text-align:center;margin-top:7px;font-size:10px;color:rgba(255,255,255,.3)}
+.admin-link a{color:rgba(255,255,255,.45);cursor:pointer;text-decoration:underline;text-underline-offset:2px}
 .admin-link a:hover{color:var(--kasg-gold)}
-.pending-notice{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:var(--radius);padding:10px 14px;font-size:11px;color:rgba(255,255,255,.45);text-align:center;margin-top:12px;line-height:1.6}
-.pending-notice strong{color:rgba(255,255,255,.65)}
 </style>
 </head>
 <body>
-
 <div class="auth-wrap">
   <div class="auth-logo">
     <img src="assets/logo-wide.png" alt="KASG">
     <div class="auth-logo-sub">AML Online Education System</div>
   </div>
-
   <div class="auth-card">
     <div class="auth-tabs">
       <div class="auth-tab active" onclick="switchTab('login')" id="tab-btn-login">로그인</div>
-      <div class="auth-tab" onclick="switchTab('register')" id="tab-btn-register">수강 신청</div>
+      <div class="auth-tab" onclick="switchTab('register')" id="tab-btn-register">회원 가입</div>
     </div>
-
     <div class="auth-body">
 
-      <!-- ── LOGIN ── -->
+      <!-- LOGIN -->
       <div class="tab-panel active" id="tab-login">
         <div class="panel-title">수강생 로그인</div>
         <div class="err-box" id="login-err"></div>
@@ -63,7 +61,7 @@ body::after{content:'';position:absolute;width:500px;height:500px;border-radius:
           <label class="form-label">아이디</label>
           <input class="form-input" id="l-id" type="text" placeholder="아이디 입력" autocomplete="username">
         </div>
-        <div class="form-group">
+        <div class="form-group" style="margin-bottom:13px">
           <label class="form-label">비밀번호</label>
           <div class="pw-wrap">
             <input class="form-input" id="l-pw" type="password" placeholder="비밀번호" autocomplete="current-password">
@@ -73,29 +71,20 @@ body::after{content:'';position:absolute;width:500px;height:500px;border-radius:
         <button class="btn btn-primary btn-lg btn-block" onclick="doLogin()" id="login-btn">로그인</button>
       </div>
 
-      <!-- ── REGISTER ── -->
+      <!-- REGISTER -->
       <div class="tab-panel" id="tab-register">
-        <div class="panel-title">수강 신청</div>
+        <div class="panel-title">회원 가입</div>
         <div class="err-box" id="reg-err"></div>
-        <div class="ok-box" id="reg-ok">✅ 신청 완료! 관리자 승인 후 수강 가능합니다.</div>
-
-        <div class="form-group">
-          <label class="form-label">아이디 * <span style="font-size:10px;font-weight:400;color:var(--text-light)">(영문·숫자·@·_ 사용)</span></label>
-          <input class="form-input" id="r-id" type="text" placeholder="예: hong@company.com">
-        </div>
+        <div class="ok-box" id="reg-ok">✅ 가입 완료! 관리자 승인 후 로그인 가능합니다.</div>
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label">성명 *</label>
-            <input class="form-input" id="r-name" type="text" placeholder="실명 입력">
+            <label class="form-label">아이디 *</label>
+            <input class="form-input" id="r-id" type="text" placeholder="영문·숫자·_">
           </div>
           <div class="form-group">
-            <label class="form-label">연락처</label>
-            <input class="form-input" id="r-phone" type="tel" placeholder="010-0000-0000">
+            <label class="form-label">성명 *</label>
+            <input class="form-input" id="r-name" type="text" placeholder="홍길동">
           </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">이메일 * <span style="font-size:10px;font-weight:400;color:var(--text-light)">(수강기한 알림 수신)</span></label>
-          <input class="form-input" id="r-email" type="email" placeholder="example@company.com">
         </div>
         <div class="form-row">
           <div class="form-group">
@@ -107,10 +96,19 @@ body::after{content:'';position:absolute;width:500px;height:500px;border-radius:
             <input class="form-input" id="r-dept" type="text" placeholder="부서명">
           </div>
         </div>
-
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label">비밀번호 * <span style="font-size:10px;font-weight:400">(8자↑)</span></label>
+            <label class="form-label">연락처</label>
+            <input class="form-input" id="r-phone" type="tel" placeholder="010-0000-0000">
+          </div>
+          <div class="form-group">
+            <label class="form-label">이메일 * <span style="color:var(--kasg-blue);font-weight:400">(알림수신)</span></label>
+            <input class="form-input" id="r-email" type="email" placeholder="example@co.kr">
+          </div>
+        </div>
+        <div class="form-row" style="margin-bottom:9px">
+          <div class="form-group">
+            <label class="form-label">비밀번호 * <span style="font-weight:400">(8자↑)</span></label>
             <div class="pw-wrap">
               <input class="form-input" id="r-pw" type="password" placeholder="비밀번호">
               <button class="pw-eye" onclick="togglePw('r-pw',this)" type="button">👁</button>
@@ -121,26 +119,17 @@ body::after{content:'';position:absolute;width:500px;height:500px;border-radius:
             <input class="form-input" id="r-pw2" type="password" placeholder="재입력">
           </div>
         </div>
-
-        <div class="alert alert-warn" style="margin-bottom:12px;font-size:11.5px;padding:8px 12px">
-          ⚠️ 신청 후 <strong>관리자 승인 및 강의 배정</strong>이 완료되면 수강 가능합니다.<br>
-          <span style="font-size:10.5px;color:var(--text-mid)">등록 이메일로 수강기한 알림을 발송합니다.</span>
-        </div>
-        <button class="btn btn-gold btn-lg btn-block" onclick="doRegister()" id="reg-btn">수강 신청하기</button>
+        <div class="reg-notice">⚠️ 가입 후 <strong>관리자 승인</strong> 완료 시 로그인·강의 신청이 가능합니다.</div>
+        <button class="btn btn-gold btn-lg btn-block" onclick="doRegister()" id="reg-btn">가입 신청</button>
       </div>
 
     </div>
     <div class="auth-footer">© 2025 한국자금세탁방지연구회 · Korea Anti-money Laundering Study Group</div>
   </div>
-
-  <div class="pending-notice">
-    <strong>관리자 등록 계정</strong>은 초기 비밀번호를 별도 안내받으세요.
-  </div>
   <div class="admin-link">관리자 <a onclick="window.location.href='admin-login.html'">→ 관리자 로그인</a></div>
 </div>
 
 <div id="toast-container"></div>
-
 <script type="module">
 import { DB } from './js/firebase-config.js';
 import { showToast } from './js/utils.js';
@@ -148,19 +137,17 @@ import { showToast } from './js/utils.js';
 if (sessionStorage.getItem('kasg_user')) window.location.href = 'dashboard.html';
 
 window.switchTab = function(t) {
-  document.getElementById('tab-btn-login').classList.toggle('active', t==='login');
-  document.getElementById('tab-btn-register').classList.toggle('active', t==='register');
-  document.getElementById('tab-login').classList.toggle('active', t==='login');
-  document.getElementById('tab-register').classList.toggle('active', t==='register');
+  ['login','register'].forEach(r => {
+    document.getElementById(`tab-btn-${r}`).classList.toggle('active', r===t);
+    document.getElementById(`tab-${r}`).classList.toggle('active', r===t);
+  });
 };
-
 window.togglePw = function(id, btn) {
   const el = document.getElementById(id);
   el.type = el.type==='password' ? 'text' : 'password';
   btn.textContent = el.type==='password' ? '👁' : '🙈';
 };
 
-// ── LOGIN ──
 window.doLogin = async function() {
   const id = document.getElementById('l-id').value.trim();
   const pw = document.getElementById('l-pw').value;
@@ -175,7 +162,7 @@ window.doLogin = async function() {
     if (!learner || learner.pw !== pw) {
       errEl.textContent='아이디 또는 비밀번호가 올바르지 않습니다.'; errEl.classList.add('show');
     } else if (learner.status==='pending') {
-      errEl.textContent='⏳ 관리자 승인 대기 중입니다. 잠시 기다려 주세요.'; errEl.classList.add('show');
+      errEl.textContent='⏳ 관리자 승인 대기 중입니다.'; errEl.classList.add('show');
     } else if (learner.status==='rejected') {
       errEl.textContent='❌ 가입이 거절된 상태입니다. 관리자에게 문의하세요.'; errEl.classList.add('show');
     } else {
@@ -185,13 +172,10 @@ window.doLogin = async function() {
       }));
       window.location.href = 'dashboard.html';
     }
-  } catch(e) {
-    errEl.textContent='연결 오류: '+e.message; errEl.classList.add('show');
-  }
+  } catch(e) { errEl.textContent='연결 오류: '+e.message; errEl.classList.add('show'); }
   btn.disabled=false; btn.textContent='로그인';
 };
 
-// ── REGISTER ──
 window.doRegister = async function() {
   const id    = document.getElementById('r-id').value.trim();
   const name  = document.getElementById('r-name').value.trim();
@@ -205,10 +189,10 @@ window.doRegister = async function() {
   const okEl  = document.getElementById('reg-ok');
   errEl.classList.remove('show'); okEl.classList.remove('show');
 
-  if (!id||!name||!org)   { errEl.textContent='아이디, 성명, 소속을 입력하세요.'; errEl.classList.add('show'); return; }
+  if (!id||!name||!org)             { errEl.textContent='아이디, 성명, 소속을 입력하세요.'; errEl.classList.add('show'); return; }
   if (!email||!email.includes('@')) { errEl.textContent='올바른 이메일 주소를 입력하세요.'; errEl.classList.add('show'); return; }
-  if (pw.length < 8)      { errEl.textContent='비밀번호는 8자 이상이어야 합니다.'; errEl.classList.add('show'); return; }
-  if (pw !== pw2)         { errEl.textContent='비밀번호가 일치하지 않습니다.'; errEl.classList.add('show'); return; }
+  if (pw.length < 8)                { errEl.textContent='비밀번호는 8자 이상이어야 합니다.'; errEl.classList.add('show'); return; }
+  if (pw !== pw2)                   { errEl.textContent='비밀번호가 일치하지 않습니다.'; errEl.classList.add('show'); return; }
 
   const btn = document.getElementById('reg-btn');
   btn.disabled=true; btn.textContent='신청 중...';
@@ -216,24 +200,22 @@ window.doRegister = async function() {
     const key = id.replace(/[.#$[\]]/g,'_');
     if (await DB.get(`learners/${key}`)) {
       errEl.textContent='이미 사용 중인 아이디입니다.'; errEl.classList.add('show');
-      btn.disabled=false; btn.textContent='수강 신청하기'; return;
+      btn.disabled=false; btn.textContent='가입 신청'; return;
     }
     await DB.set(`learners/${key}`, {
-      id: key, name, org, dept, phone, email, pw,
-      grade: 'general', gradeLabel: '일반',
-      status: 'pending', approved: false,
-      assignedCourses: [],
-      progress: 0, midQuizCorrect:0, midQuizTotal:0,
-      finalScore: null, attempt: 0,
-      certNo: null, certDate: null,
-      createdAt: new Date().toISOString()
+      id:key, name, org, dept, phone, email, pw,
+      grade:'general', gradeLabel:'일반',
+      status:'pending', approved:false,
+      assignedCourses:[],
+      progress:0, midQuizCorrect:0, midQuizTotal:0,
+      finalScore:null, attempt:0,
+      certNo:null, certDate:null,
+      createdAt:new Date().toISOString()
     });
     okEl.classList.add('show');
-    ['r-id','r-name','r-email','r-org','r-dept','r-phone','r-pw','r-pw2'].forEach(i => document.getElementById(i).value='');
-  } catch(e) {
-    errEl.textContent='오류: '+e.message; errEl.classList.add('show');
-  }
-  btn.disabled=false; btn.textContent='수강 신청하기';
+    ['r-id','r-name','r-email','r-org','r-dept','r-phone','r-pw','r-pw2'].forEach(i=>document.getElementById(i).value='');
+  } catch(e) { errEl.textContent='오류: '+e.message; errEl.classList.add('show'); }
+  btn.disabled=false; btn.textContent='가입 신청';
 };
 
 document.addEventListener('keydown', e => {

@@ -6,59 +6,106 @@
 <title>수강 대시보드 — KASG LMS</title>
 <link rel="stylesheet" href="css/main.css">
 <style>
-body{background:#EDE9E1;min-height:100vh}
-.dash-wrap{max-width:1080px;margin:0 auto;padding:28px 20px}
-.dash-hero{background:var(--navy);border-radius:var(--radius-lg);padding:26px 32px;margin-bottom:24px;position:relative;overflow:hidden;border-left:6px solid var(--kasg-gold)}
-.dash-hero::after{content:'';position:absolute;right:0;top:0;bottom:0;width:180px;background:url('assets/logo-circle.png') center/80px no-repeat;opacity:.05}
-.hero-welcome{font-family:'Noto Serif KR',serif;font-size:22px;font-weight:700;color:#fff;margin-bottom:4px}
-.hero-sub{color:rgba(255,255,255,.5);font-size:12.5px}
-.hero-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
-.hero-chip{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.08);padding:5px 12px;border-radius:16px;color:rgba(255,255,255,.75);font-size:11.5px}
-.grade-pill{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:14px;font-size:11px;font-weight:700;letter-spacing:.3px}
-.grade-board   {background:rgba(200,150,10,.2);color:var(--kasg-gold);border:1px solid rgba(200,150,10,.3)}
-.grade-aml     {background:rgba(26,62,160,.2);color:#6B9DFF;border:1px solid rgba(100,150,255,.25)}
-.grade-general {background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.15)}
+body{background:#ECEAE4;min-height:100vh}
+
+/* ── 헤더 칩 ── */
+.grade-pill{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:12px;font-size:11px;font-weight:700}
+.grade-board  {background:rgba(200,150,10,.18);color:var(--kasg-gold);border:1px solid rgba(200,150,10,.3)}
+.grade-aml    {background:rgba(26,62,160,.18);color:#6B9DFF;border:1px solid rgba(100,150,255,.25)}
+.grade-general{background:rgba(255,255,255,.12);color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.2)}
 .grade-research{background:rgba(200,48,42,.15);color:#FF8A85;border:1px solid rgba(200,48,42,.2)}
-.dash-layout{display:grid;grid-template-columns:1fr 300px;gap:20px}
-@media(max-width:800px){.dash-layout{grid-template-columns:1fr}}
 
-/* Course card */
-.course-card{background:#fff;border-radius:var(--radius-lg);overflow:hidden;display:flex;border-left:5px solid var(--kasg-gold);box-shadow:var(--shadow-sm);transition:transform .18s,box-shadow .18s;cursor:pointer}
+/* ── 히어로 ── */
+.dash-hero{background:var(--navy);padding:18px 28px 16px;border-bottom:3px solid var(--kasg-gold)}
+.hero-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.hero-welcome{font-family:'Noto Serif KR',serif;font-size:17px;font-weight:700;color:#fff}
+.hero-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.hero-chip{display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.07);padding:3px 10px;border-radius:12px;color:rgba(255,255,255,.65);font-size:11px}
+
+/* ── 탭 ── */
+.dash-tabs{display:flex;background:#fff;border-bottom:2px solid var(--border);padding:0 24px}
+.dash-tab{padding:11px 16px;font-size:12.5px;font-weight:600;color:var(--text-mid);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .15s;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.dash-tab:hover{color:var(--navy)}
+.dash-tab.active{color:var(--navy);border-bottom-color:var(--kasg-gold)}
+.dash-tab .tab-badge{background:var(--kasg-red);color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:8px;min-width:14px;text-align:center}
+
+/* ── 콘텐츠 영역 ── */
+.dash-body{max-width:1000px;margin:0 auto;padding:22px 20px}
+.tab-pane{display:none}
+.tab-pane.active{display:block}
+
+/* ── 강의 카드 ── */
+.course-card{background:#fff;border-radius:var(--radius-lg);overflow:hidden;display:flex;border-left:5px solid var(--kasg-gold);box-shadow:var(--shadow-sm);transition:transform .15s,box-shadow .15s;cursor:pointer;margin-bottom:10px}
+.course-card:last-child{margin-bottom:0}
 .course-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
-.course-thumb{width:100px;flex-shrink:0;background:linear-gradient(135deg,var(--navy),var(--navy-mid));display:flex;align-items:center;justify-content:center;font-size:32px}
-.course-body{flex:1;padding:14px 16px;min-width:0}
-.course-title{font-family:'Noto Serif KR',serif;font-size:14px;font-weight:700;color:var(--navy);margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.course-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
-.c-tag{padding:2px 8px;background:var(--cream);border-radius:10px;font-size:10.5px;color:var(--text-mid)}
-.c-prog{display:flex;align-items:center;gap:9px}
-.prog-bar{flex:1;height:4px}
+.course-thumb{width:72px;flex-shrink:0;background:linear-gradient(135deg,var(--navy),var(--navy-mid));display:flex;align-items:center;justify-content:center;font-size:26px}
+.course-body{flex:1;padding:12px 14px;min-width:0}
+.course-title{font-family:'Noto Serif KR',serif;font-size:13.5px;font-weight:700;color:var(--navy);margin-bottom:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.course-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:7px}
+.c-tag{padding:2px 7px;background:var(--cream);border-radius:9px;font-size:10px;color:var(--text-mid)}
+.c-prog{display:flex;align-items:center;gap:8px}
 .prog-pct{font-size:11px;font-weight:600;color:var(--navy);min-width:28px}
-.course-action{padding:14px;display:flex;align-items:center;flex-shrink:0}
-.empty-courses{background:#fff;border-radius:var(--radius-lg);padding:48px 32px;text-align:center;box-shadow:var(--shadow-sm)}
-.empty-icon{font-size:40px;margin-bottom:12px}
-.empty-title{font-family:'Noto Serif KR',serif;font-size:16px;font-weight:700;color:var(--navy);margin-bottom:6px}
-.empty-sub{font-size:13px;color:var(--text-mid);line-height:1.6}
+.course-action{padding:12px;display:flex;align-items:center;flex-shrink:0}
 
-/* Sidebar */
-.my-status{background:#fff;border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-sm)}
-.my-status-hd{background:var(--navy);padding:13px 16px;font-family:'Noto Serif KR',serif;font-size:13px;font-weight:700;color:#fff}
-.status-rows{padding:12px 16px}
-.s-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(0,0,0,.04);font-size:12.5px}
+/* ── 강의 신청 ── */
+.apply-card{background:#fff;border-radius:var(--radius-lg);overflow:hidden;border:1.5px solid var(--border);box-shadow:var(--shadow-sm);margin-bottom:10px;transition:border-color .15s}
+.apply-card:hover{border-color:var(--navy)}
+.apply-card-body{display:flex;align-items:center;gap:14px;padding:13px 16px}
+.apply-thumb{width:54px;height:54px;border-radius:var(--radius);background:linear-gradient(135deg,var(--navy),var(--navy-mid));display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.apply-info{flex:1;min-width:0}
+.apply-title{font-family:'Noto Serif KR',serif;font-size:13px;font-weight:700;color:var(--navy);margin-bottom:3px}
+.apply-meta{font-size:11px;color:var(--text-mid)}
+.apply-btn{padding:7px 16px;border-radius:var(--radius);font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid var(--navy);background:var(--navy);color:#fff;transition:all .13s;white-space:nowrap;flex-shrink:0}
+.apply-btn:hover{background:var(--navy-mid)}
+.apply-btn.applied{background:rgba(12,31,63,.06);color:var(--text-mid);border-color:var(--border);cursor:default}
+.apply-btn.approved{background:rgba(16,185,129,.1);color:var(--success);border-color:var(--success);cursor:default}
+
+/* ── 신청 현황 뱃지 ── */
+.status-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:9px;font-size:10.5px;font-weight:600}
+.sb-pending {background:#FEF3C7;color:#7A4F00}
+.sb-approved{background:#D1FAE5;color:var(--success)}
+.sb-rejected{background:#FEE2E2;color:var(--error)}
+.sb-assigned{background:rgba(26,62,160,.1);color:#1A3EA0}
+
+/* ── 수료 현황 ── */
+.cert-card{background:#fff;border-radius:var(--radius-lg);padding:14px 18px;box-shadow:var(--shadow-sm);border-left:4px solid var(--kasg-gold);margin-bottom:10px;display:flex;align-items:center;gap:16px}
+.cert-icon{font-size:28px;flex-shrink:0}
+.cert-info{flex:1}
+.cert-title{font-family:'Noto Serif KR',serif;font-size:13.5px;font-weight:700;color:var(--navy)}
+.cert-meta{font-size:11px;color:var(--text-mid);margin-top:3px}
+.cert-score{font-size:18px;font-weight:700;color:var(--success);flex-shrink:0}
+
+/* ── 사이드 현황 ── */
+.dash-layout{display:grid;grid-template-columns:1fr 260px;gap:18px}
+@media(max-width:780px){.dash-layout{grid-template-columns:1fr}}
+.my-status{background:#fff;border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-sm);position:sticky;top:16px}
+.my-status-hd{background:var(--navy);padding:11px 15px;font-size:12.5px;font-weight:700;color:#fff;font-family:'Noto Serif KR',serif}
+.status-rows{padding:10px 15px}
+.s-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(0,0,0,.05);font-size:12px}
 .s-row:last-child{border-bottom:none}
 .s-key{color:var(--text-mid)}
 .s-val{font-weight:600;color:var(--text)}
-.cert-cta{background:linear-gradient(135deg,var(--kasg-gold),#DAA010);border-radius:var(--radius-lg);padding:18px;text-align:center;cursor:pointer;transition:transform .18s;box-shadow:0 4px 14px rgba(200,150,10,.28);margin-top:14px}
+.cert-cta{background:linear-gradient(135deg,var(--kasg-gold),#DAA010);border-radius:var(--radius-lg);padding:15px;text-align:center;cursor:pointer;transition:transform .15s;box-shadow:0 4px 14px rgba(200,150,10,.28);margin-top:12px}
 .cert-cta:hover{transform:translateY(-2px)}
-.cert-cta .icon{font-size:28px;margin-bottom:5px}
-.cert-cta .t{font-family:'Noto Serif KR',serif;font-size:14px;font-weight:700;color:var(--navy)}
-.cert-cta .s{font-size:11px;color:rgba(12,31,63,.65);margin-top:2px}
-.guide{background:#fff;border-radius:var(--radius-lg);padding:16px;box-shadow:var(--shadow-sm);margin-top:14px}
-.guide-t{font-size:12.5px;font-weight:700;color:var(--navy);margin-bottom:9px}
-.guide-step{display:flex;align-items:flex-start;gap:8px;font-size:11.5px;color:var(--text-mid);padding:4px 0;line-height:1.5}
-.step-n{width:18px;height:18px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0;margin-top:1px}
+.cert-cta .icon{font-size:24px;margin-bottom:4px}
+.cert-cta .t{font-family:'Noto Serif KR',serif;font-size:13px;font-weight:700;color:var(--navy)}
+.cert-cta .s{font-size:10px;color:rgba(12,31,63,.65);margin-top:1px}
+
+/* ── 빈 상태 ── */
+.empty-state{background:#fff;border-radius:var(--radius-lg);padding:40px 24px;text-align:center;box-shadow:var(--shadow-sm)}
+.empty-icon{font-size:36px;margin-bottom:10px}
+.empty-title{font-family:'Noto Serif KR',serif;font-size:15px;font-weight:700;color:var(--navy);margin-bottom:6px}
+.empty-sub{font-size:12px;color:var(--text-mid);line-height:1.7}
+
+/* ── 안내 가이드 ── */
+.guide{background:#fff;border-radius:var(--radius-lg);padding:13px 15px;box-shadow:var(--shadow-sm);margin-top:12px}
+.guide-t{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:8px}
+.guide-step{display:flex;align-items:flex-start;gap:7px;font-size:11px;color:var(--text-mid);padding:3px 0;line-height:1.5}
+.step-n{width:16px;height:16px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;flex-shrink:0;margin-top:1px}
 </style>
 </head>
 <body>
+
 <header class="site-header">
   <div class="header-brand">
     <img class="header-logo-img" src="assets/logo-wide.png" alt="KASG">
@@ -69,39 +116,80 @@ body{background:#EDE9E1;min-height:100vh}
   </div>
 </header>
 
-<div class="dash-wrap">
-  <!-- Hero -->
-  <div class="dash-hero">
+<!-- 히어로 -->
+<div class="dash-hero">
+  <div class="hero-top">
     <div class="hero-welcome" id="hero-welcome">환영합니다!</div>
-    <div class="hero-sub">한국자금세탁방지연구회 AML 온라인 교육 시스템</div>
-    <div class="hero-chips">
-      <div class="hero-chip">📅 <span id="hero-date"></span></div>
-      <div class="hero-chip">🎯 수료기준: 70점 이상</div>
-      <div class="hero-chip" id="grade-chip"></div>
-    </div>
   </div>
+  <div class="hero-meta">
+    <div class="hero-chip">📅 <span id="hero-date"></span></div>
+    <div class="hero-chip">🎯 수료기준: 70점 이상</div>
+    <div class="hero-chip" id="grade-chip"></div>
+  </div>
+</div>
 
+<!-- 탭 메뉴 -->
+<div class="dash-tabs">
+  <div class="dash-tab active" onclick="switchTab('courses')" id="dtab-courses">📚 내 강의</div>
+  <div class="dash-tab" onclick="switchTab('apply')"   id="dtab-apply">📋 강의 신청 <span class="tab-badge" id="apply-cnt" style="display:none">0</span></div>
+  <div class="dash-tab" onclick="switchTab('status')"  id="dtab-status">⏳ 신청 현황 <span class="tab-badge" id="status-cnt" style="display:none">0</span></div>
+  <div class="dash-tab" onclick="switchTab('certs')"   id="dtab-certs">🏆 수료 현황 <span class="tab-badge" id="certs-cnt" style="background:var(--success);display:none">0</span></div>
+</div>
+
+<!-- 탭 본문 -->
+<div class="dash-body">
   <div class="dash-layout">
-    <!-- Left: course list -->
+    <!-- 메인 콘텐츠 -->
     <div>
-      <div class="section-title">📚 배정된 강의 목록</div>
-      <div id="course-list" style="display:flex;flex-direction:column;gap:12px">
-        <div style="text-align:center;padding:40px;color:var(--text-light)">
-          <div class="spinner" style="margin:0 auto 12px"></div>강의 목록을 불러오는 중...
+
+      <!-- ① 내 강의 -->
+      <div class="tab-pane active" id="pane-courses">
+        <div id="course-list" style="display:flex;flex-direction:column">
+          <div style="text-align:center;padding:40px;color:var(--text-light)">
+            <div class="spinner" style="margin:0 auto 10px"></div>불러오는 중...
+          </div>
         </div>
       </div>
+
+      <!-- ② 강의 신청 -->
+      <div class="tab-pane" id="pane-apply">
+        <div id="apply-list">
+          <div style="text-align:center;padding:40px;color:var(--text-light)">
+            <div class="spinner" style="margin:0 auto 10px"></div>불러오는 중...
+          </div>
+        </div>
+      </div>
+
+      <!-- ③ 신청 현황 -->
+      <div class="tab-pane" id="pane-status">
+        <div id="apply-status-list">
+          <div style="text-align:center;padding:40px;color:var(--text-light)">
+            <div class="spinner" style="margin:0 auto 10px"></div>불러오는 중...
+          </div>
+        </div>
+      </div>
+
+      <!-- ④ 수료 현황 -->
+      <div class="tab-pane" id="pane-certs">
+        <div id="cert-list">
+          <div style="text-align:center;padding:40px;color:var(--text-light)">
+            <div class="spinner" style="margin:0 auto 10px"></div>불러오는 중...
+          </div>
+        </div>
+      </div>
+
     </div>
 
-    <!-- Right: sidebar -->
+    <!-- 사이드바 -->
     <div>
       <div class="my-status">
         <div class="my-status-hd">📊 내 학습 현황</div>
         <div class="status-rows">
           <div class="s-row"><span class="s-key">배정 강의</span><span class="s-val" id="st-assigned">-</span></div>
           <div class="s-row"><span class="s-key">수료 완료</span><span class="s-val" id="st-done">-</span></div>
-          <div class="s-row"><span class="s-key">최종 점수</span><span class="s-val" id="st-score">-</span></div>
+          <div class="s-row"><span class="s-key">신청 강의</span><span class="s-val" id="st-applied">-</span></div>
           <div class="s-row"><span class="s-key">수강생 등급</span><span class="s-val" id="st-grade">-</span></div>
-          <div class="s-row"><span class="s-key">소속</span><span class="s-val" id="st-org" style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">-</span></div>
+          <div class="s-row"><span class="s-key">소속</span><span class="s-val" id="st-org" style="max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">-</span></div>
         </div>
       </div>
 
@@ -112,12 +200,11 @@ body{background:#EDE9E1;min-height:100vh}
       </div>
 
       <div class="guide">
-        <div class="guide-t">📋 수강 안내</div>
-        <div class="guide-step"><div class="step-n">1</div><span>배정된 강의 영상을 처음부터 끝까지 시청</span></div>
-        <div class="guide-step"><div class="step-n">2</div><span>25%·50%·75% 지점 이해도 퀴즈 통과</span></div>
-        <div class="guide-step"><div class="step-n">3</div><span>영상 완료 후 최종 평가 응시 (20문항, 40분)</span></div>
-        <div class="guide-step"><div class="step-n">4</div><span>70점 이상 → 수료증 발급</span></div>
-        <div class="guide-step"><div class="step-n">5</div><span>미수료 시 재수강 후 재응시 (최대 2회)</span></div>
+        <div class="guide-t">📋 수강 절차</div>
+        <div class="guide-step"><div class="step-n">1</div><span>강의 신청 탭에서 원하는 강의 신청</span></div>
+        <div class="guide-step"><div class="step-n">2</div><span>관리자 승인 후 내 강의에 표시</span></div>
+        <div class="guide-step"><div class="step-n">3</div><span>영상 시청 후 중간 퀴즈 통과</span></div>
+        <div class="guide-step"><div class="step-n">4</div><span>최종 평가 70점 이상 → 수료</span></div>
       </div>
     </div>
   </div>
@@ -127,68 +214,84 @@ body{background:#EDE9E1;min-height:100vh}
 
 <script type="module">
 import { DB } from './js/firebase-config.js';
-import { requireAuth, fmtDate } from './js/utils.js';
+import { requireAuth, fmtDate, showToast } from './js/utils.js';
 
 const user = requireAuth(); if (!user) throw 0;
 
-const GRADE_LABELS = { board:'이사회·임원', aml:'AML 담당자', general:'일반', research:'연구회' };
-const GRADE_ICONS  = { board:'🏛', aml:'🔍', general:'👤', research:'🎓' };
-const GRADE_CLASSES= { board:'grade-board', aml:'grade-aml', general:'grade-general', research:'grade-research' };
+const GRADE_LABELS  = { board:'이사회·임원', aml:'AML 담당자', general:'일반', research:'연구회' };
+const GRADE_ICONS   = { board:'🏛', aml:'🔍', general:'👤', research:'🎓' };
+const GRADE_CLASSES = { board:'grade-board', aml:'grade-aml', general:'grade-general', research:'grade-research' };
 
 document.getElementById('hd-chip').innerHTML =
   `👤 ${user.name} <span class="grade-pill ${GRADE_CLASSES[user.grade]||'grade-general'}" style="margin-left:5px">${GRADE_ICONS[user.grade]||'👤'} ${GRADE_LABELS[user.grade]||'일반'}</span>`;
 document.getElementById('hero-welcome').textContent = `안녕하세요, ${user.name}님 👋`;
 document.getElementById('hero-date').textContent    = fmtDate(new Date());
 document.getElementById('grade-chip').textContent   = `${GRADE_ICONS[user.grade]||'👤'} ${GRADE_LABELS[user.grade]||'일반'}`;
-
 window.logout = () => { sessionStorage.removeItem('kasg_user'); window.location.href='index.html'; };
 
+// ── 탭 전환 ──────────────────────────────────────
+const TABS = ['courses','apply','status','certs'];
+window.switchTab = function(t) {
+  TABS.forEach(id => {
+    document.getElementById(`dtab-${id}`).classList.toggle('active', id===t);
+    document.getElementById(`pane-${id}`).classList.toggle('active', id===t);
+  });
+};
+
+// ── 데이터 캐시 ──────────────────────────────────
+let allCourses={}, learner={}, courseApplies=[];
+
+// ── 초기 로드 ─────────────────────────────────────
 async function init() {
-  const [allCourses, learner] = await Promise.all([
-    DB.get('courses'), DB.get(`learners/${user.id}`)
+  [allCourses, learner] = await Promise.all([
+    DB.get('courses').then(d=>d||{}),
+    DB.get(`learners/${user.id}`).then(d=>d||{})
   ]);
+  // courseApplies: learner.courseApplies = { courseId: {status, appliedAt} }
+  courseApplies = learner.courseApplies || {};
 
-  // Sidebar stats
-  if (learner) {
-    const assigned = (learner.assignedCourses||[]).length;
-    const doneCount= Object.values(learner.courseStatus||{}).filter(s=>s==='completed').length;
-    document.getElementById('st-assigned').textContent = assigned + '개';
-    document.getElementById('st-done').textContent     = doneCount + '개';
-    document.getElementById('st-score').textContent    = learner.finalScore!=null ? learner.finalScore+'점' : '미응시';
-    document.getElementById('st-grade').textContent    = learner.gradeLabel || GRADE_LABELS[user.grade] || '일반';
-    document.getElementById('st-org').textContent      = learner.org || user.org;
-    if (learner.completedStatus==='completed'||learner.status==='completed') {
-      document.getElementById('cert-cta').style.display='';
-    }
-  }
+  updateSidebar();
+  renderCourses();
+  renderApply();
+  renderApplyStatus();
+  renderCerts();
+}
 
-  // Show only assigned courses
-  const assigned = learner?.assignedCourses || [];
+// ── 사이드바 ──────────────────────────────────────
+function updateSidebar() {
+  const assigned = (learner.assignedCourses||[]).length;
+  const doneCount = Object.values(learner.courseStatus||{}).filter(s=>s==='completed').length;
+  const appliedCount = Object.keys(courseApplies).length;
+  document.getElementById('st-assigned').textContent = assigned + '개';
+  document.getElementById('st-done').textContent     = doneCount + '개';
+  document.getElementById('st-applied').textContent  = appliedCount + '개';
+  document.getElementById('st-grade').textContent    = learner.gradeLabel || GRADE_LABELS[user.grade] || '일반';
+  document.getElementById('st-org').textContent      = learner.org || user.org;
+  if (doneCount > 0) document.getElementById('cert-cta').style.display='';
+
+  // 배지
+  const pendingApplies = Object.values(courseApplies).filter(a=>a.status==='pending').length;
+  const cntEl = document.getElementById('status-cnt');
+  if (pendingApplies > 0) { cntEl.textContent=pendingApplies; cntEl.style.display=''; }
+  if (doneCount > 0) { document.getElementById('certs-cnt').textContent=doneCount; document.getElementById('certs-cnt').style.display=''; }
+}
+
+// ── ① 내 강의 ─────────────────────────────────────
+function renderCourses() {
+  const assigned = learner.assignedCourses || [];
   const listEl   = document.getElementById('course-list');
-
   if (!assigned.length) {
-    listEl.innerHTML = `<div class="empty-courses">
+    listEl.innerHTML = `<div class="empty-state">
       <div class="empty-icon">📭</div>
       <div class="empty-title">배정된 강의가 없습니다</div>
-      <div class="empty-sub">관리자가 강의를 배정하면 이곳에 표시됩니다.<br>
-      수강기한 알림은 등록 이메일로 자동 발송됩니다.</div>
-    </div>`;
-    return;
+      <div class="empty-sub">「강의 신청」 탭에서 원하는 강의를 신청하면<br>관리자 승인 후 이곳에 표시됩니다.</div>
+    </div>`; return;
   }
-
-  const courseArr = assigned
-    .map(id => allCourses?.[id] ? { id, ...allCourses[id] } : null)
-    .filter(Boolean);
-
-  if (!courseArr.length) {
-    listEl.innerHTML = `<div class="empty-courses"><div class="empty-icon">📂</div><div class="empty-title">강의 정보를 불러올 수 없습니다</div></div>`;
-    return;
-  }
-
-  listEl.innerHTML = courseArr.map(c => {
-    const cp   = learner?.courseProgress?.[c.id] || 0;
-    const cs   = learner?.courseStatus?.[c.id]   || 'new';
-    const pct  = Math.round(cp * 100);
+  const arr = assigned.map(id=>allCourses[id]?{id,...allCourses[id]}:null).filter(Boolean);
+  listEl.innerHTML = arr.map(c => {
+    const cp  = learner.courseProgress?.[c.id] || 0;
+    const cs  = learner.courseStatus?.[c.id]   || 'new';
+    const pct = Math.round(cp*100);
     const badge = cs==='completed'
       ? '<span class="badge badge-success">✅ 수료</span>'
       : cs==='in_progress'||cs==='watched'
@@ -197,28 +300,20 @@ async function init() {
     const btnLbl = cs==='completed'?'재수강':cs==='in_progress'||cs==='watched'?'이어보기':'수강 시작';
     const btnCls = cs==='completed'?'btn-outline':'btn-primary';
 
-    // 수강기한 표시
-    const dl = learner?.courseDeadlines?.[c.id];
-    let deadlineBadge = '';
+    // 수강기한
+    const dl = learner.courseDeadlines?.[c.id];
+    let dlBadge = '';
     if (dl) {
-      const today = new Date(); today.setHours(0,0,0,0);
-      const due   = new Date(dl); due.setHours(0,0,0,0);
-      const diff  = Math.round((due - today) / 86400000);
-      if (cs !== 'completed') {
-        if (diff < 0) {
-          deadlineBadge = `<span class="c-tag" style="background:#FEE2E2;color:var(--error);font-weight:700">⛔ 기한 만료</span>`;
-        } else if (diff === 0) {
-          deadlineBadge = `<span class="c-tag" style="background:#FEE2E2;color:var(--error);font-weight:700">🔴 오늘 마감</span>`;
-        } else if (diff <= 5) {
-          deadlineBadge = `<span class="c-tag" style="background:#FEF3C7;color:#7A4F00;font-weight:700">⚠️ D-${diff}</span>`;
-        } else {
-          deadlineBadge = `<span class="c-tag" style="color:var(--text-light)">📅 ${due.getFullYear()}.${String(due.getMonth()+1).padStart(2,'0')}.${String(due.getDate()).padStart(2,'0')} 까지</span>`;
-        }
-      } else {
-        deadlineBadge = `<span class="c-tag" style="color:var(--text-light)">📅 ${due.getFullYear()}.${String(due.getMonth()+1).padStart(2,'0')}.${String(due.getDate()).padStart(2,'0')}</span>`;
+      const today=new Date(); today.setHours(0,0,0,0);
+      const due=new Date(dl); due.setHours(0,0,0,0);
+      const diff=Math.round((due-today)/86400000);
+      if (cs!=='completed') {
+        if (diff<0)       dlBadge=`<span class="c-tag" style="background:#FEE2E2;color:var(--error);font-weight:700">⛔ 기한만료</span>`;
+        else if (diff===0) dlBadge=`<span class="c-tag" style="background:#FEE2E2;color:var(--error);font-weight:700">🔴 오늘마감</span>`;
+        else if (diff<=5)  dlBadge=`<span class="c-tag" style="background:#FEF3C7;color:#7A4F00;font-weight:700">⚠️ D-${diff}</span>`;
+        else               dlBadge=`<span class="c-tag" style="color:var(--text-light)">📅 ${dl} 까지</span>`;
       }
     }
-
     return `<div class="course-card" onclick="goCourse('${c.id}')">
       <div class="course-thumb">🎬</div>
       <div class="course-body">
@@ -226,11 +321,10 @@ async function init() {
         <div class="course-tags">
           <span class="c-tag">🕐 ${c.duration||'?'}시간</span>
           <span class="c-tag">📋 ${c.examCount||20}문항</span>
-          ${badge}
-          ${deadlineBadge}
+          ${badge}${dlBadge}
         </div>
         <div class="c-prog">
-          <div class="prog-bar"><div class="progress-wrap" style="height:4px"><div class="progress-fill" style="width:${pct}%"></div></div></div>
+          <div style="flex:1"><div class="progress-wrap" style="height:4px"><div class="progress-fill" style="width:${pct}%"></div></div></div>
           <span class="prog-pct">${pct}%</span>
         </div>
       </div>
@@ -240,6 +334,135 @@ async function init() {
     </div>`;
   }).join('');
 }
+
+// ── ② 강의 신청 ───────────────────────────────────
+function renderApply() {
+  const listEl = document.getElementById('apply-list');
+  const courses = Object.entries(allCourses);
+  if (!courses.length) {
+    listEl.innerHTML = `<div class="empty-state"><div class="empty-icon">📂</div><div class="empty-title">등록된 강의가 없습니다</div></div>`;
+    return;
+  }
+  const assigned = new Set(learner.assignedCourses||[]);
+  let availCnt = 0;
+  listEl.innerHTML = courses.map(([id, c]) => {
+    const appStatus = courseApplies[id]?.status;
+    const isAssigned = assigned.has(id);
+    let btnHtml='', statusHtml='';
+    if (isAssigned) {
+      btnHtml = `<span class="apply-btn approved">✅ 수강 중</span>`;
+      statusHtml = `<span class="status-badge sb-assigned">배정완료</span>`;
+    } else if (appStatus==='pending') {
+      btnHtml = `<span class="apply-btn applied">⏳ 승인 대기</span>`;
+      statusHtml = `<span class="status-badge sb-pending">신청완료</span>`;
+    } else if (appStatus==='approved') {
+      btnHtml = `<span class="apply-btn approved">✅ 승인됨</span>`;
+      statusHtml = `<span class="status-badge sb-approved">승인완료</span>`;
+    } else if (appStatus==='rejected') {
+      btnHtml = `<button class="apply-btn" onclick="applyCourse('${id}')">🔄 재신청</button>`;
+      statusHtml = `<span class="status-badge sb-rejected">반려됨</span>`;
+    } else {
+      availCnt++;
+      btnHtml = `<button class="apply-btn" onclick="applyCourse('${id}')">신청하기</button>`;
+    }
+    return `<div class="apply-card">
+      <div class="apply-card-body">
+        <div class="apply-thumb">🎬</div>
+        <div class="apply-info">
+          <div class="apply-title">${c.title}</div>
+          <div class="apply-meta">🕐 ${c.duration||'?'}시간 &nbsp;·&nbsp; 📋 ${c.examCount||20}문항 &nbsp;·&nbsp; ${c.purpose||'AML 교육'}</div>
+          <div style="margin-top:4px">${statusHtml}</div>
+        </div>
+        ${btnHtml}
+      </div>
+    </div>`;
+  }).join('');
+  if (availCnt > 0) { document.getElementById('apply-cnt').textContent=availCnt; document.getElementById('apply-cnt').style.display=''; }
+}
+
+// ── ③ 신청 현황 ───────────────────────────────────
+function renderApplyStatus() {
+  const listEl = document.getElementById('apply-status-list');
+  const entries = Object.entries(courseApplies);
+  if (!entries.length) {
+    listEl.innerHTML = `<div class="empty-state">
+      <div class="empty-icon">📋</div>
+      <div class="empty-title">신청 내역이 없습니다</div>
+      <div class="empty-sub">「강의 신청」 탭에서 강의를 신청하세요.</div>
+    </div>`; return;
+  }
+  const STATUS_MAP = {
+    pending:  { label:'승인 대기', cls:'sb-pending',  icon:'⏳' },
+    approved: { label:'승인 완료', cls:'sb-approved', icon:'✅' },
+    rejected: { label:'반려됨',   cls:'sb-rejected', icon:'❌' },
+  };
+  listEl.innerHTML = `<div class="tbl-wrap"><table class="data-table">
+    <thead><tr><th>강의명</th><th>신청일</th><th>처리일</th><th>상태</th><th>비고</th></tr></thead>
+    <tbody>
+    ${entries.map(([cid, a]) => {
+      const c = allCourses[cid];
+      const s = STATUS_MAP[a.status] || STATUS_MAP.pending;
+      const assigned = (learner.assignedCourses||[]).includes(cid);
+      return `<tr>
+        <td><strong>${c?.title||cid}</strong></td>
+        <td style="font-size:11px;color:var(--text-light)">${a.appliedAt?fmtDate(new Date(a.appliedAt)):'-'}</td>
+        <td style="font-size:11px;color:var(--text-light)">${a.processedAt?fmtDate(new Date(a.processedAt)):'-'}</td>
+        <td><span class="status-badge ${s.cls}">${s.icon} ${s.label}</span></td>
+        <td style="font-size:11px;color:var(--text-mid)">${assigned?'강의 배정됨':a.reason||'-'}</td>
+      </tr>`;
+    }).join('')}
+    </tbody>
+  </table></div>`;
+}
+
+// ── ④ 수료 현황 ───────────────────────────────────
+function renderCerts() {
+  const listEl  = document.getElementById('cert-list');
+  const assigned = learner.assignedCourses||[];
+  const completed = assigned.filter(id=>(learner.courseStatus?.[id])==='completed');
+  if (!completed.length) {
+    listEl.innerHTML = `<div class="empty-state">
+      <div class="empty-icon">🏆</div>
+      <div class="empty-title">수료한 강의가 없습니다</div>
+      <div class="empty-sub">강의를 수강하고 최종 평가를 통과하면<br>이곳에 수료 내역이 표시됩니다.</div>
+    </div>`; return;
+  }
+  const certs = learner.courseCerts||{};
+  listEl.innerHTML = completed.map(id => {
+    const c = allCourses[id];
+    const cert = certs[id] || {};
+    return `<div class="cert-card">
+      <div class="cert-icon">🏆</div>
+      <div class="cert-info">
+        <div class="cert-title">${c?.title||id}</div>
+        <div class="cert-meta">
+          수료일: ${cert.certDate?fmtDate(new Date(cert.certDate)):'-'}
+          ${cert.certNo ? `&nbsp;·&nbsp; 수료번호: 제 ${cert.certNo}호` : ''}
+        </div>
+      </div>
+      <div class="cert-score">${cert.score!=null?cert.score+'점':'-'}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── 강의 신청 처리 ─────────────────────────────────
+window.applyCourse = async function(courseId) {
+  const c = allCourses[courseId];
+  if (!confirm(`「${c?.title}」 강의를 신청하시겠습니까?`)) return;
+  const now = new Date().toISOString();
+  await DB.update(`learners/${user.id}/courseApplies/${courseId}`, {
+    status: 'pending',
+    courseTitle: c?.title||courseId,
+    appliedAt: now,
+    processedAt: null,
+    reason: null
+  });
+  courseApplies[courseId] = { status:'pending', courseTitle:c?.title, appliedAt:now };
+  renderApply();
+  renderApplyStatus();
+  updateSidebar();
+  showToast('강의 신청 완료! 관리자 승인을 기다려 주세요.','success');
+};
 
 window.goCourse = function(id) {
   sessionStorage.setItem('kasg_course', id);
