@@ -122,6 +122,56 @@ body{background:#ECEAE4;min-height:100vh}
 .stats-cta-left .t{font-family:'Noto Serif KR',serif;font-size:15px;font-weight:700;color:#fff}
 .stats-cta-left .s{font-size:12px;color:rgba(255,255,255,.5);margin-top:2px}
 .stats-cta-arr{font-size:22px;color:var(--kasg-gold)}
+
+/* ── Quiz Editor ── */
+.quiz-section{margin-top:18px}
+.quiz-section-hd{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;background:var(--navy);border-radius:var(--radius-lg) var(--radius-lg) 0 0;border-bottom:3px solid var(--kasg-gold)}
+.quiz-section-title{font-family:'Noto Serif KR',serif;font-size:13px;font-weight:700;color:#fff;display:flex;align-items:center;gap:7px}
+.quiz-section-badge{font-size:10px;background:var(--kasg-gold);color:var(--navy);padding:2px 8px;border-radius:8px;font-weight:700}
+.quiz-section-body{background:#fff;border-radius:0 0 var(--radius-lg) var(--radius-lg);border:1px solid var(--border);border-top:none;padding:16px}
+.mid-quiz-card{background:#F8F7F4;border:1.5px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px}
+.mid-quiz-card:last-child{margin-bottom:0}
+.mqc-hd{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.mqc-num{width:26px;height:26px;border-radius:50%;background:var(--navy);color:var(--kasg-gold);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;flex-shrink:0}
+.mqc-label{font-size:12px;font-weight:700;color:var(--navy)}
+.mqc-timing{font-size:10.5px;color:var(--text-light);margin-left:auto;background:rgba(12,31,63,.07);padding:2px 9px;border-radius:8px}
+.mqc-q-input{width:100%;padding:9px 11px;border:1.5px solid var(--border);border-radius:var(--radius);font-size:12.5px;resize:vertical;min-height:64px;font-family:inherit;line-height:1.5;margin-bottom:10px;box-sizing:border-box}
+.mqc-q-input:focus{border-color:var(--navy);outline:none}
+.opts-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px}
+.opt-row{display:flex;align-items:center;gap:6px}
+.opt-radio{width:15px;height:15px;accent-color:var(--success);cursor:pointer;flex-shrink:0}
+.opt-input{flex:1;padding:7px 10px;border:1.5px solid var(--border);border-radius:var(--radius);font-size:12px;font-family:inherit;box-sizing:border-box}
+.opt-input:focus{border-color:var(--navy);outline:none}
+.opt-row.is-answer .opt-input{border-color:var(--success);background:#F0FFF4}
+.mqc-expl-input{width:100%;padding:7px 10px;border:1.5px solid var(--border);border-radius:var(--radius);font-size:12px;font-family:inherit;box-sizing:border-box}
+.mqc-expl-input:focus{border-color:var(--navy);outline:none}
+.mqc-status{display:inline-flex;align-items:center;gap:4px;font-size:10px;padding:2px 8px;border-radius:8px;margin-top:8px}
+.mqc-status.filled{background:#D1FAE5;color:var(--success)}
+.mqc-status.empty{background:#FEE2E2;color:var(--error)}
+.qbank-controls{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.qbank-count strong{color:var(--navy);font-size:14px}
+.qbank-count{font-size:12px;color:var(--text-mid)}
+.q-card{background:#F8F7F4;border:1.5px solid var(--border);border-radius:var(--radius);margin-bottom:8px;overflow:hidden}
+.q-card:last-child{margin-bottom:0}
+.q-card-hd{display:flex;align-items:center;gap:8px;padding:9px 12px;cursor:pointer;user-select:none;background:#F8F7F4;transition:background .12s}
+.q-card-hd:hover{background:#EEECEA}
+.q-card-num{width:22px;height:22px;border-radius:50%;background:var(--kasg-blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
+.q-card-q{flex:1;font-size:12.5px;color:var(--navy);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.q-card-chevron{font-size:10px;color:var(--text-light);transition:transform .2s;flex-shrink:0}
+.q-card-chevron.open{transform:rotate(180deg)}
+.q-card-body{padding:12px 14px;border-top:1px solid var(--border);background:#fff;display:none}
+.q-card-body.open{display:block}
+.q-del-btn{background:none;border:none;cursor:pointer;color:var(--text-light);font-size:13px;padding:2px 5px;border-radius:3px;flex-shrink:0}
+.q-del-btn:hover{color:var(--error);background:#FEE2E2}
+.exam-settings-bar{display:flex;align-items:center;gap:14px;padding:12px 14px;background:linear-gradient(90deg,rgba(12,31,63,.05),rgba(200,150,10,.06));border-radius:var(--radius);border:1px solid var(--border);margin-bottom:14px;flex-wrap:wrap}
+.esb-item{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--text-mid)}
+.esb-input{width:64px;padding:5px 8px;border:1.5px solid var(--border);border-radius:var(--radius);font-size:13px;font-weight:600;text-align:center;color:var(--navy)}
+.esb-input:focus{border-color:var(--navy);outline:none}
+.esb-warn{font-size:11px;color:var(--kasg-red);margin-left:4px}
+.import-bank-btn{display:flex;align-items:center;gap:5px;padding:6px 13px;border:1.5px dashed var(--kasg-blue);border-radius:var(--radius);font-size:12px;color:var(--kasg-blue);cursor:pointer;background:rgba(26,62,160,.04);transition:all .15s}
+.import-bank-btn:hover{background:rgba(26,62,160,.1)}
+.quiz-modal .modal-box{width:min(900px,96vw);max-height:92vh;display:flex;flex-direction:column}
+.quiz-modal .modal-body{overflow-y:auto;flex:1}
 </style>
 </head>
 <body>
@@ -361,12 +411,15 @@ body{background:#ECEAE4;min-height:100vh}
     <!-- ══ ADD COURSE ══ -->
     <div class="content-sec" id="sec-add-course">
       <div class="section-title">➕ 강의 등록</div>
-      <div class="card">
-        <div class="card-header"><span class="card-title">새 강의 등록 (YouTube URL)</span></div>
+
+      <!-- 기본 정보 -->
+      <div class="card" style="margin-bottom:0;border-radius:var(--radius-lg) var(--radius-lg) 0 0;border-bottom:none">
+        <div class="card-header" style="border-radius:var(--radius-lg) var(--radius-lg) 0 0"><span class="card-title">① 강의 기본 정보</span></div>
         <div class="card-body">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px">
             <div class="form-group"><label class="form-label">강의명 *</label><input class="form-input" id="cf-title" placeholder="예: AML 실무자 교육 2025"></div>
-            <div class="form-group"><label class="form-label">교육 시간(시간)</label><input class="form-input" id="cf-duration" type="number" value="2" min="1" max="20"></div>
+            <div class="form-group"><label class="form-label">교육 시간(h)</label><input class="form-input" id="cf-duration" type="number" value="2" min="1" max="20"></div>
+            <div class="form-group"><label class="form-label">시험 제한시간(분)</label><input class="form-input" id="cf-exam-time" type="number" value="40" min="10" max="120"></div>
           </div>
           <div class="form-group"><label class="form-label">교육목적 *</label><input class="form-input" id="cf-purpose" placeholder="예: 자금세탁방지 실무 이해 및 역량 강화"></div>
           <div class="form-group">
@@ -374,12 +427,61 @@ body{background:#ECEAE4;min-height:100vh}
             <input class="form-input" id="cf-yturl" placeholder="https://www.youtube.com/watch?v=..." oninput="previewYT()">
           </div>
           <div class="yt-preview" id="yt-preview"><iframe id="yt-preview-frame" allowfullscreen></iframe></div>
-          <div id="add-course-msg" style="margin-top:10px"></div>
-          <div style="margin-top:14px;display:flex;gap:8px;justify-content:flex-end">
-            <button class="btn btn-outline btn-sm" onclick="clearCF()">초기화</button>
-            <button class="btn btn-gold" onclick="saveCourse()">강의 등록</button>
-          </div>
         </div>
+      </div>
+
+      <!-- 중간 퀴즈 3개 -->
+      <div style="background:#fff;border:1px solid var(--border);border-top:none;border-bottom:none">
+        <div class="quiz-section-hd">
+          <div class="quiz-section-title">⚡ ② 중간 퀴즈 <span class="quiz-section-badge">25% · 50% · 75% 지점</span></div>
+          <span style="font-size:11px;color:rgba(255,255,255,.5)">비워두면 AI 자동 생성</span>
+        </div>
+        <div style="padding:16px;display:flex;flex-direction:column;gap:10px" id="cf-mid-quizzes">
+          <!-- JS로 렌더 -->
+        </div>
+      </div>
+
+      <!-- 최종 문제 은행 -->
+      <div style="background:#fff;border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius-lg) var(--radius-lg)">
+        <div class="quiz-section-hd" style="border-radius:0">
+          <div class="quiz-section-title">📝 ③ 최종 평가 문제 은행 <span class="quiz-section-badge" id="cf-bank-badge">0문항</span></div>
+          <span style="font-size:11px;color:rgba(255,255,255,.5)">등록 문항 중 랜덤 출제</span>
+        </div>
+        <div style="padding:16px">
+          <!-- 출제 설정 -->
+          <div class="exam-settings-bar">
+            <div class="esb-item">🎲 출제 문항 수: <input class="esb-input" id="cf-exam-count" type="number" value="20" min="5" max="100" oninput="updateExamCountWarn('cf')"></div>
+            <div class="esb-item" style="color:var(--text-light)">⏱ 제한시간: <strong id="cf-exam-time-disp">40분</strong></div>
+            <span class="esb-warn" id="cf-exam-warn" style="display:none"></span>
+            <div style="margin-left:auto;font-size:11px;color:var(--text-mid)">문제 은행이 출제 수보다 많으면 매 시험마다 다른 문제 출제</div>
+          </div>
+          <!-- 문제 추가 폼 -->
+          <div style="background:#F8F7F4;border:1.5px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:12px" id="cf-add-q-form">
+            <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:10px">➕ 문제 추가</div>
+            <div class="form-group" style="margin-bottom:8px">
+              <textarea class="mqc-q-input" id="cf-new-q" placeholder="문제를 입력하세요..." style="min-height:56px"></textarea>
+            </div>
+            <div class="opts-grid" id="cf-new-opts-grid">
+              <!-- 보기 4개 (JS 렌더) -->
+            </div>
+            <div class="form-group" style="margin-bottom:6px">
+              <input class="mqc-expl-input" id="cf-new-expl" placeholder="정답 해설 (선택사항)">
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+              <button class="btn btn-sm btn-primary" onclick="addQToBank('cf')">문제 추가</button>
+              <button class="import-bank-btn" onclick="importDefaultBank('cf')">📚 기본 문제 은행 가져오기 (20문항)</button>
+              <span style="font-size:11px;color:var(--text-light)">① 정답 라디오 버튼 선택 필수</span>
+            </div>
+          </div>
+          <!-- 문제 목록 -->
+          <div id="cf-q-list"></div>
+        </div>
+      </div>
+
+      <div id="add-course-msg" style="margin-top:10px"></div>
+      <div style="margin-top:14px;display:flex;gap:8px;justify-content:flex-end">
+        <button class="btn btn-outline btn-sm" onclick="clearCF()">초기화</button>
+        <button class="btn btn-gold" onclick="saveCourse()">💾 강의 등록 완료</button>
       </div>
     </div>
 
@@ -482,20 +584,60 @@ body{background:#ECEAE4;min-height:100vh}
   </div>
 </div>
 
-<!-- Edit Course -->
-<div class="modal-backdrop hidden" id="modal-edit-course">
+<!-- Edit Course (with quiz editor) -->
+<div class="modal-backdrop hidden quiz-modal" id="modal-edit-course">
   <div class="modal-box">
-    <div class="modal-header"><span class="modal-title">✏️ 강의 수정</span><button class="modal-close" onclick="closeModal('modal-edit-course')">✕</button></div>
-    <div class="modal-body">
+    <div class="modal-header">
+      <span class="modal-title">✏️ 강의 수정 — <span id="ec-course-name"></span></span>
+      <button class="modal-close" onclick="closeModal('modal-edit-course')">✕</button>
+    </div>
+    <div class="modal-body" style="padding:20px">
       <input type="hidden" id="ec-id">
-      <div class="form-group"><label class="form-label">강의명</label><input class="form-input" id="ec-title"></div>
-      <div class="form-group"><label class="form-label">교육목적</label><input class="form-input" id="ec-purpose"></div>
-      <div class="form-group"><label class="form-label">교육 시간(시간)</label><input class="form-input" type="number" id="ec-duration" min="1" max="20"></div>
-      <div class="form-group"><label class="form-label">YouTube URL</label><input class="form-input" id="ec-yturl"></div>
+
+      <!-- 기본 정보 -->
+      <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px;margin-bottom:12px">
+        <div class="form-group"><label class="form-label">강의명</label><input class="form-input" id="ec-title"></div>
+        <div class="form-group"><label class="form-label">교육 시간(h)</label><input class="form-input" type="number" id="ec-duration" min="1" max="20"></div>
+        <div class="form-group"><label class="form-label">시험 제한시간(분)</label><input class="form-input" type="number" id="ec-exam-time" value="40" min="10" max="120"></div>
+      </div>
+      <div class="form-group" style="margin-bottom:12px"><label class="form-label">교육목적</label><input class="form-input" id="ec-purpose"></div>
+      <div class="form-group" style="margin-bottom:16px"><label class="form-label">YouTube URL</label><input class="form-input" id="ec-yturl"></div>
+
+      <!-- 중간 퀴즈 -->
+      <div class="quiz-section-hd" style="border-radius:var(--radius) var(--radius) 0 0">
+        <div class="quiz-section-title">⚡ 중간 퀴즈 <span class="quiz-section-badge">25% · 50% · 75%</span></div>
+        <span style="font-size:11px;color:rgba(255,255,255,.5)">비워두면 AI 자동 생성</span>
+      </div>
+      <div style="background:#fff;border:1px solid var(--border);border-top:none;padding:14px;margin-bottom:14px;border-radius:0 0 var(--radius) var(--radius)" id="ec-mid-quizzes"></div>
+
+      <!-- 최종 문제 은행 -->
+      <div class="quiz-section-hd" style="border-radius:var(--radius) var(--radius) 0 0">
+        <div class="quiz-section-title">📝 최종 평가 문제 은행 <span class="quiz-section-badge" id="ec-bank-badge">0문항</span></div>
+        <span style="font-size:11px;color:rgba(255,255,255,.5)">랜덤 출제</span>
+      </div>
+      <div style="background:#fff;border:1px solid var(--border);border-top:none;padding:14px;border-radius:0 0 var(--radius) var(--radius)">
+        <div class="exam-settings-bar">
+          <div class="esb-item">🎲 출제 문항 수: <input class="esb-input" id="ec-exam-count" type="number" value="20" min="5" max="100" oninput="updateExamCountWarn('ec')"></div>
+          <div class="esb-item" style="color:var(--text-light)">⏱ 제한시간: <strong id="ec-exam-time-disp">40분</strong></div>
+          <span class="esb-warn" id="ec-exam-warn" style="display:none"></span>
+        </div>
+        <!-- 문제 추가 폼 -->
+        <div style="background:#F8F7F4;border:1.5px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:11px">
+          <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:9px">➕ 문제 추가</div>
+          <textarea class="mqc-q-input" id="ec-new-q" placeholder="문제를 입력하세요..." style="min-height:52px"></textarea>
+          <div class="opts-grid" id="ec-new-opts-grid"></div>
+          <input class="mqc-expl-input" id="ec-new-expl" placeholder="정답 해설 (선택사항)" style="margin-bottom:8px">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:6px">
+            <button class="btn btn-sm btn-primary" onclick="addQToBank('ec')">문제 추가</button>
+            <button class="import-bank-btn" onclick="importDefaultBank('ec')">📚 기본 문제 은행 가져오기</button>
+          </div>
+        </div>
+        <div id="ec-q-list"></div>
+      </div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-outline btn-sm" onclick="closeModal('modal-edit-course')">취소</button>
-      <button class="btn btn-primary btn-sm" onclick="doEditCourse()">저장</button>
+      <button class="btn btn-primary" onclick="doEditCourse()">💾 저장</button>
     </div>
   </div>
 </div>
@@ -523,6 +665,31 @@ function gradePill(g){
   return `<span class="gp ${cls}">${icon} ${GRADE_LABEL[g]||g}</span>`;
 }
 
+// ── Default Question Bank (fallback / import source) ──
+const DEFAULT_BANK_QUESTIONS = [
+  {q:"자금세탁방지(AML)의 주요 목적으로 가장 적절한 것은?",opts:["범죄 수익의 합법화를 차단하여 금융시스템 건전성 보호","고객 서비스 품질 향상","금융기관의 수익 증대","직원 교육 비용 절감"],ans:0,explanation:"AML의 핵심 목적은 범죄 수익이 합법적인 금융시스템으로 유입되는 것을 차단하는 것입니다."},
+  {q:"FATF 권고사항에서 규정하는 고객확인제도(CDD)의 핵심 요소가 아닌 것은?",opts:["고객 신원 확인","실소유자 파악","지속적인 모니터링","배당금 지급 여부 확인"],ans:3,explanation:"CDD의 핵심 요소는 신원확인, 실소유자 파악, 지속적 모니터링입니다."},
+  {q:"의심거래보고(STR)를 제출해야 하는 요건으로 올바른 것은?",opts:["일정 금액 이상의 거래 발생 시 무조건 보고","자금세탁 등 위법행위와 관련된다고 의심되는 경우","고객이 직접 요청할 경우","금융감독원의 사전 승인을 받은 경우"],ans:1,explanation:"STR은 금액 기준이 아닌 의심 여부를 기준으로 보고합니다."},
+  {q:"강화된 고객확인(EDD)이 적용되어야 하는 대상으로 가장 적절한 것은?",opts:["일반 월급생활자","정치적 주요인물(PEP)","단순 환전 고객","소액 게임 이용자"],ans:1,explanation:"PEP는 부패 위험이 높아 강화된 고객확인 대상입니다."},
+  {q:"자금세탁의 3단계 중 '통합(Integration)' 단계의 특징은?",opts:["범죄 수익을 금융시스템에 최초 유입시키는 단계","세탁된 자금을 합법적인 자산처럼 경제에 재투입하는 단계","자금 출처를 은폐하기 위해 복잡한 거래를 만드는 단계","금융기관에 의심거래를 보고하는 단계"],ans:1,explanation:"통합 단계는 세탁된 자금을 정상 경제에 재유입시키는 마지막 단계입니다."},
+  {q:"고액현금거래보고(CTR) 기준 금액은?",opts:["500만원 이상","1,000만원 이상","2,000만원 이상","5,000만원 이상"],ans:3,explanation:"한국의 CTR 기준은 5,000만원 이상입니다."},
+  {q:"카지노 AML 모니터링에서 주의해야 할 '비정상적 행동 패턴'은?",opts:["정해진 한도 내에서 규칙적으로 게임","소액 환전 후 즉시 출구","고액 현금을 지속적으로 칩으로 교환하고 대부분 환전 후 반환","신분증 제시 후 정상적인 게임 진행"],ans:2,explanation:"게임 없이 칩을 현금으로 교환하는 패턴은 자금세탁 의심 행위입니다."},
+  {q:"금융정보분석원(KoFIU)의 주요 역할은?",opts:["금융기관에 대한 직접 영업 지도","의심거래보고 정보 수집·분석 및 수사기관 제공","외환거래 직접 규제","고객 신용등급 평가"],ans:1,explanation:"KoFIU는 금융정보 수집·분석기관으로 수사기관에 정보를 제공합니다."},
+  {q:"'위험 기반 접근법(RBA)'의 핵심 원칙은?",opts:["모든 고객에게 동일한 수준의 확인 절차 적용","고위험 고객과 거래에 더 많은 자원 집중","저위험 고객에게는 아무런 확인 절차 불필요","위험도와 무관하게 정형화된 절차 준수"],ans:1,explanation:"RBA는 위험도에 비례하여 자원을 배분하는 원칙입니다."},
+  {q:"테러자금조달 방지(CFT)와 자금세탁방지(AML)의 차이점으로 옳은 것은?",opts:["CFT는 불법 수익의 합법화를 방지하고, AML은 테러 목적의 자금 이동을 차단","AML은 불법 수익의 합법화를 방지하고, CFT는 테러 목적의 자금 이동을 차단","두 개념은 동일한 의미","CFT는 국내법이고, AML은 국제법"],ans:1,explanation:"AML은 불법자금 세탁 방지, CFT는 테러 목적 자금 이동 차단입니다."},
+  {q:"'실소유자(UBO)'의 기준은?",opts:["회사 지분 5% 이상 보유자","회사 지분 25% 이상을 직·간접적으로 보유하거나 경영을 실질적으로 지배하는 자","등기이사 전원","주요 거래처 담당자"],ans:1,explanation:"UBO는 25% 이상 지분 보유 또는 실질 지배자를 의미합니다."},
+  {q:"'거래 모니터링(Transaction Monitoring)'의 목적은?",opts:["고객의 자산 증대를 돕기 위한 투자 분석","비정상적인 거래 패턴을 탐지하여 의심거래를 식별","고객 서비스 만족도 측정","금융기관의 수익성 분석"],ans:1,explanation:"거래 모니터링은 비정상 패턴 탐지를 통해 의심거래를 식별합니다."},
+  {q:"자금세탁의 '배치(Placement)' 단계에서 흔히 사용되는 수법은?",opts:["법인 설립 후 정상적인 사업 활동으로 위장","스머핑(Smurfing): 대규모 현금을 소액으로 분산 입금","부동산 투자를 통한 합법적 자산화","주식 분산 투자"],ans:1,explanation:"스머핑은 보고 의무를 회피하기 위해 소액으로 분산 입금하는 방법입니다."},
+  {q:"AML 의심거래보고(STR) 제출 후 적절한 행동은?",opts:["보고 사실을 고객에게 즉시 알림","보고 사실을 대외비로 유지 (Tipping-off 금지)","SNS에 의심 거래 내용 공유","언론사에 정보 제공"],ans:1,explanation:"Tipping-off 금지 원칙에 따라 보고 사실은 절대 고객에게 알리면 안됩니다."},
+  {q:"FATF 비협조 국가와의 거래 시 취해야 할 조치는?",opts:["거래를 완전히 금지","강화된 고객확인(EDD) 절차 적용 및 위험 평가 강화","일반적인 CDD 적용으로 충분","금융정보분석원에 사전 승인 요청"],ans:1,explanation:"FATF 고위험 국가는 EDD 절차를 강화하여 적용해야 합니다."},
+  {q:"카지노에서 고객이 대규모 현금으로 칩을 구매 후 게임 없이 환전을 요청하는 행위는?",opts:["정상적인 게임 활동","자금세탁 의심 행위로 보고 대상","세금 절약을 위한 합법적 행위","카지노 보너스 수령을 위한 행위"],ans:1,explanation:"게임 없이 칩을 현금으로 환전하는 것은 전형적인 자금세탁 의심 행위입니다."},
+  {q:"'고객 알기 제도(KYC)'에서 필수적으로 확인해야 하는 정보는?",opts:["고객의 취미 및 여가 활동","고객의 신원, 거래 목적, 자금 출처","고객의 학력 및 경력 사항","고객의 가족 구성원 수"],ans:1,explanation:"KYC의 핵심은 신원, 거래 목적, 자금 출처 확인입니다."},
+  {q:"AML '제재(Sanctions) 스크리닝'의 목적은?",opts:["고객 신용 등급 확인","제재 대상으로 지정된 개인·법인·국가와의 거래 차단","세금 납부 여부 확인","고객 투자 성향 분석"],ans:1,explanation:"제재 스크리닝은 제재 대상과의 거래를 사전에 차단하기 위한 절차입니다."},
+  {q:"'스트럭처링(Structuring)'이란 AML 관점에서 무엇을 의미하는가?",opts:["금융 상품을 구조화하여 투자 수익을 극대화하는 행위","보고 의무 회피를 위해 대규모 거래를 소액으로 분산하는 행위","복잡한 기업 구조를 통한 세금 절감","파생상품을 활용한 위험 헤지"],ans:1,explanation:"스트럭처링은 보고 기준액을 피하기 위해 거래를 소액으로 분산하는 행위입니다."},
+  {q:"다음 중 자금세탁 의심 징후에 해당하는 것은?",opts:["신분증 제시 후 정상적인 금액을 입금","출처를 설명하지 못하는 대규모 현금 거래","정기적인 급여 이체","소액 해외 송금"],ans:1,explanation:"자금 출처를 설명하지 못하는 대규모 현금 거래는 대표적인 의심 징후입니다."},
+  {q:"카지노 업권에서 자금세탁 위험이 높은 이유로 가장 적절하지 않은 것은?",opts:["현금 거래 비중이 높음","익명성이 보장되는 경우가 있음","칩과 현금 교환 과정에서 자금 출처 은폐 가능","24시간 모든 거래를 실시간으로 보고하는 체계가 없음"],ans:3,explanation:"실시간 보고 체계 미비는 위험 원인 중 하나이지만, 가장 직접적인 이유로는 부적절합니다."}
+];
+
 // ── Navigation ──
 window.go=function(el){
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
@@ -530,7 +697,8 @@ window.go=function(el){
   el.classList.add('active');
   document.getElementById('sec-'+el.dataset.sec).classList.add('active');
   const m={overview:'loadOverview',pending:'loadPending',learners:'loadLearners',
-    assign:'loadAssign',completions:'loadCompletions',courses:'loadCourses','bulk-register':'loadBulkRegister'};
+    assign:'loadAssign',completions:'loadCompletions',courses:'loadCourses',
+    'bulk-register':'loadBulkRegister','add-course':'initAddCourseForm'};
   if(m[el.dataset.sec]) window[m[el.dataset.sec]]();
 };
 window.adminLogout=()=>{sessionStorage.removeItem('kasg_admin');window.location.href='admin-login.html';};
@@ -896,71 +1064,323 @@ window.filterCompletions=function(){
   renderCompletions(allCompletions.filter(c=>c.name?.toLowerCase().includes(q)||(c.certNo||'').toLowerCase().includes(q)));
 };
 
-// ── COURSES ──
+// ── QUIZ EDITOR ENGINE ──────────────────────────────────────
+// pfx: 'cf'(신규) 또는 'ec'(수정)
+// State
+const qState = { cf: { midQuizzes:[null,null,null], bank:[], answerMap:{} },
+                  ec: { midQuizzes:[null,null,null], bank:[], answerMap:{} } };
+
+const TIMINGS=['영상 25% 지점','영상 50% 지점','영상 75% 지점'];
+
+// ── 중간 퀴즈 렌더 ──
+function renderMidQuizForms(pfx) {
+  const container=document.getElementById(`${pfx}-mid-quizzes`);
+  if(!container) return;
+  container.innerHTML='';
+  for(let i=0;i<3;i++) {
+    const q=qState[pfx].midQuizzes[i]||{q:'',opts:['','','',''],ans:0,explanation:''};
+    const div=document.createElement('div');
+    div.className='mid-quiz-card';
+    div.innerHTML=`
+      <div class="mqc-hd">
+        <div class="mqc-num">${i+1}</div>
+        <div class="mqc-label">중간 퀴즈 ${i+1}</div>
+        <div class="mqc-timing">📍 ${TIMINGS[i]}</div>
+      </div>
+      <textarea class="mqc-q-input" id="${pfx}-mq${i}-q" placeholder="문제를 입력하세요 (비워두면 AI 자동 생성)">${q.q||''}</textarea>
+      <div class="opts-grid">
+        ${[0,1,2,3].map(j=>`
+          <div class="opt-row ${q.ans===j?'is-answer':''}" id="${pfx}-mq${i}-optrow${j}">
+            <input type="radio" class="opt-radio" name="${pfx}-mq${i}-ans" value="${j}" ${q.ans===j?'checked':''} onchange="onMidAnsChange('${pfx}',${i})">
+            <input class="opt-input" id="${pfx}-mq${i}-opt${j}" placeholder="보기 ${j+1}" value="${q.opts[j]||''}" oninput="updateMidStatus('${pfx}',${i})">
+          </div>`).join('')}
+      </div>
+      <input class="mqc-expl-input" id="${pfx}-mq${i}-expl" placeholder="정답 해설 (선택사항)" value="${q.explanation||''}">
+      <div id="${pfx}-mq${i}-status"></div>
+    `;
+    container.appendChild(div);
+    updateMidStatus(pfx,i);
+  }
+}
+
+window.onMidAnsChange=function(pfx,i){
+  const ans=parseInt(document.querySelector(`input[name="${pfx}-mq${i}-ans"]:checked`)?.value??'0');
+  for(let j=0;j<4;j++){
+    const row=document.getElementById(`${pfx}-mq${i}-optrow${j}`);
+    if(row) row.className='opt-row'+(ans===j?' is-answer':'');
+  }
+  updateMidStatus(pfx,i);
+};
+
+function updateMidStatus(pfx,i){
+  const q   =document.getElementById(`${pfx}-mq${i}-q`)?.value.trim();
+  const opts=[0,1,2,3].map(j=>document.getElementById(`${pfx}-mq${i}-opt${j}`)?.value.trim()||'');
+  const filled=q&&opts.every(o=>o);
+  const el=document.getElementById(`${pfx}-mq${i}-status`);
+  if(el) el.innerHTML=`<div class="mqc-status ${filled?'filled':'empty'}">${filled?'✅ 입력 완료':'⬜ 미입력 (AI 자동 생성 예정)'}</div>`;
+}
+
+function getMidQuizFromForm(pfx,i){
+  const q   =document.getElementById(`${pfx}-mq${i}-q`)?.value.trim();
+  const opts=[0,1,2,3].map(j=>document.getElementById(`${pfx}-mq${i}-opt${j}`)?.value.trim()||'');
+  const ans =parseInt(document.querySelector(`input[name="${pfx}-mq${i}-ans"]:checked`)?.value??'0');
+  const expl=document.getElementById(`${pfx}-mq${i}-expl`)?.value.trim();
+  if(!q||opts.some(o=>!o)) return null; // not filled = AI generates
+  return {q,opts,ans,explanation:expl||''};
+}
+
+// ── 최종 문제 은행 ──
+function renderNewQForm(pfx){
+  const grid=document.getElementById(`${pfx}-new-opts-grid`);
+  if(!grid) return;
+  if(!qState[pfx].answerMap[pfx]) qState[pfx].answerMap[pfx]=0;
+  grid.innerHTML=[0,1,2,3].map(j=>`
+    <div class="opt-row ${qState[pfx].answerMap[pfx]===j?'is-answer':''}" id="${pfx}-noptrow${j}">
+      <input type="radio" class="opt-radio" name="${pfx}-new-ans" value="${j}" ${qState[pfx].answerMap[pfx]===j?'checked':''} onchange="onNewAnsChange('${pfx}',${j})">
+      <input class="opt-input" id="${pfx}-nopt${j}" placeholder="보기 ${j+1}">
+    </div>`).join('');
+}
+
+window.onNewAnsChange=function(pfx,ans){
+  qState[pfx].answerMap[pfx]=ans;
+  for(let j=0;j<4;j++){
+    const row=document.getElementById(`${pfx}-noptrow${j}`);
+    if(row) row.className='opt-row'+(ans===j?' is-answer':'');
+  }
+};
+
+window.addQToBank=function(pfx){
+  const q   =document.getElementById(`${pfx}-new-q`)?.value.trim();
+  const opts=[0,1,2,3].map(j=>document.getElementById(`${pfx}-nopt${j}`)?.value.trim()||'');
+  const ans =parseInt(document.querySelector(`input[name="${pfx}-new-ans"]:checked`)?.value??'0');
+  const expl=document.getElementById(`${pfx}-new-expl`)?.value.trim()||'';
+  if(!q){showToast('문제를 입력하세요','warn');return;}
+  if(opts.some(o=>!o)){showToast('4개 보기를 모두 입력하세요','warn');return;}
+  qState[pfx].bank.push({q,opts,ans,explanation:expl});
+  // clear form
+  document.getElementById(`${pfx}-new-q`).value='';
+  document.getElementById(`${pfx}-new-expl`).value='';
+  [0,1,2,3].forEach(j=>{const el=document.getElementById(`${pfx}-nopt${j}`);if(el)el.value='';});
+  renderQBank(pfx);
+  updateExamCountWarn(pfx);
+};
+
+window.deleteQFromBank=function(pfx,idx){
+  qState[pfx].bank.splice(idx,1);
+  renderQBank(pfx);
+  updateExamCountWarn(pfx);
+};
+
+window.toggleQCard=function(el){
+  const body=el.nextElementSibling;
+  body.classList.toggle('open');
+  el.querySelector('.q-card-chevron').classList.toggle('open');
+};
+
+function renderQBank(pfx){
+  const list=document.getElementById(`${pfx}-q-list`);
+  const badge=document.getElementById(`${pfx}-bank-badge`);
+  const bank=qState[pfx].bank;
+  if(badge) badge.textContent=bank.length+'문항';
+  if(!list) return;
+  if(!bank.length){
+    list.innerHTML='<div style="text-align:center;padding:20px;color:var(--text-light);font-size:12px">📭 등록된 문제가 없습니다. 문제를 추가하거나 기본 문제 은행을 가져오세요.</div>';
+    return;
+  }
+  list.innerHTML=bank.map((q,i)=>`
+    <div class="q-card">
+      <div class="q-card-hd" onclick="toggleQCard(this)">
+        <div class="q-card-num">${i+1}</div>
+        <div class="q-card-q" title="${q.q}">${q.q}</div>
+        <button class="q-del-btn" onclick="event.stopPropagation();deleteQFromBank('${pfx}',${i})" title="삭제">🗑</button>
+        <div class="q-card-chevron">▼</div>
+      </div>
+      <div class="q-card-body">
+        <div style="font-size:12.5px;color:var(--navy);font-weight:600;margin-bottom:8px">${q.q}</div>
+        ${q.opts.map((o,j)=>`
+          <div style="display:flex;align-items:flex-start;gap:7px;padding:4px 0;font-size:12px">
+            <span style="width:18px;height:18px;border-radius:50%;${j===q.ans?'background:var(--success);color:#fff':'background:#F1F0EC;color:var(--text-mid)'};display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:700;flex-shrink:0">${j+1}</span>
+            <span style="${j===q.ans?'color:var(--success);font-weight:600':''}">${o}</span>
+            ${j===q.ans?'<span style="font-size:10px;color:var(--success);margin-left:auto">✓ 정답</span>':''}
+          </div>`).join('')}
+        ${q.explanation?`<div style="margin-top:7px;padding:6px 9px;background:#F0FFF4;border-radius:var(--radius);font-size:11.5px;color:var(--success)">💡 ${q.explanation}</div>`:''}
+      </div>
+    </div>`).join('');
+}
+
+window.updateExamCountWarn=function(pfx){
+  const count=parseInt(document.getElementById(`${pfx}-exam-count`)?.value||'20');
+  const bankSize=qState[pfx].bank.length;
+  const warn=document.getElementById(`${pfx}-exam-warn`);
+  // sync time display
+  const timeVal=document.getElementById(`${pfx==='cf'?'cf-exam-time':'ec-exam-time'}`)?.value||'40';
+  const timeDisp=document.getElementById(`${pfx}-exam-time-disp`);
+  if(timeDisp) timeDisp.textContent=timeVal+'분';
+  if(!warn) return;
+  if(bankSize>0&&bankSize<count){
+    warn.textContent=`⚠️ 문제 은행(${bankSize}문항) < 출제 수(${count}문항). 기본 문제 은행으로 보완됩니다.`;
+    warn.style.display='';
+  } else if(bankSize===0){
+    warn.textContent='⚠️ 문제 은행 미등록 시 내장 기본 문제로 출제됩니다.';
+    warn.style.display='';
+  } else {
+    warn.style.display='none';
+  }
+};
+
+window.importDefaultBank=function(pfx){
+  if(!confirm(`기본 AML 문제 은행 20문항을 가져옵니까?\n(기존 문제 은행에 추가됩니다)`)) return;
+  // import from QUIZ_BANK
+  const added=DEFAULT_BANK_QUESTIONS.filter(q=>!qState[pfx].bank.find(e=>e.q===q.q));
+  qState[pfx].bank.push(...added);
+  renderQBank(pfx);
+  updateExamCountWarn(pfx);
+  showToast(`${added.length}문항이 추가되었습니다.`,'success');
+};
+
+// ── COURSES ──────────────────────────────────────────────────
 window.loadCourses=async function(){
   await fetchAll();
   const arr=Object.entries(allCourses);
-  document.getElementById('course-grid').innerHTML=arr.length?arr.map(([id,c])=>`
-    <div class="cc"><div class="cc-hd">
+  document.getElementById('course-grid').innerHTML=arr.length?arr.map(([id,c])=>{
+    const midCnt=(c.midQuizzes||[]).filter(q=>q&&q.q).length;
+    const bankCnt=(c.questionBank||[]).length;
+    return `<div class="cc"><div class="cc-hd">
       <div class="cc-title">${c.title}</div>
-      <div class="cc-meta">⏱ ${c.duration||'?'}시간 · ${fmtDate(new Date(c.createdAt||Date.now()))}</div>
-      <div class="cc-meta">🎯 ${c.purpose||'-'}</div>
+      <div class="cc-meta">⏱ ${c.duration||'?'}시간 · 시험 ${c.examTime||40}분 · 출제 ${c.examCount||20}문</div>
+      <div class="cc-meta" style="margin-top:3px">🎯 ${c.purpose||'-'}</div>
+      <div class="cc-meta" style="margin-top:3px;display:flex;gap:6px;flex-wrap:wrap">
+        <span style="background:${midCnt>0?'#D1FAE5':'#FEF3C7'};color:${midCnt>0?'var(--success)':'#7A4F00'};padding:1px 7px;border-radius:8px;font-size:10px">⚡중간퀴즈 ${midCnt}/3</span>
+        <span style="background:${bankCnt>0?'#DBEAFE':'#FEE2E2'};color:${bankCnt>0?'#1E40AF':'var(--error)'};padding:1px 7px;border-radius:8px;font-size:10px">📝문제은행 ${bankCnt}문항</span>
+      </div>
       ${c.videoURL?`<div class="cc-url" onclick="window.open('${c.videoURL}','_blank')">▶ YouTube 영상</div>`:'<div class="cc-meta" style="color:var(--error)">⚠️ 영상 미등록</div>'}
     </div>
     <div class="cc-ft">
       <span class="badge ${c.locked?'badge-error':'badge-success'}">${c.locked?'🔒 잠김':'✅ 공개'}</span>
       <button class="tbl-btn ${c.locked?'tb-approve':'tb-reject'}" onclick="toggleLock('${id}',${!c.locked})">${c.locked?'🔓 공개':'🔒 잠금'}</button>
-      <button class="tbl-btn tb-edit" onclick="openEditCourse('${id}')">✏️ 수정</button>
+      <button class="tbl-btn tb-edit" onclick="openEditCourse('${id}')">✏️ 문제 편집</button>
       <button class="tbl-btn tb-delete" onclick="deleteCourse('${id}','${c.title}')">🗑</button>
-    </div></div>`).join('')
-    :'<div class="card" style="padding:40px;text-align:center;grid-column:1/-1"><div style="font-size:36px;margin-bottom:10px">📂</div><div style="color:var(--text-mid)">등록된 강의 없음</div></div>';
+    </div></div>`;
+  }).join('')
+  :'<div class="card" style="padding:40px;text-align:center;grid-column:1/-1"><div style="font-size:36px;margin-bottom:10px">📂</div><div style="color:var(--text-mid)">등록된 강의 없음</div></div>';
 };
 window.toggleLock=async function(id,lock){await DB.update(`courses/${id}`,{locked:lock});showToast(lock?'잠금':'공개','success');loadCourses();};
 window.deleteCourse=async function(id,title){if(!confirm(`"${title}" 삭제?`))return;await DB.remove(`courses/${id}`);showToast('삭제 완료','warn');loadCourses();};
+
 window.openEditCourse=function(id){
-  const c=allCourses[id];if(!c)return;
-  document.getElementById('ec-id').value=id;document.getElementById('ec-title').value=c.title||'';
-  document.getElementById('ec-purpose').value=c.purpose||'';document.getElementById('ec-duration').value=c.duration||2;
-  document.getElementById('ec-yturl').value=c.videoURL||'';
+  const c=allCourses[id]; if(!c) return;
+  document.getElementById('ec-id').value      =id;
+  document.getElementById('ec-course-name').textContent=c.title||'';
+  document.getElementById('ec-title').value   =c.title||'';
+  document.getElementById('ec-purpose').value =c.purpose||'';
+  document.getElementById('ec-duration').value=c.duration||2;
+  document.getElementById('ec-exam-time').value=c.examTime||40;
+  document.getElementById('ec-yturl').value   =c.videoURL||'';
+  document.getElementById('ec-exam-count').value=c.examCount||20;
+  // Load quizzes into state
+  qState.ec.midQuizzes=c.midQuizzes?[...c.midQuizzes]:[null,null,null];
+  qState.ec.bank=[...(c.questionBank||[])];
+  qState.ec.answerMap={ec:0};
+  // Render
+  renderMidQuizForms('ec');
+  renderNewQForm('ec');
+  renderQBank('ec');
+  updateExamCountWarn('ec');
   document.getElementById('modal-edit-course').classList.remove('hidden');
 };
+
 window.doEditCourse=async function(){
-  const id=document.getElementById('ec-id').value,title=document.getElementById('ec-title').value.trim();
+  const id   =document.getElementById('ec-id').value;
+  const title=document.getElementById('ec-title').value.trim();
   if(!title){alert('강의명 필수');return;}
-  const pur=document.getElementById('ec-purpose').value.trim(),dur=document.getElementById('ec-duration').value;
-  const yt=document.getElementById('ec-yturl').value.trim();
-  const embed=toYoutubeEmbed(yt)||yt;
-  await DB.update(`courses/${id}`,{title,purpose:pur,duration:Number(dur),videoURL:embed});
-  showToast('수정 완료','success');closeModal('modal-edit-course');loadCourses();
+  const pur   =document.getElementById('ec-purpose').value.trim();
+  const dur   =document.getElementById('ec-duration').value;
+  const yt    =document.getElementById('ec-yturl').value.trim();
+  const eTime =parseInt(document.getElementById('ec-exam-time').value)||40;
+  const eCount=parseInt(document.getElementById('ec-exam-count').value)||20;
+  const embed =toYoutubeEmbed(yt)||yt;
+  // Collect mid quizzes
+  const midQuizzes=[0,1,2].map(i=>getMidQuizFromForm('ec',i));
+  await DB.update(`courses/${id}`,{
+    title,purpose:pur,duration:Number(dur),videoURL:embed,
+    examTime:eTime,examCount:eCount,
+    midQuizzes,
+    questionBank:qState.ec.bank
+  });
+  showToast('강의 수정 완료','success');
+  closeModal('modal-edit-course');
+  loadCourses();
 };
 
-// ── ADD COURSE ──
+// ── ADD COURSE ──────────────────────────────────────────────
+function initAddCourseForm(){
+  qState.cf.midQuizzes=[null,null,null];
+  qState.cf.bank=[];
+  qState.cf.answerMap={cf:0};
+  renderMidQuizForms('cf');
+  renderNewQForm('cf');
+  renderQBank('cf');
+  updateExamCountWarn('cf');
+  // sync time display on exam-time input change
+  document.getElementById('cf-exam-time')?.addEventListener('input',()=>updateExamCountWarn('cf'));
+  document.getElementById('ec-exam-time')?.addEventListener('input',()=>updateExamCountWarn('ec'));
+}
+
 window.previewYT=function(){
   const url=document.getElementById('cf-yturl').value.trim();
   const embed=toYoutubeEmbed(url);
   const pv=document.getElementById('yt-preview'),fr=document.getElementById('yt-preview-frame');
   if(embed){fr.src=embed;pv.classList.add('show');}else{pv.classList.remove('show');fr.src='';}
 };
+
 window.saveCourse=async function(){
-  const title=document.getElementById('cf-title').value.trim();
-  const dur=document.getElementById('cf-duration').value;
+  const title  =document.getElementById('cf-title').value.trim();
+  const dur    =document.getElementById('cf-duration').value;
   const purpose=document.getElementById('cf-purpose').value.trim();
-  const yturl=document.getElementById('cf-yturl').value.trim();
-  if(!title){alert('강의명 필수');return;}if(!purpose){alert('교육목적 필수');return;}if(!yturl){alert('YouTube URL 필수');return;}
+  const yturl  =document.getElementById('cf-yturl').value.trim();
+  const eTime  =parseInt(document.getElementById('cf-exam-time').value)||40;
+  const eCount =parseInt(document.getElementById('cf-exam-count').value)||20;
+  if(!title){alert('강의명 필수');return;}
+  if(!purpose){alert('교육목적 필수');return;}
+  if(!yturl){alert('YouTube URL 필수');return;}
   const embed=toYoutubeEmbed(yturl);
   if(!embed){alert('올바른 YouTube URL이 아닙니다.');return;}
+  // Collect mid quizzes
+  const midQuizzes=[0,1,2].map(i=>getMidQuizFromForm('cf',i));
   const id='course_'+Date.now();
-  await DB.set(`courses/${id}`,{title,purpose,duration:Number(dur),videoURL:embed,locked:false,createdAt:new Date().toISOString()});
-  document.getElementById('add-course-msg').innerHTML='<div class="alert alert-success">✅ 강의 등록 완료!</div>';
-  showToast('강의 등록 완료!','success');clearCF();
-  setTimeout(()=>go(document.querySelector('[data-sec="courses"]')),1400);
+  await DB.set(`courses/${id}`,{
+    title,purpose,duration:Number(dur),videoURL:embed,
+    examTime:eTime,examCount:eCount,
+    midQuizzes,
+    questionBank:qState.cf.bank,
+    locked:false,createdAt:new Date().toISOString()
+  });
+  const midCount=midQuizzes.filter(Boolean).length;
+  const bankCount=qState.cf.bank.length;
+  document.getElementById('add-course-msg').innerHTML=
+    `<div class="alert alert-success">✅ 강의 등록 완료! 중간퀴즈 ${midCount}/3개 · 문제은행 ${bankCount}문항</div>`;
+  showToast('강의 등록 완료!','success');
+  clearCF();
+  setTimeout(()=>go(document.querySelector('[data-sec="courses"]')),1600);
 };
+
 window.clearCF=function(){
-  ['cf-title','cf-purpose','cf-yturl'].forEach(i=>document.getElementById(i).value='');
+  ['cf-title','cf-purpose','cf-yturl'].forEach(i=>{const el=document.getElementById(i);if(el)el.value='';});
   document.getElementById('cf-duration').value='2';
-  document.getElementById('yt-preview').classList.remove('show');
-  document.getElementById('yt-preview-frame').src='';
+  document.getElementById('cf-exam-time').value='40';
+  document.getElementById('cf-exam-count').value='20';
+  const pv=document.getElementById('yt-preview');if(pv)pv.classList.remove('show');
+  const fr=document.getElementById('yt-preview-frame');if(fr)fr.src='';
   document.getElementById('add-course-msg').innerHTML='';
+  qState.cf.bank=[];
+  qState.cf.midQuizzes=[null,null,null];
+  qState.cf.answerMap={cf:0};
+  // force re-render
+  const mc=document.getElementById('cf-mid-quizzes');if(mc)mc.innerHTML='';
+  renderMidQuizForms('cf');
+  renderNewQForm('cf');
+  renderQBank('cf');
+  updateExamCountWarn('cf');
 };
 
 // ── SETTINGS ──
@@ -973,6 +1393,21 @@ window.changeAdminPw=async function(){
 window.saveSettings=async function(){
   await DB.set('settings',{passScore:Number(document.getElementById('pass-score').value),maxAttempts:Number(document.getElementById('max-attempts').value)});
   showToast('저장 완료','success');
+};
+
+window.initAddCourseForm=function(){
+  if(document.getElementById('cf-mid-quizzes')?.children.length>0) return;
+  qState.cf.midQuizzes=[null,null,null];
+  qState.cf.bank=[];
+  qState.cf.answerMap={cf:0};
+  renderMidQuizForms('cf');
+  renderNewQForm('cf');
+  renderQBank('cf');
+  updateExamCountWarn('cf');
+  const etEl=document.getElementById('cf-exam-time');
+  if(etEl&&!etEl._initBound){etEl._initBound=true;etEl.addEventListener('input',()=>updateExamCountWarn('cf'));}
+  const ecEl=document.getElementById('ec-exam-time');
+  if(ecEl&&!ecEl._initBound){ecEl._initBound=true;ecEl.addEventListener('input',()=>updateExamCountWarn('ec'));}
 };
 
 // ── CSV ──
@@ -992,7 +1427,10 @@ window.exportCompletions=function(){
   csvDl('completions.csv',rows);
 };
 
+// ── Boot ──
 loadOverview();
+setTimeout(()=>window.initAddCourseForm(),200);
 </script>
 </body>
 </html>
+

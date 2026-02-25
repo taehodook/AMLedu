@@ -9,81 +9,55 @@
 body{background:#0A0A12;margin:0;overflow:hidden}
 .player-layout{display:grid;grid-template-columns:1fr 300px;height:calc(100vh - 66px)}
 @media(max-width:900px){.player-layout{grid-template-columns:1fr;overflow-y:auto}}
-
-/* Video */
 .video-area{display:flex;flex-direction:column;background:#000;min-width:0}
 .video-container{flex:1;position:relative;background:#000;overflow:hidden}
 #yt-player,#yt-player iframe{width:100%!important;height:100%!important;border:none}
 .yt-block-overlay{position:absolute;bottom:0;left:0;right:0;height:52px;z-index:2;background:transparent}
 
-/* ══ QUIZ OVERLAY — compact & scrollable ══ */
+/* ── QUIZ OVERLAY ── */
 .quiz-overlay{
-  position:absolute;inset:0;
-  background:rgba(0,0,0,.82);
-  display:none;
-  align-items:center;justify-content:center;
-  z-index:30;
-  backdrop-filter:blur(5px);
-  padding:10px;
-  overflow-y:auto;
+  position:absolute;inset:0;background:rgba(0,0,0,.82);
+  display:none;align-items:center;justify-content:center;
+  z-index:30;backdrop-filter:blur(5px);padding:10px;overflow-y:auto;
 }
 .quiz-overlay.active{display:flex;animation:qzIn .22s ease}
 @keyframes qzIn{from{opacity:0}to{opacity:1}}
-
-/* Popup — never taller than viewport */
 .quiz-popup{
-  background:#fff;
-  border-radius:var(--radius-lg);
+  background:#fff;border-radius:var(--radius-lg);
   width:100%;max-width:460px;
-  max-height:min(520px, calc(100vh - 90px));
-  overflow-y:auto;
-  border-top:4px solid var(--kasg-gold);
+  max-height:min(520px,calc(100vh - 90px));
+  overflow-y:auto;border-top:4px solid var(--kasg-gold);
   box-shadow:0 20px 60px rgba(0,0,0,.8);
-  padding:16px 18px;
-  flex-shrink:0;
+  padding:16px 18px;flex-shrink:0;
   animation:popUp .22s ease;
 }
 @keyframes popUp{from{opacity:0;transform:scale(.97) translateY(10px)}to{opacity:1;transform:none}}
-
-/* Header */
 .qz-hd{display:flex;align-items:center;gap:8px;margin-bottom:10px;padding-bottom:9px;border-bottom:1px solid rgba(0,0,0,.07)}
 .qz-badge{width:24px;height:24px;border-radius:50%;background:var(--navy);color:var(--kasg-gold);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;flex-shrink:0}
 .qz-hd-text{flex:1;min-width:0}
 .qz-hd-title{font-size:9.5px;font-weight:700;color:var(--kasg-gold);letter-spacing:.8px;text-transform:uppercase}
 .qz-hd-sub{font-size:10.5px;color:var(--text-mid)}
-.qz-ai-tag{font-size:9px;color:rgba(255,255,255,.7);background:var(--navy);padding:2px 7px;border-radius:8px;white-space:nowrap;flex-shrink:0}
+.qz-tag{font-size:9px;color:rgba(255,255,255,.7);padding:2px 7px;border-radius:8px;white-space:nowrap;flex-shrink:0}
+.qz-tag.registered{background:#1A6B40}
+.qz-tag.ai{background:var(--navy)}
 .qz-loading-row{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-mid);margin-bottom:10px}
 .mini-spin{width:12px;height:12px;border:2px solid rgba(0,0,0,.1);border-top-color:var(--navy);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
 @keyframes spin{to{transform:rotate(360deg)}}
-
-/* Question */
 .qz-q{font-family:'Noto Serif KR',serif;font-size:13.5px;font-weight:600;color:var(--navy);line-height:1.6;margin-bottom:11px}
-
-/* Options — compact rows */
 .qz-opts{display:flex;flex-direction:column;gap:5px}
-.qz-opt{
-  padding:8px 11px;
-  border:1.5px solid var(--border);border-radius:var(--radius);
-  cursor:pointer;font-size:12.5px;
-  display:flex;align-items:flex-start;gap:8px;
-  transition:all .12s;line-height:1.45;
-}
+.qz-opt{padding:8px 11px;border:1.5px solid var(--border);border-radius:var(--radius);cursor:pointer;font-size:12.5px;display:flex;align-items:flex-start;gap:8px;transition:all .12s;line-height:1.45}
 .qz-opt:hover{border-color:var(--navy);background:rgba(12,31,63,.04)}
 .qz-opt.selected{border-color:var(--navy);background:var(--navy);color:#fff}
 .qz-opt.correct{border-color:var(--success);background:#D1FAE5;color:var(--success)}
 .qz-opt.wrong{border-color:var(--error);background:#FEE2E2;color:var(--error)}
 .qz-n{width:18px;height:18px;border-radius:50%;border:1.5px solid currentColor;opacity:.5;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0;margin-top:1px}
-
-/* Feedback */
 .qz-fb{margin-top:9px;padding:7px 10px;border-radius:var(--radius);font-size:11.5px;display:none;line-height:1.5}
 .qz-fb.show{display:block}
 .qz-fb.ok{background:#D1FAE5;color:var(--success);border-left:3px solid var(--success)}
 .qz-fb.err{background:#FEE2E2;color:var(--error);border-left:3px solid var(--error)}
-
-/* Actions */
 .qz-acts{margin-top:10px;display:flex;justify-content:flex-end;gap:6px}
 
-/* ── Controls bar ── */
+/* Controls */
 .video-controls{background:#14141E;padding:6px 14px;display:flex;align-items:center;gap:10px;border-top:1px solid rgba(255,255,255,.06);flex-shrink:0}
 .vc-time{color:rgba(255,255,255,.5);font-size:11px;font-family:'DM Mono',monospace;white-space:nowrap}
 .vc-bar{flex:1;height:4px;background:rgba(255,255,255,.1);border-radius:2px;position:relative;cursor:not-allowed}
@@ -136,8 +110,7 @@ body{background:#0A0A12;margin:0;overflow:hidden}
 <div class="player-layout">
   <div class="video-area">
     <div class="video-container" id="video-container">
-
-      <!-- ══ COMPACT QUIZ OVERLAY ══ -->
+      <!-- ── QUIZ OVERLAY ── -->
       <div class="quiz-overlay" id="quiz-overlay">
         <div class="quiz-popup">
           <div class="qz-hd">
@@ -146,7 +119,7 @@ body{background:#0A0A12;margin:0;overflow:hidden}
               <div class="qz-hd-title">⚡ 이해도 확인 문제</div>
               <div class="qz-hd-sub">풀어야 계속 시청할 수 있습니다</div>
             </div>
-            <span class="qz-ai-tag" id="qz-ai-tag" style="display:none">🤖 AI 생성</span>
+            <span class="qz-tag" id="qz-tag" style="display:none"></span>
           </div>
           <div class="qz-loading-row" id="qz-loading" style="display:none">
             <div class="mini-spin"></div>강의 내용 기반 문제 생성 중...
@@ -160,8 +133,7 @@ body{background:#0A0A12;margin:0;overflow:hidden}
           </div>
         </div>
       </div>
-
-    </div><!-- /video-container -->
+    </div>
 
     <div class="video-controls">
       <span class="vc-time" id="vc-time">00:00 / 00:00</span>
@@ -183,33 +155,28 @@ body{background:#0A0A12;margin:0;overflow:hidden}
     </div>
   </div>
 
-  <!-- Sidebar -->
   <div class="video-sidebar">
     <div class="sb-hd">
       <div class="sb-title" id="sb-title">강의 로딩 중...</div>
       <div class="sb-row"><span>교육목적</span><strong id="sb-purpose">-</strong></div>
       <div class="sb-row"><span>교육형태</span><strong>온라인 교육</strong></div>
-      <div class="sb-row"><span>수료기준</span><strong>최종평가 70점↑</strong></div>
+      <div class="sb-row"><span>수료기준</span><strong id="sb-pass">70점 이상</strong></div>
     </div>
-
     <div class="sb-sec">
       <div class="sb-sec-t">📍 진도 체크포인트</div>
       <div class="cp-list" id="cp-list"></div>
     </div>
-
     <div class="score-blk">
       <div class="sb-sec-t" style="margin-bottom:7px">📊 중간 퀴즈 현황</div>
       <div class="sc-item"><span>완료/전체</span><span class="sc-val" id="sc-done">0/3</span></div>
       <div class="sc-item"><span>정답 수</span><span class="sc-val" id="sc-correct">0</span></div>
       <div class="sc-big" id="sc-pct" style="color:var(--text-mid);font-size:13px">-</div>
     </div>
-
     <div class="done-banner" id="done-banner">
       <div class="icon">🎉</div>
       <div class="t">영상 시청 완료!</div>
       <div class="s">아래 버튼으로 최종 평가 응시</div>
     </div>
-
     <div class="sb-acts">
       <button class="btn btn-gold btn-block" id="exam-btn" onclick="goExam()" style="display:none;font-size:13px;padding:10px">📝 최종 평가 응시</button>
       <button class="btn btn-outline btn-block btn-sm" onclick="window.location.href='dashboard.html'">← 강의 목록</button>
@@ -236,40 +203,55 @@ let videoEnded=false, maxProgress=0;
 let midAnswered=[false,false,false], midCorrect=0;
 let activeMidIdx=-1, midSelected=null, midDone=false;
 let currentSpeed=1, saveTimer=null;
-let generatedQuizzes=[null,null,null];
+// courseMidQuizzes: array of 3 questions from course registration (highest priority)
+let courseMidQuizzes=[null,null,null];
+// aiGeneratedQuizzes: cached AI-generated (fallback if no registered quiz)
+let aiGeneratedQuizzes=[null,null,null];
 
 async function init() {
   [course, learner] = await Promise.all([
     DB.get(`courses/${courseId}`), DB.get(`learners/${user.id}`)
   ]);
   if (!course) { alert('강의 정보를 찾을 수 없습니다.'); window.location.href='dashboard.html'; return; }
+
   document.getElementById('sb-title').textContent   = course.title;
   document.getElementById('sb-purpose').textContent = course.purpose||'-';
 
+  // Load registered mid quizzes from course
+  if (course.midQuizzes && Array.isArray(course.midQuizzes)) {
+    courseMidQuizzes = course.midQuizzes;
+  }
+
+  // Settings
+  const settings = await DB.get('settings');
+  const passScore = settings?.passScore || 70;
+  document.getElementById('sb-pass').textContent = passScore+'점 이상';
+
   if (learner) {
     maxProgress = learner.courseProgress?.[courseId]||0;
-    if (learner.midAnswered?.[courseId])         midAnswered = learner.midAnswered[courseId];
-    if (learner.midQuizCorrect)                  midCorrect  = learner.midQuizCorrect;
-    if (learner.generatedQuizzes?.[courseId])    generatedQuizzes = learner.generatedQuizzes[courseId];
+    if (learner.midAnswered?.[courseId])       midAnswered       = learner.midAnswered[courseId];
+    if (learner.midQuizCorrect)                midCorrect        = learner.midQuizCorrect;
+    if (learner.aiGeneratedQuizzes?.[courseId])aiGeneratedQuizzes= learner.aiGeneratedQuizzes[courseId];
     if (learner.completedStatus==='completed'||learner.status==='completed') {
       videoEnded=true; showCompletionUI();
     }
   }
+
   buildCheckpoints(); updateScore();
+
   const ytEmbed = toYoutubeEmbed(course.videoURL||'');
   if (ytEmbed) setupYouTube(ytEmbed);
   else if (course.videoURL) setupMP4(course.videoURL);
   else document.getElementById('video-container').insertAdjacentHTML('beforeend',
     '<div style="color:rgba(255,255,255,.4);font-size:14px;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)">강의 영상이 등록되지 않았습니다.</div>');
+
   saveTimer = setInterval(saveProgress, 15000);
 }
 
 /* ── YouTube ── */
 function setupYouTube(embedUrl) {
-  isYT=true;
-  document.getElementById('yt-notice').style.display='';
-  const m=embedUrl.match(/embed\/([A-Za-z0-9_-]{11})/);
-  const videoId=m?m[1]:'';
+  isYT=true; document.getElementById('yt-notice').style.display='';
+  const m=embedUrl.match(/embed\/([A-Za-z0-9_-]{11})/), videoId=m?m[1]:'';
   document.getElementById('video-container').insertAdjacentHTML('afterbegin','<div id="yt-player"></div><div class="yt-block-overlay"></div>');
   window.onYouTubeIframeAPIReady=()=>{
     ytPlayer=new YT.Player('yt-player',{
@@ -353,56 +335,60 @@ async function openMidQuiz(idx){
   document.getElementById('qz-submit').disabled=true;
   document.getElementById('qz-submit').style.display='';
   document.getElementById('qz-continue').style.display='none';
-  document.getElementById('qz-ai-tag').style.display='none';
+  document.getElementById('qz-tag').style.display='none';
+  document.getElementById('qz-loading').style.display='none';
   document.getElementById('quiz-overlay').classList.add('active');
 
-  let q=generatedQuizzes[idx];
-  if(!q){
-    document.getElementById('qz-loading').style.display='flex';
-    document.getElementById('qz-q').textContent='강의 내용을 분석하여 문제를 생성하고 있습니다...';
-    q=await generateAIQuiz(idx);
-    generatedQuizzes[idx]=q;
-    await DB.update(`learners/${user.id}`,{[`generatedQuizzes/${courseId}`]:generatedQuizzes});
-    document.getElementById('qz-loading').style.display='none';
-    if(q._isAI) document.getElementById('qz-ai-tag').style.display='';
-  } else {
-    if(q._isAI) document.getElementById('qz-ai-tag').style.display='';
+  // Priority 1: Registered quiz from course
+  if (courseMidQuizzes[idx]) {
+    const tag = document.getElementById('qz-tag');
+    tag.textContent='📝 등록 문제'; tag.className='qz-tag registered'; tag.style.display='';
+    renderMidQ(courseMidQuizzes[idx]);
+    return;
   }
+
+  // Priority 2: Cached AI quiz
+  if (aiGeneratedQuizzes[idx]) {
+    const tag = document.getElementById('qz-tag');
+    tag.textContent='🤖 AI 생성'; tag.className='qz-tag ai'; tag.style.display='';
+    renderMidQ(aiGeneratedQuizzes[idx]);
+    return;
+  }
+
+  // Priority 3: Generate AI quiz
+  document.getElementById('qz-loading').style.display='flex';
+  document.getElementById('qz-q').textContent='강의 내용 기반 문제 생성 중...';
+  const q = await generateAIQuiz(idx);
+  aiGeneratedQuizzes[idx]=q;
+  await DB.update(`learners/${user.id}`,{[`aiGeneratedQuizzes/${courseId}`]:aiGeneratedQuizzes});
+  document.getElementById('qz-loading').style.display='none';
+  if(q._isAI){ const tag=document.getElementById('qz-tag'); tag.textContent='🤖 AI 생성'; tag.className='qz-tag ai'; tag.style.display=''; }
   renderMidQ(q);
 }
 
 async function generateAIQuiz(idx){
   const labels=['전반부(25%)','중반부(50%)','후반부(75%)'];
   const prompt=`당신은 자금세탁방지(AML) 교육 전문가입니다.
-
 강의명: ${course.title||'AML 실무자 교육'}
-교육목적: ${course.purpose||'자금세탁방지 실무 이해 및 역량 강화'}
-교육 시간: ${course.duration||2}시간
+교육목적: ${course.purpose||'자금세탁방지 실무 이해'}
+강의 시간: ${course.duration||2}시간
 현재 위치: 강의 ${labels[idx]} 시점
-
-이 강의의 ${labels[idx]} 내용을 학습한 수강생에게 적합한 이해도 확인 문제를 1개 만들어주세요.
-- 실무 적용 가능한 문제
-- 명확하고 구체적인 선택지
-- 교육 목적에 부합하는 내용
-
+이 강의의 ${labels[idx]} 내용을 학습한 수강생에게 적합한 이해도 확인 문제를 1개 만들어 주세요.
 반드시 아래 JSON만 응답 (설명 텍스트 없이):
 {"q":"문제","opts":["①","②","③","④"],"ans":0,"explanation":"정답 해설"}`;
-
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:500,messages:[{role:'user',content:prompt}]})
     });
     if(!res.ok) throw new Error('API '+res.status);
     const data=await res.json();
     const text=data.content?.[0]?.text||'';
-    const clean=text.replace(/```json|```/g,'').trim();
-    const parsed=JSON.parse(clean);
+    const parsed=JSON.parse(text.replace(/```json|```/g,'').trim());
     return {...parsed,_isAI:true};
   }catch(e){
     console.warn('AI quiz fallback:',e.message);
-    return MID_QUIZZES[idx]; // static fallback
+    return MID_QUIZZES[idx];
   }
 }
 
@@ -420,11 +406,10 @@ window.selectMidOpt=function(i){
   document.querySelectorAll('.qz-opt').forEach((el,j)=>el.className='qz-opt'+(j===i?' selected':''));
   document.getElementById('qz-submit').disabled=false;
 };
-
 window.submitMidQuiz=function(){
   if(midSelected===null||midDone) return;
   midDone=true;
-  const q=generatedQuizzes[activeMidIdx]||MID_QUIZZES[activeMidIdx];
+  const q=courseMidQuizzes[activeMidIdx]||aiGeneratedQuizzes[activeMidIdx]||MID_QUIZZES[activeMidIdx];
   const ok=midSelected===q.ans;
   if(ok) midCorrect++;
   midAnswered[activeMidIdx]=true;
@@ -440,12 +425,10 @@ window.submitMidQuiz=function(){
   document.getElementById('qz-continue').style.display='';
   saveProgress(); updateScore();
 };
-
 window.closeMidQuiz=function(){
   document.getElementById('quiz-overlay').classList.remove('active');
   const v=document.getElementById('main-video');
-  if(v) v.play();
-  else if(ytPlayer?.playVideo) ytPlayer.playVideo();
+  if(v) v.play(); else if(ytPlayer?.playVideo) ytPlayer.playVideo();
   updateCheckpoints();
 };
 
@@ -458,12 +441,7 @@ function buildCheckpoints(){
 }
 function updateCheckpoints(){
   const d=[maxProgress>0.01,midAnswered[0],midAnswered[1],midAnswered[2],videoEnded,(learner?.attempt||0)>0,learner?.completedStatus==='completed'||learner?.status==='completed'];
-  d.forEach((v,i)=>{
-    const dot=document.getElementById('cp-'+i);if(!dot) return;
-    const nx=!v&&d.slice(0,i).every(Boolean);
-    dot.className='cp-dot'+(v?' done':nx?' active':'');
-    dot.textContent=v?'✓':'·';
-  });
+  d.forEach((v,i)=>{const dot=document.getElementById('cp-'+i);if(!dot)return;const nx=!v&&d.slice(0,i).every(Boolean);dot.className='cp-dot'+(v?' done':nx?' active':'');dot.textContent=v?'✓':'·';});
 }
 function updateScore(){
   const done=midAnswered.filter(Boolean).length;
@@ -491,6 +469,7 @@ async function saveProgress(){
     status:maxProgress>0?'in_progress':(learner?.status||'approved')
   });
 }
+
 init();
 window.addEventListener('beforeunload',()=>{clearInterval(saveTimer);saveProgress();});
 </script>

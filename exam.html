@@ -7,33 +7,41 @@
 <link rel="stylesheet" href="css/main.css">
 <style>
 body{background:#EDE9E1;min-height:100vh}
-.exam-wrap{max-width:780px;margin:0 auto;padding:32px 20px}
-.exam-top{background:var(--navy);border-radius:var(--radius-lg) var(--radius-lg) 0 0;padding:26px 32px;display:flex;align-items:center;justify-content:space-between}
-.exam-title{font-family:'Noto Serif KR',serif;font-size:20px;font-weight:700;color:#fff}
-.exam-sub{color:var(--kasg-gold);font-size:12px;margin-top:3px}
-.timer-box{background:rgba(255,255,255,.08);border:1.5px solid var(--kasg-gold);border-radius:var(--radius);padding:9px 20px;font-family:'DM Mono',monospace;font-size:26px;color:var(--kasg-gold);letter-spacing:2px}
+.exam-wrap{max-width:820px;margin:0 auto;padding:32px 20px}
+.exam-top{background:var(--navy);border-radius:var(--radius-lg) var(--radius-lg) 0 0;padding:22px 30px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.exam-title{font-family:'Noto Serif KR',serif;font-size:19px;font-weight:700;color:#fff}
+.exam-meta{color:var(--kasg-gold);font-size:11.5px;margin-top:3px}
+.timer-box{background:rgba(255,255,255,.08);border:1.5px solid var(--kasg-gold);border-radius:var(--radius);padding:8px 18px;font-family:'DM Mono',monospace;font-size:24px;color:var(--kasg-gold);letter-spacing:2px;flex-shrink:0}
 .timer-box.urgent{color:#FF6B6B;border-color:#FF6B6B;animation:pulse 1s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.65}}
-.exam-body{background:#fff;border-radius:0 0 var(--radius-lg) var(--radius-lg);padding:32px;box-shadow:var(--shadow-md)}
-.ep-bar-wrap{display:flex;align-items:center;gap:13px;margin-bottom:28px}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+.exam-body{background:#fff;border-radius:0 0 var(--radius-lg) var(--radius-lg);padding:28px 32px;box-shadow:var(--shadow-md)}
+.ep-bar-row{display:flex;align-items:center;gap:12px;margin-bottom:24px}
 .ep-fill-wrap{flex:1;height:5px}
 .ep-text{font-size:12px;color:var(--text-mid);white-space:nowrap}
-.q-num{font-size:11px;font-weight:600;color:var(--kasg-gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:9px}
-.q-text{font-family:'Noto Serif KR',serif;font-size:18px;font-weight:600;color:var(--navy);line-height:1.75;margin-bottom:24px}
-.exam-opts{display:flex;flex-direction:column;gap:9px}
-.exam-opt{padding:14px 16px;border:1.5px solid var(--border);border-radius:var(--radius);cursor:pointer;font-size:14px;display:flex;align-items:center;gap:13px;transition:all .15s}
+.q-num{font-size:11px;font-weight:600;color:var(--kasg-gold);letter-spacing:1px;margin-bottom:8px}
+.q-text{font-family:'Noto Serif KR',serif;font-size:17px;font-weight:600;color:var(--navy);line-height:1.75;margin-bottom:22px}
+.exam-opts{display:flex;flex-direction:column;gap:8px}
+.exam-opt{padding:13px 15px;border:1.5px solid var(--border);border-radius:var(--radius);cursor:pointer;font-size:14px;display:flex;align-items:flex-start;gap:12px;transition:all .14s;line-height:1.5}
 .exam-opt:hover{border-color:var(--navy);background:rgba(12,31,63,.03)}
 .exam-opt.selected{border-color:var(--navy);background:var(--navy);color:#fff}
-.exam-opt-n{width:27px;height:27px;border-radius:50%;border:1.5px solid currentColor;opacity:.5;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
-.exam-nav{display:flex;justify-content:space-between;align-items:center;margin-top:32px}
-.palette-wrap{margin-top:24px;padding-top:20px;border-top:1px solid var(--border)}
-.palette-title{font-size:11px;font-weight:600;color:var(--text-mid);letter-spacing:.5px;text-transform:uppercase;margin-bottom:11px}
-.palette-grid{display:flex;flex-wrap:wrap;gap:6px}
-.pc{width:34px;height:34px;border-radius:var(--radius);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;cursor:pointer;transition:all .15s}
+.exam-opt-n{width:26px;height:26px;border-radius:50%;border:1.5px solid currentColor;opacity:.5;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px}
+.exam-nav{display:flex;justify-content:space-between;align-items:center;margin-top:28px}
+.palette-wrap{margin-top:22px;padding-top:18px;border-top:1px solid var(--border)}
+.palette-title{font-size:11px;font-weight:600;color:var(--text-mid);letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px}
+.palette-grid{display:flex;flex-wrap:wrap;gap:5px}
+.pc{width:32px;height:32px;border-radius:var(--radius);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;cursor:pointer;transition:all .14s}
 .pc.answered{background:var(--navy);color:#fff;border-color:var(--navy)}
-.pc.current{border-color:var(--kasg-gold)}
-.review-warn{margin-top:14px;padding:10px 14px;background:var(--warn-bg);border-radius:var(--radius);font-size:13px;color:var(--warn-text);border-left:3px solid var(--kasg-gold);display:none}
+.pc.current{border-color:var(--kasg-gold);box-shadow:0 0 0 2px rgba(200,150,10,.25)}
+.review-warn{margin-top:12px;padding:9px 13px;background:var(--warn-bg);border-radius:var(--radius);font-size:13px;color:var(--warn-text);border-left:3px solid var(--kasg-gold);display:none}
 .review-warn.show{display:block}
+/* Loading screen */
+.exam-loading{text-align:center;padding:60px 20px}
+.exam-loading .spin{width:36px;height:36px;border:3px solid rgba(12,31,63,.1);border-top-color:var(--navy);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.exam-loading .t{font-family:'Noto Serif KR',serif;font-size:16px;color:var(--navy);margin-bottom:6px}
+.exam-loading .s{font-size:12px;color:var(--text-mid)}
+/* Count badge */
+.count-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(200,150,10,.12);color:#8B6800;padding:3px 10px;border-radius:10px;font-size:11px;font-weight:600;margin-left:8px}
 </style>
 </head>
 <body>
@@ -41,103 +49,240 @@ body{background:#EDE9E1;min-height:100vh}
   <div class="header-brand"><img class="header-logo-img" src="assets/logo-wide.png" alt="KASG"></div>
   <div class="header-nav"><div class="header-chip">👤 <span id="hd-name"></span></div></div>
 </header>
+
 <div class="exam-wrap">
   <div class="exam-top">
-    <div><div class="exam-title">최종 이해도 평가</div><div class="exam-sub" id="exam-sub">1차 시험 · 총 20문항 · 40분</div></div>
-    <div class="timer-box" id="timer">40:00</div>
+    <div>
+      <div class="exam-title" id="exam-title">최종 이해도 평가</div>
+      <div class="exam-meta" id="exam-meta">문제 로딩 중...</div>
+    </div>
+    <div class="timer-box" id="timer">--:--</div>
   </div>
-  <div class="exam-body">
-    <div class="ep-bar-wrap">
-      <div class="ep-fill-wrap"><div class="progress-wrap" style="height:5px"><div class="progress-fill" id="ep-fill" style="width:5%"></div></div></div>
-      <span class="ep-text" id="ep-text">1 / 20</span>
+  <div class="exam-body" id="exam-body">
+    <div class="exam-loading" id="loading-screen">
+      <div class="spin"></div>
+      <div class="t">문제를 준비하는 중입니다</div>
+      <div class="s">문제 은행에서 랜덤으로 출제 중...</div>
     </div>
-    <div class="q-num" id="q-num">Q 01 / 20</div>
-    <div class="q-text" id="q-text">문제 로딩 중...</div>
-    <div class="exam-opts" id="q-opts"></div>
-    <div class="exam-nav">
-      <button class="btn btn-outline" id="prev-btn" onclick="navigate(-1)">← 이전</button>
-      <button class="btn btn-primary" id="next-btn" onclick="navigate(1)">다음 →</button>
+
+    <!-- Question area (hidden until loaded) -->
+    <div id="q-area" style="display:none">
+      <div class="ep-bar-row">
+        <div class="ep-fill-wrap"><div class="progress-wrap" style="height:5px"><div class="progress-fill" id="ep-fill" style="width:5%"></div></div></div>
+        <span class="ep-text" id="ep-text">1 / 20</span>
+      </div>
+      <div class="q-num" id="q-num">Q 01 / 20</div>
+      <div class="q-text" id="q-text"></div>
+      <div class="exam-opts" id="q-opts"></div>
+      <div class="exam-nav">
+        <button class="btn btn-outline" id="prev-btn" onclick="navigate(-1)">← 이전</button>
+        <button class="btn btn-primary" id="next-btn" onclick="navigate(1)">다음 →</button>
+      </div>
+      <div class="palette-wrap">
+        <div class="palette-title">답안 현황 (클릭으로 이동)</div>
+        <div class="palette-grid" id="palette"></div>
+      </div>
+      <div class="review-warn" id="review-warn">⚠️ 아직 답하지 않은 문항이 있습니다. 모든 문항에 답한 후 제출하세요.</div>
     </div>
-    <div class="palette-wrap">
-      <div class="palette-title">답안 현황</div>
-      <div class="palette-grid" id="palette"></div>
-    </div>
-    <div class="review-warn" id="review-warn">⚠️ 아직 답하지 않은 문항이 있습니다.</div>
   </div>
 </div>
+
 <div id="toast-container"></div>
+
 <script type="module">
 import { DB } from './js/firebase-config.js';
-import { requireAuth, fmtDate, generateCertNo } from './js/utils.js';
+import { requireAuth, generateCertNo } from './js/utils.js';
 import { QUIZ_BANK } from './js/quiz-data.js';
 
 const user = requireAuth(); if (!user) throw 0;
 const courseId = sessionStorage.getItem('kasg_course');
-if (!courseId) { window.location.href='dashboard.html'; throw 0; }
+if (!courseId) { window.location.href = 'dashboard.html'; throw 0; }
 document.getElementById('hd-name').textContent = user.name;
 
-let questions=[], answers={}, curIdx=0, timerSec=2400, timerInt=null, attempt=1, learner=null, course=null;
+let questions = [], answers = {}, curIdx = 0;
+let timerSec = 2400, timerInt = null;
+let attempt = 1, learner = null, course = null;
+let passScore = 70;
 
-async function init() {
-  [learner, course] = await Promise.all([DB.get(`learners/${user.id}`), DB.get(`courses/${courseId}`)]);
-  // Guard: must have watched
-  const cp = learner?.courseProgress?.[courseId] || 0;
-  if (cp < 0.99 && learner?.courseStatus?.[courseId] !== 'watched') {
-    alert('영상을 끝까지 시청해야 평가에 응시할 수 있습니다.');
-    window.location.href='player.html'; return;
+// ── shuffle ──────────────────────────────────
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
   }
-  attempt = (learner?.attempt||0)+1;
-  if (attempt > 2) { alert('최대 응시 횟수(2회)를 초과하였습니다.'); window.location.href='dashboard.html'; return; }
-  questions = QUIZ_BANK[attempt===1?'A':'B'];
-  document.getElementById('exam-sub').textContent = `${attempt}차 시험 · 총 ${questions.length}문항 · 40분`;
-  buildPalette(); renderQ(); startTimer();
+  return a;
 }
 
+// ── init ─────────────────────────────────────
+async function init() {
+  [learner, course] = await Promise.all([
+    DB.get(`learners/${user.id}`),
+    DB.get(`courses/${courseId}`)
+  ]);
+
+  // Guard: must have watched
+  const watched = learner?.courseStatus?.[courseId];
+  const cp      = learner?.courseProgress?.[courseId] || 0;
+  if (cp < 0.99 && watched !== 'watched' && watched !== 'completed') {
+    alert('영상을 끝까지 시청해야 평가에 응시할 수 있습니다.');
+    window.location.href = 'player.html'; return;
+  }
+
+  attempt = (learner?.attempt || 0) + 1;
+
+  // Max attempts
+  const settings = await DB.get('settings');
+  const maxAttempts = settings?.maxAttempts || 2;
+  passScore = settings?.passScore || 70;
+
+  if (attempt > maxAttempts) {
+    alert(`최대 응시 횟수(${maxAttempts}회)를 초과하였습니다.`);
+    window.location.href = 'dashboard.html'; return;
+  }
+
+  // ── Build question set ───────────────────
+  // Priority: course.questionBank → QUIZ_BANK fallback
+  const bank     = course?.questionBank || [];
+  const examCount = course?.examCount   || 20;
+  const examTime  = course?.examTime    || 40; // minutes
+
+  let pool = [];
+
+  if (bank.length >= examCount) {
+    // Shuffle the entire bank, pick examCount questions
+    pool = shuffle(bank).slice(0, examCount);
+  } else if (bank.length > 0) {
+    // Use all bank questions + fill from QUIZ_BANK if needed
+    const fallback = shuffle([...QUIZ_BANK.A, ...QUIZ_BANK.B]);
+    const needed   = examCount - bank.length;
+    pool = shuffle([...bank, ...fallback.slice(0, needed)]);
+  } else {
+    // Pure fallback: use legacy A/B sets
+    const legacy = attempt === 1 ? QUIZ_BANK.A : QUIZ_BANK.B;
+    pool = shuffle(legacy).slice(0, Math.min(examCount, legacy.length));
+  }
+
+  questions = pool;
+  timerSec  = examTime * 60;
+
+  // UI
+  document.getElementById('exam-title').textContent = course?.title || '최종 이해도 평가';
+  document.getElementById('exam-meta').textContent =
+    `${attempt}차 시험 · 총 ${questions.length}문항 · ${examTime}분 · 수료기준 ${passScore}점`;
+
+  document.getElementById('loading-screen').style.display = 'none';
+  document.getElementById('q-area').style.display = '';
+
+  buildPalette();
+  renderQ();
+  startTimer();
+}
+
+// ── Render ───────────────────────────────────
 function renderQ() {
-  const q=questions[curIdx], n=curIdx+1, t=questions.length, sel=answers[curIdx];
-  document.getElementById('q-num').textContent  = `Q ${String(n).padStart(2,'0')} / ${String(t).padStart(2,'0')}`;
-  document.getElementById('q-text').textContent = q.q;
-  document.getElementById('ep-fill').style.width= (n/t*100)+'%';
+  const q   = questions[curIdx];
+  const n   = curIdx + 1;
+  const t   = questions.length;
+  const sel = answers[curIdx];
+
+  document.getElementById('q-num').textContent   = `Q ${String(n).padStart(2,'0')} / ${String(t).padStart(2,'0')}`;
+  document.getElementById('q-text').textContent  = q.q;
+  document.getElementById('ep-fill').style.width = (n / t * 100) + '%';
   document.getElementById('ep-text').textContent = `${n} / ${t}`;
-  document.getElementById('q-opts').innerHTML = q.opts.map((o,i) =>
-    `<div class="exam-opt${sel===i?' selected':''}" onclick="selOpt(${i})"><span class="exam-opt-n">${i+1}</span>${o}</div>`
+  document.getElementById('q-opts').innerHTML    = q.opts.map((o, i) =>
+    `<div class="exam-opt${sel === i ? ' selected' : ''}" onclick="selOpt(${i})">
+      <span class="exam-opt-n">${i + 1}</span><span>${o}</span>
+    </div>`
   ).join('');
-  document.getElementById('prev-btn').disabled = curIdx===0;
-  document.getElementById('next-btn').textContent = curIdx===t-1 ? '최종 제출 🏁' : '다음 →';
+  document.getElementById('prev-btn').disabled        = curIdx === 0;
+  document.getElementById('next-btn').textContent     = curIdx === t - 1 ? '최종 제출 🏁' : '다음 →';
   updatePalette();
   document.getElementById('review-warn').classList.remove('show');
 }
-window.selOpt = function(i){ answers[curIdx]=i; renderQ(); };
+
+window.selOpt = function(i) { answers[curIdx] = i; renderQ(); };
+
 window.navigate = function(dir) {
-  const isLast=curIdx===questions.length-1;
-  if (isLast && dir===1) {
-    const un=questions.filter((_,i)=>answers[i]===undefined).length;
-    if (un>0){document.getElementById('review-warn').classList.add('show');return;}
-    if(confirm('최종 제출하시겠습니까? 수정이 불가합니다.')) submitExam();
+  const isLast = curIdx === questions.length - 1;
+  if (isLast && dir === 1) {
+    const un = questions.filter((_, i) => answers[i] === undefined).length;
+    if (un > 0) { document.getElementById('review-warn').classList.add('show'); return; }
+    if (confirm('최종 제출하시겠습니까? 수정이 불가합니다.')) submitExam();
     return;
   }
-  curIdx=Math.max(0,Math.min(questions.length-1,curIdx+dir)); renderQ();
+  curIdx = Math.max(0, Math.min(questions.length - 1, curIdx + dir));
+  renderQ();
 };
-function buildPalette(){document.getElementById('palette').innerHTML=questions.map((_,i)=>`<div class="pc" id="pc-${i}" onclick="jumpTo(${i})">${i+1}</div>`).join('');}
-function updatePalette(){questions.forEach((_,i)=>{const c=document.getElementById('pc-'+i);if(!c)return;c.className='pc'+(answers[i]!==undefined?' answered':'')+(i===curIdx?' current':'');});}
-window.jumpTo=function(i){curIdx=i;renderQ();};
-function startTimer(){updateTimerEl();timerInt=setInterval(()=>{timerSec--;updateTimerEl();if(timerSec<=0){clearInterval(timerInt);alert('시험 시간이 종료되었습니다.');submitExam();}},1000);}
-function updateTimerEl(){const m=Math.floor(timerSec/60).toString().padStart(2,'0'),s=(timerSec%60).toString().padStart(2,'0');const el=document.getElementById('timer');el.textContent=`${m}:${s}`;el.className='timer-box'+(timerSec<300?' urgent':'');}
-async function submitExam(){
-  clearInterval(timerInt);
-  let correct=0; questions.forEach((q,i)=>{if(answers[i]===q.ans)correct++;});
-  const score=Math.round(correct/questions.length*100), passed=score>=70, now=new Date();
-  const up={attempt, finalScore:score, finalPassed:passed, lastExamDate:now.toISOString(), [`courseStatus/${courseId}`]:passed?'completed':'failed'};
-  if(passed){
-    const certNo=generateCertNo();
-    up.completedStatus='completed'; up.certNo=certNo; up.certDate=now.toISOString();
-    up[`courseCerts/${courseId}`]={certNo,certDate:now.toISOString(),score};
-    await DB.push('completions',{name:user.name,org:user.org,grade:user.grade||'general',userId:user.id,courseId,courseTitle:course?.title||'',certNo,score,date:now.toISOString()});
-  }
-  await DB.update(`learners/${user.id}`,up);
-  sessionStorage.setItem('kasg_result',JSON.stringify({score,passed,correct,total:questions.length,attempt}));
-  window.location.href='result.html';
+
+function buildPalette() {
+  document.getElementById('palette').innerHTML = questions.map((_, i) =>
+    `<div class="pc" id="pc-${i}" onclick="jumpTo(${i})">${i + 1}</div>`
+  ).join('');
 }
+function updatePalette() {
+  questions.forEach((_, i) => {
+    const c = document.getElementById('pc-' + i); if (!c) return;
+    c.className = 'pc' + (answers[i] !== undefined ? ' answered' : '') + (i === curIdx ? ' current' : '');
+  });
+}
+window.jumpTo = function(i) { curIdx = i; renderQ(); };
+
+// ── Timer ─────────────────────────────────────
+function startTimer() {
+  updateTimerEl();
+  timerInt = setInterval(() => {
+    timerSec--;
+    updateTimerEl();
+    if (timerSec <= 0) { clearInterval(timerInt); alert('시험 시간이 종료되었습니다.'); submitExam(); }
+  }, 1000);
+}
+function updateTimerEl() {
+  const m  = Math.floor(timerSec / 60).toString().padStart(2, '0');
+  const s  = (timerSec % 60).toString().padStart(2, '0');
+  const el = document.getElementById('timer');
+  el.textContent = `${m}:${s}`;
+  el.className   = 'timer-box' + (timerSec < 300 ? ' urgent' : '');
+}
+
+// ── Submit ────────────────────────────────────
+async function submitExam() {
+  clearInterval(timerInt);
+  let correct = 0;
+  questions.forEach((q, i) => { if (answers[i] === q.ans) correct++; });
+  const score  = Math.round(correct / questions.length * 100);
+  const passed = score >= passScore;
+  const now    = new Date();
+
+  const up = {
+    attempt,
+    finalScore: score,
+    finalPassed: passed,
+    lastExamDate: now.toISOString(),
+    [`courseStatus/${courseId}`]: passed ? 'completed' : 'failed'
+  };
+
+  if (passed) {
+    const certNo = generateCertNo();
+    up.completedStatus = 'completed';
+    up.certNo    = certNo;
+    up.certDate  = now.toISOString();
+    up[`courseCerts/${courseId}`] = { certNo, certDate: now.toISOString(), score };
+    await DB.push('completions', {
+      name: user.name, org: user.org, grade: user.grade || 'general',
+      userId: user.id, courseId,
+      courseTitle: course?.title || '',
+      certNo, score, date: now.toISOString()
+    });
+  }
+
+  await DB.update(`learners/${user.id}`, up);
+  sessionStorage.setItem('kasg_result', JSON.stringify({
+    score, passed, correct, total: questions.length, attempt, passScore
+  }));
+  window.location.href = 'result.html';
+}
+
 init();
 </script>
 </body>
