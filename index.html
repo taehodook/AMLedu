@@ -7,75 +7,74 @@
 <link rel="stylesheet" href="css/main.css">
 <style>
 body{background:linear-gradient(150deg,#050D1F 0%,#0C1F3F 55%,#091428 100%);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;position:relative;overflow:hidden}
-body::before{content:'';position:absolute;width:800px;height:800px;border-radius:50%;border:1px solid rgba(200,150,10,.06);top:-300px;right:-200px;pointer-events:none}
-body::after{content:'';position:absolute;width:600px;height:600px;border-radius:50%;border:1px solid rgba(200,48,42,.05);bottom:-250px;left:-150px;pointer-events:none}
-
-.auth-wrap{width:440px;max-width:100%;position:relative;z-index:1}
-
-.auth-logo-wrap{text-align:center;margin-bottom:24px}
-.auth-logo-img{height:52px;margin:0 auto 10px}
-.auth-logo-sub{font-size:11px;color:rgba(255,255,255,.4);letter-spacing:2px;text-transform:uppercase}
-
+body::before{content:'';position:absolute;width:700px;height:700px;border-radius:50%;border:1px solid rgba(200,150,10,.05);top:-280px;right:-180px;pointer-events:none}
+body::after{content:'';position:absolute;width:500px;height:500px;border-radius:50%;border:1px solid rgba(200,48,42,.04);bottom:-220px;left:-120px;pointer-events:none}
+.auth-wrap{width:460px;max-width:100%;position:relative;z-index:1}
+.auth-logo{text-align:center;margin-bottom:22px}
+.auth-logo img{height:50px;margin:0 auto 8px}
+.auth-logo-sub{font-size:10.5px;color:rgba(255,255,255,.38);letter-spacing:2px;text-transform:uppercase}
 .auth-card{background:#fff;border-radius:var(--radius-lg);overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,.55);border-top:5px solid var(--kasg-gold);animation:cardIn .4s ease}
-@keyframes cardIn{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:none}}
-
-/* Tab */
+@keyframes cardIn{from{opacity:0;transform:translateY(-18px)}to{opacity:1;transform:none}}
 .auth-tabs{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--border)}
-.auth-tab{padding:16px;text-align:center;font-size:14px;font-weight:500;cursor:pointer;color:var(--text-mid);border-bottom:3px solid transparent;margin-bottom:-1px;transition:all .2s}
+.auth-tab{padding:14px;text-align:center;font-size:13.5px;font-weight:500;cursor:pointer;color:var(--text-mid);border-bottom:3px solid transparent;margin-bottom:-1px;transition:all .18s}
 .auth-tab.active{color:var(--navy);border-bottom-color:var(--kasg-gold);font-weight:700}
-
-.auth-body{padding:28px 36px 34px}
-
+.auth-body{padding:24px 32px 28px}
 .tab-panel{display:none}
-.tab-panel.active{display:block;animation:fadeIn .25s ease}
+.tab-panel.active{display:block;animation:fadeIn .2s ease}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-
-.panel-title{font-family:'Noto Serif KR',serif;font-size:18px;font-weight:700;color:var(--navy);text-align:center;margin-bottom:22px}
-
-.err-box{background:#FEE2E2;color:var(--error);padding:10px 14px;border-radius:var(--radius);font-size:13px;margin-bottom:14px;border-left:3px solid var(--error);display:none}
+.panel-title{font-family:'Noto Serif KR',serif;font-size:17px;font-weight:700;color:var(--navy);text-align:center;margin-bottom:18px}
+.err-box{background:#FEE2E2;color:var(--error);padding:9px 13px;border-radius:var(--radius);font-size:12.5px;margin-bottom:12px;border-left:3px solid var(--error);display:none}
 .err-box.show{display:block}
-.ok-box{background:#D1FAE5;color:var(--success);padding:10px 14px;border-radius:var(--radius);font-size:13px;margin-bottom:14px;border-left:3px solid var(--success);display:none}
+.ok-box{background:#D1FAE5;color:var(--success);padding:9px 13px;border-radius:var(--radius);font-size:12.5px;margin-bottom:12px;border-left:3px solid var(--success);display:none}
 .ok-box.show{display:block}
-
-.auth-footer{padding:14px 36px;background:var(--cream);border-top:1px solid var(--border);font-size:11px;color:var(--text-light);text-align:center;line-height:1.7}
-
-.admin-link{text-align:center;margin-top:14px;font-size:12px;color:rgba(255,255,255,.4)}
-.admin-link a{color:rgba(255,255,255,.6);cursor:pointer}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pw-wrap{position:relative}
+.pw-wrap input{padding-right:38px}
+.pw-eye{position:absolute;right:11px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-light);font-size:14px;padding:0;line-height:1}
+.auth-footer{padding:12px 32px;background:var(--cream);border-top:1px solid var(--border);font-size:10.5px;color:var(--text-light);text-align:center}
+.admin-link{text-align:center;margin-top:12px;font-size:11.5px;color:rgba(255,255,255,.38)}
+.admin-link a{color:rgba(255,255,255,.58);cursor:pointer;text-decoration:underline;text-underline-offset:2px}
 .admin-link a:hover{color:var(--kasg-gold)}
 
-.pw-toggle{position:relative}
-.pw-toggle input{padding-right:40px}
-.pw-toggle-btn{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-light);font-size:15px;padding:0}
+/* 등급 선택 카드 */
+.grade-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:4px}
+.grade-card{padding:9px 10px;border:1.5px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all .15s;position:relative;overflow:hidden}
+.grade-card:hover{border-color:var(--navy);background:rgba(12,31,63,.03)}
+.grade-card.selected{border-color:var(--navy);background:var(--navy);color:#fff}
+.grade-card input{position:absolute;opacity:0;pointer-events:none}
+.grade-name{font-size:12px;font-weight:600;display:block;margin-bottom:2px}
+.grade-desc{font-size:10px;opacity:.6;display:block;line-height:1.3}
 </style>
 </head>
 <body>
 
 <div class="auth-wrap">
-  <div class="auth-logo-wrap">
-    <img class="auth-logo-img" src="assets/logo-wide.png" alt="KASG">
+  <div class="auth-logo">
+    <img src="assets/logo-wide.png" alt="KASG">
     <div class="auth-logo-sub">AML Online Education System</div>
   </div>
 
   <div class="auth-card">
     <div class="auth-tabs">
-      <div class="auth-tab active" onclick="switchTab('login')">로그인</div>
-      <div class="auth-tab" onclick="switchTab('register')">회원가입</div>
+      <div class="auth-tab active" onclick="switchTab('login')" id="tab-btn-login">로그인</div>
+      <div class="auth-tab" onclick="switchTab('register')" id="tab-btn-register">수강 신청</div>
     </div>
 
     <div class="auth-body">
+
       <!-- ── LOGIN ── -->
       <div class="tab-panel active" id="tab-login">
         <div class="panel-title">수강생 로그인</div>
         <div class="err-box" id="login-err"></div>
         <div class="form-group">
-          <label class="form-label">아이디 (이메일 또는 성함)</label>
+          <label class="form-label">아이디</label>
           <input class="form-input" id="l-id" type="text" placeholder="가입 시 입력한 아이디" autocomplete="username">
         </div>
         <div class="form-group">
           <label class="form-label">비밀번호</label>
-          <div class="pw-toggle">
+          <div class="pw-wrap">
             <input class="form-input" id="l-pw" type="password" placeholder="비밀번호" autocomplete="current-password">
-            <button class="pw-toggle-btn" onclick="togglePw('l-pw',this)">👁</button>
+            <button class="pw-eye" onclick="togglePw('l-pw',this)" type="button">👁</button>
           </div>
         </div>
         <button class="btn btn-primary btn-lg btn-block" onclick="doLogin()" id="login-btn">로그인</button>
@@ -83,157 +82,193 @@ body::after{content:'';position:absolute;width:600px;height:600px;border-radius:
 
       <!-- ── REGISTER ── -->
       <div class="tab-panel" id="tab-register">
-        <div class="panel-title">수강 신청 / 회원가입</div>
+        <div class="panel-title">수강 신청</div>
         <div class="err-box" id="reg-err"></div>
-        <div class="ok-box" id="reg-ok">✅ 가입 신청이 완료되었습니다!<br>관리자 승인 후 수강이 가능합니다.</div>
+        <div class="ok-box" id="reg-ok">✅ 신청 완료! 관리자 승인 후 수강 가능합니다.</div>
+
         <div class="form-group">
           <label class="form-label">아이디 *</label>
-          <input class="form-input" id="r-id" type="text" placeholder="영문/숫자/이메일 형식">
+          <input class="form-input" id="r-id" type="text" placeholder="영문·숫자·이메일 형식">
         </div>
-        <div class="form-group">
-          <label class="form-label">성명 *</label>
-          <input class="form-input" id="r-name" type="text" placeholder="실명을 입력하세요">
-        </div>
-        <div class="form-group">
-          <label class="form-label">소속 기관 *</label>
-          <input class="form-input" id="r-org" type="text" placeholder="소속 회사 또는 기관명">
-        </div>
-        <div class="form-group">
-          <label class="form-label">연락처</label>
-          <input class="form-input" id="r-phone" type="tel" placeholder="010-0000-0000">
-        </div>
-        <div class="form-group">
-          <label class="form-label">비밀번호 *</label>
-          <div class="pw-toggle">
-            <input class="form-input" id="r-pw" type="password" placeholder="8자 이상">
-            <button class="pw-toggle-btn" onclick="togglePw('r-pw',this)">👁</button>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">성명 *</label>
+            <input class="form-input" id="r-name" type="text" placeholder="실명">
+          </div>
+          <div class="form-group">
+            <label class="form-label">연락처</label>
+            <input class="form-input" id="r-phone" type="tel" placeholder="010-0000-0000">
           </div>
         </div>
-        <div class="form-group">
-          <label class="form-label">비밀번호 확인 *</label>
-          <input class="form-input" id="r-pw2" type="password" placeholder="비밀번호 재입력">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">소속 기관 *</label>
+            <input class="form-input" id="r-org" type="text" placeholder="회사·기관명">
+          </div>
+          <div class="form-group">
+            <label class="form-label">부서</label>
+            <input class="form-input" id="r-dept" type="text" placeholder="부서명">
+          </div>
         </div>
-        <div class="alert alert-warn" style="margin-bottom:16px;font-size:12px">
-          ⚠️ 가입 후 관리자 승인이 완료되어야 강의를 수강할 수 있습니다.
+
+        <!-- 등급 선택 -->
+        <div class="form-group">
+          <label class="form-label">수강생 등급 *</label>
+          <div class="grade-grid" id="grade-grid">
+            <div class="grade-card" onclick="selectGrade('board',this)">
+              <span class="grade-name">🏛 이사회·임원</span>
+              <span class="grade-desc">경영진·이사회 구성원</span>
+            </div>
+            <div class="grade-card" onclick="selectGrade('aml',this)">
+              <span class="grade-name">🔍 AML 담당자</span>
+              <span class="grade-desc">컴플라이언스·AML 전담</span>
+            </div>
+            <div class="grade-card" onclick="selectGrade('general',this)">
+              <span class="grade-name">👤 일반</span>
+              <span class="grade-desc">일반 직원·수강생</span>
+            </div>
+            <div class="grade-card" onclick="selectGrade('research',this)">
+              <span class="grade-name">🎓 연구회</span>
+              <span class="grade-desc">한국자금세탁방지연구회 회원</span>
+            </div>
+          </div>
+          <input type="hidden" id="r-grade" value="">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">비밀번호 * <span style="font-size:10px;font-weight:400">(8자↑)</span></label>
+            <div class="pw-wrap">
+              <input class="form-input" id="r-pw" type="password" placeholder="비밀번호">
+              <button class="pw-eye" onclick="togglePw('r-pw',this)" type="button">👁</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">비밀번호 확인 *</label>
+            <input class="form-input" id="r-pw2" type="password" placeholder="재입력">
+          </div>
+        </div>
+
+        <div class="alert alert-warn" style="margin-bottom:14px;font-size:11.5px;padding:8px 12px">
+          ⚠️ 관리자 승인 완료 후 강의를 수강할 수 있습니다.
         </div>
         <button class="btn btn-gold btn-lg btn-block" onclick="doRegister()" id="reg-btn">수강 신청하기</button>
       </div>
-    </div>
 
-    <div class="auth-footer">
-      © 2025 한국자금세탁방지연구회 · Korea Anti-money Laundering Study Group
     </div>
+    <div class="auth-footer">© 2025 한국자금세탁방지연구회 · Korea Anti-money Laundering Study Group</div>
   </div>
 
-  <div class="admin-link">관리자 로그인 <a onclick="window.location.href='admin-login.html'">→ 관리자 페이지</a></div>
+  <div class="admin-link">관리자 <a onclick="window.location.href='admin-login.html'">→ 관리자 로그인</a></div>
 </div>
 
 <div id="toast-container"></div>
 
 <script type="module">
 import { DB } from './js/firebase-config.js';
-import { safeId, showToast } from './js/utils.js';
+import { showToast } from './js/utils.js';
 
-// Auto redirect if already logged in
 if (sessionStorage.getItem('kasg_user')) window.location.href = 'dashboard.html';
 
+let selectedGrade = '';
+
 window.switchTab = function(t) {
-  document.querySelectorAll('.auth-tab').forEach((el,i)=>el.classList.toggle('active', (i===0&&t==='login')||(i===1&&t==='register')));
+  document.getElementById('tab-btn-login').classList.toggle('active', t==='login');
+  document.getElementById('tab-btn-register').classList.toggle('active', t==='register');
   document.getElementById('tab-login').classList.toggle('active', t==='login');
   document.getElementById('tab-register').classList.toggle('active', t==='register');
 };
 
 window.togglePw = function(id, btn) {
   const el = document.getElementById(id);
-  el.type = el.type === 'password' ? 'text' : 'password';
-  btn.textContent = el.type === 'password' ? '👁' : '🙈';
+  el.type = el.type==='password' ? 'text' : 'password';
+  btn.textContent = el.type==='password' ? '👁' : '🙈';
 };
 
-// ── LOGIN ──────────────────────────────────
+window.selectGrade = function(grade, el) {
+  selectedGrade = grade;
+  document.getElementById('r-grade').value = grade;
+  document.querySelectorAll('.grade-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+};
+
+// ── LOGIN ──
 window.doLogin = async function() {
   const id = document.getElementById('l-id').value.trim();
   const pw = document.getElementById('l-pw').value;
   const errEl = document.getElementById('login-err');
   errEl.classList.remove('show');
-
-  if (!id || !pw) { errEl.textContent='모든 항목을 입력해 주세요.'; errEl.classList.add('show'); return; }
-
+  if (!id || !pw) { errEl.textContent='아이디와 비밀번호를 입력해 주세요.'; errEl.classList.add('show'); return; }
   const btn = document.getElementById('login-btn');
-  btn.disabled = true; btn.textContent = '로그인 중...';
-
+  btn.disabled=true; btn.textContent='확인 중...';
   try {
-    const learner = await DB.get(`learners/${id.replace(/[.#$[\]]/g,'_')}`);
+    const key = id.replace(/[.#$[\]]/g,'_');
+    const learner = await DB.get(`learners/${key}`);
     if (!learner || learner.pw !== pw) {
-      errEl.textContent = '아이디 또는 비밀번호가 올바르지 않습니다.';
-      errEl.classList.add('show');
-      btn.disabled = false; btn.textContent = '로그인';
-      return;
+      errEl.textContent='아이디 또는 비밀번호가 올바르지 않습니다.'; errEl.classList.add('show');
+    } else if (learner.status==='pending') {
+      errEl.textContent='⏳ 관리자 승인 대기 중입니다.'; errEl.classList.add('show');
+    } else if (learner.status==='rejected') {
+      errEl.textContent='❌ 가입 거절 상태입니다. 관리자에게 문의하세요.'; errEl.classList.add('show');
+    } else {
+      sessionStorage.setItem('kasg_user', JSON.stringify({
+        id: key, name: learner.name, org: learner.org,
+        grade: learner.grade||'general', dept: learner.dept||''
+      }));
+      window.location.href = 'dashboard.html';
     }
-    if (learner.status === 'pending') {
-      errEl.textContent = '⏳ 관리자 승인 대기 중입니다. 승인 후 로그인할 수 있습니다.';
-      errEl.classList.add('show');
-      btn.disabled = false; btn.textContent = '로그인';
-      return;
-    }
-    if (learner.status === 'rejected') {
-      errEl.textContent = '❌ 가입이 거절되었습니다. 관리자에게 문의하세요.';
-      errEl.classList.add('show');
-      btn.disabled = false; btn.textContent = '로그인';
-      return;
-    }
-    sessionStorage.setItem('kasg_user', JSON.stringify({
-      id: id.replace(/[.#$[\]]/g,'_'), name: learner.name, org: learner.org
-    }));
-    window.location.href = 'dashboard.html';
   } catch(e) {
-    errEl.textContent = '연결 오류: ' + e.message;
-    errEl.classList.add('show');
-    btn.disabled = false; btn.textContent = '로그인';
+    errEl.textContent='연결 오류: '+e.message; errEl.classList.add('show');
   }
+  btn.disabled=false; btn.textContent='로그인';
 };
 
-// ── REGISTER ───────────────────────────────
+// ── REGISTER ──
 window.doRegister = async function() {
   const id    = document.getElementById('r-id').value.trim();
   const name  = document.getElementById('r-name').value.trim();
   const org   = document.getElementById('r-org').value.trim();
+  const dept  = document.getElementById('r-dept').value.trim();
   const phone = document.getElementById('r-phone').value.trim();
+  const grade = document.getElementById('r-grade').value;
   const pw    = document.getElementById('r-pw').value;
   const pw2   = document.getElementById('r-pw2').value;
   const errEl = document.getElementById('reg-err');
   const okEl  = document.getElementById('reg-ok');
   errEl.classList.remove('show'); okEl.classList.remove('show');
 
-  if (!id||!name||!org||!pw) { errEl.textContent='필수 항목(*)을 모두 입력해 주세요.'; errEl.classList.add('show'); return; }
-  if (pw.length < 8) { errEl.textContent='비밀번호는 8자 이상이어야 합니다.'; errEl.classList.add('show'); return; }
-  if (pw !== pw2)    { errEl.textContent='비밀번호가 일치하지 않습니다.'; errEl.classList.add('show'); return; }
+  if (!id||!name||!org)  { errEl.textContent='아이디, 성명, 소속을 입력하세요.'; errEl.classList.add('show'); return; }
+  if (!grade)             { errEl.textContent='수강생 등급을 선택하세요.'; errEl.classList.add('show'); return; }
+  if (pw.length < 8)      { errEl.textContent='비밀번호는 8자 이상이어야 합니다.'; errEl.classList.add('show'); return; }
+  if (pw !== pw2)         { errEl.textContent='비밀번호가 일치하지 않습니다.'; errEl.classList.add('show'); return; }
 
   const btn = document.getElementById('reg-btn');
-  btn.disabled = true; btn.textContent = '신청 중...';
-
+  btn.disabled=true; btn.textContent='신청 중...';
   try {
-    const dbKey = id.replace(/[.#$[\]]/g,'_');
-    const exists = await DB.get(`learners/${dbKey}`);
-    if (exists) { errEl.textContent='이미 사용 중인 아이디입니다.'; errEl.classList.add('show'); btn.disabled=false; btn.textContent='수강 신청하기'; return; }
-
-    await DB.set(`learners/${dbKey}`, {
-      id: dbKey, name, org, phone, pw,
-      status: 'pending',        // 관리자 승인 대기
-      approved: false,
+    const key = id.replace(/[.#$[\]]/g,'_');
+    if (await DB.get(`learners/${key}`)) {
+      errEl.textContent='이미 사용 중인 아이디입니다.'; errEl.classList.add('show');
+      btn.disabled=false; btn.textContent='수강 신청하기'; return;
+    }
+    const GRADE_LABELS = { board:'이사회·임원', aml:'AML 담당자', general:'일반', research:'연구회' };
+    await DB.set(`learners/${key}`, {
+      id: key, name, org, dept, phone, pw,
+      grade, gradeLabel: GRADE_LABELS[grade]||grade,
+      status: 'pending', approved: false,
+      assignedCourses: [],   // 관리자가 배정한 강의 목록
       progress: 0, midQuizCorrect:0, midQuizTotal:0,
       finalScore: null, attempt: 0,
       certNo: null, certDate: null,
       createdAt: new Date().toISOString()
     });
-
     okEl.classList.add('show');
-    ['r-id','r-name','r-org','r-phone','r-pw','r-pw2'].forEach(i=>document.getElementById(i).value='');
-    btn.disabled = false; btn.textContent = '수강 신청하기';
+    ['r-id','r-name','r-org','r-dept','r-phone','r-pw','r-pw2'].forEach(i => document.getElementById(i).value='');
+    document.querySelectorAll('.grade-card').forEach(c=>c.classList.remove('selected'));
+    selectedGrade='';
   } catch(e) {
-    errEl.textContent = '오류: ' + e.message;
-    errEl.classList.add('show');
-    btn.disabled = false; btn.textContent = '수강 신청하기';
+    errEl.textContent='오류: '+e.message; errEl.classList.add('show');
   }
+  btn.disabled=false; btn.textContent='수강 신청하기';
 };
 
 document.addEventListener('keydown', e => {

@@ -132,7 +132,7 @@ async function submitExam(){
     const certNo=generateCertNo();
     up.completedStatus='completed'; up.certNo=certNo; up.certDate=now.toISOString();
     up[`courseCerts/${courseId}`]={certNo,certDate:now.toISOString(),score};
-    await DB.push('completions',{name:user.name,org:user.org,userId:user.id,courseId,courseTitle:course?.title||'',certNo,score,date:now.toISOString()});
+    await DB.push('completions',{name:user.name,org:user.org,grade:user.grade||'general',userId:user.id,courseId,courseTitle:course?.title||'',certNo,score,date:now.toISOString()});
   }
   await DB.update(`learners/${user.id}`,up);
   sessionStorage.setItem('kasg_result',JSON.stringify({score,passed,correct,total:questions.length,attempt}));
